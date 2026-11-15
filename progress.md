@@ -1,22 +1,20 @@
 # Progress
 
 **Current milestone:** M1 - New-post workflow and live deploy
-**Status:** IN PROGRESS   <!-- IN PROGRESS | BLOCKED | COMPLETE -->
+**Status:** COMPLETE   <!-- IN PROGRESS | BLOCKED | COMPLETE -->
 **Kickoff:** docs/kickoffs/M1-kickoff.md
-**Branch:** `feature/newPostWorkflow` (pushed; PR #3 open)
+**Branch:** `feature/newPostWorkflow` (PR #3 merged into `main` as 8b544b7; this final progress update is committed locally only)
 
 M0's record is in git history (`progress.md` as of commit 084f458).
 
 ## Done-when checklist
-**Waiting on Tony:** open the preview URL (behind Vercel login) to confirm `/log/deploy-check/`; merge PR #3; then the production check.
-
 - [x] `npm run new` creates a correctly numbered and slugged draft from the template, both interactively and with flags, and refuses a duplicate slug - verified by: flags, piped answers and a real TTY via `expect`, a duplicate slug refused with nothing written (details under Completed), plus `createPost` unit tests and the integration test.
 - [x] `npm run publish -- <n>` flips the draft, sets the date (or keeps it with `--keep-date`), and runs check and build; on failure it exits non-zero and leaves the post unchanged - verified by: by hand on a probe post (`--keep-date`, today, a schema failure and Ctrl-C mid-build, each restoring the file with an unchanged SHA-1 and exit 1), plus `publishPost` unit tests and the integration test.
 - [x] The site is live on a `vercel.app` URL, and `site` in `astro.config.mjs` is set to it - verified by: `curl https://off-the-happy-path.vercel.app/` returned 200 with title "Off the Happy Path" and only № 001 listed (draft excluded); `site: 'https://off-the-happy-path.vercel.app'` committed.
-- [ ] A post created with `npm run new` and published with `npm run publish` appears on the live site after it reaches `main` - partly verified: `003-deploy-check.md` was made with both scripts, the Vercel preview deployment for PR #3 succeeded, and the local build has `/log/deploy-check/`. The preview URL (`https://off-the-happy-path-git-feature-newp-181cdd-tbalbacetes-projects.vercel.app/log/deploy-check/`) answers 302 to anonymous requests because of Vercel deployment protection, so Tony checks it in a signed-in browser. Production check after Tony merges: `https://off-the-happy-path.vercel.app/log/deploy-check/` should return 200, and the home page should list № 003 and № 001.
+- [x] A post created with `npm run new` and published with `npm run publish` appears on the live site after it reaches `main` - verified by: `003-deploy-check.md` was made with both scripts. After Tony merged PR #3 (merge commit 8b544b7), `curl https://off-the-happy-path.vercel.app/log/deploy-check/` returned 200 with `<h1>Deploy check</h1>` and `№ 003 · 2026-11-14 · 1 min read`; the home page lists № 003 and № 001; `/log/draft-example/` still returns 404. The preview check was left to Tony (previews are behind Vercel login), and production now covers it.
 - [x] `README.md` covers the day-to-day loop - verified by: README has setup, new / dev / publish / commit / push, flags, editing with `revised:`, checks, and where the plan and progress live.
 - [x] Tests for the new behavior pass: unit tests for every `scripts/lib` helper, and the temp-directory integration test for new and publish; CI is green on the PR - verified by: `npm test` passed 10 files / 105 tests (`scripts-slug`, `scripts-entries`, `scripts-frontmatter`, `scripts-template`, `scripts-workflow`, `scripts-integration` plus the four M0 files); CI `verify` passed on PR #3 (check, test, build) and the Vercel check passed.
-- [ ] progress.md is complete and status is COMPLETE
+- [x] progress.md is complete and status is COMPLETE - verified by: this file.
 
 ## Completed
 - `scripts/lib/slug.mjs`: `slugify` (NFKD + a small map for letters like ß/æ/ø/ł, apostrophes dropped, hyphens, cut at 60 on a word boundary), `postFileName`, and `slugFromId` re-exported from `src/lib/entries.ts`.

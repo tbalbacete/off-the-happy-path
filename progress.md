@@ -3,7 +3,7 @@
 **Current milestone:** M4 - Navigation, feeds, and the rest of the pages
 **Status:** COMPLETE   <!-- IN PROGRESS | BLOCKED | COMPLETE -->
 **Kickoff:** docs/kickoffs/M4-kickoff.md
-**Branch:** `feature/navigationAndFeeds` (PR #10)
+**Branch:** `feature/navigationAndFeeds` (PR #10, merged into `main` as c8f1bca)
 
 M0's to M3's records are in git history (`progress.md` as of commits 084f458, 9406219, ef48ec2 and b8c049f).
 

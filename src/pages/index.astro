@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../data/site';
+import { getPosts } from '../lib/posts';
+import { formatEntryNo, slugFromId } from '../lib/entries';
+
+const posts = await getPosts();
+---
+
+<BaseLayout>
+  <header>
+    <h1>{site.name}</h1>
+    <p>{site.tagline}</p>
+  </header>
+  <main>
+    <ul>
+      {
+        posts.map((post) => (
+          <li>
+            <span class="mono">{formatEntryNo(post.data.no)}</span>{' '}
+            <span class="mono">{post.data.date}</span>{' '}
+            <a href={`/log/${slugFromId(post.id)}/`}>{post.data.title}</a>
+            {post.data.draft && <span class="mono"> (draft)</span>}
+          </li>
+        ))
+      }
+    </ul>
+  </main>
+</BaseLayout>

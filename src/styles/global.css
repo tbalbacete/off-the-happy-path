@@ -1,0 +1,81 @@
+/* Tokens and base typography. Design rules: docs/plan.md §6. */
+
+:root {
+  /* Five colors, no more. */
+  --paper: #f2f2ee;
+  --ink: #111111;
+  --pencil: #55534d;
+  --pen: #b3190f;
+  --highlighter: #ffe14d;
+  /* The one allowed neutral tint, for hairline dividers. */
+  --hairline: #c4c2b9;
+
+  --font-head: 'Archivo Variable', 'Arial Narrow', sans-serif;
+  --font-body: 'Source Serif 4 Variable', Georgia, serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  --head-stretch: 78%;
+  --head-weight: 800;
+  --mono-tracking: 0.08em;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.6;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-head);
+  font-stretch: var(--head-stretch);
+  font-weight: var(--head-weight);
+  line-height: 1.1;
+}
+
+code,
+pre,
+.mono {
+  font-family: var(--font-mono);
+}
+
+.mono {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: var(--mono-tracking);
+  color: var(--pencil);
+}
+
+a {
+  color: var(--ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--pen);
+  outline-offset: 2px;
+}
+
+mark {
+  background: var(--highlighter);
+  color: var(--ink);
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--hairline);
+}

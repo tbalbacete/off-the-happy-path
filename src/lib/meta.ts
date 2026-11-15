@@ -40,6 +40,14 @@ export function withTrailingSlash(path: string): string {
   return path.endsWith('/') ? path : `${path}/`;
 }
 
+/**
+ * A page's absolute URL with a trailing slash: the canonical, `og:url`, and
+ * the permalink the share box shows and copies.
+ */
+export function canonicalUrl(path: string, origin: string | URL): string {
+  return new URL(withTrailingSlash(path), origin).href;
+}
+
 export function pageMeta({
   title,
   description = site.tagline,
@@ -48,7 +56,7 @@ export function pageMeta({
   origin,
   noindex = false,
 }: PageMetaInput): PageMeta {
-  const url = new URL(withTrailingSlash(path), origin).href;
+  const url = canonicalUrl(path, origin);
   const image = new URL(site.og.image, origin).href;
   const ogTitle = title ?? site.name;
 

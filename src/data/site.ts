@@ -138,6 +138,22 @@ export const site = {
       /** Previous, on the oldest entry. */
       oldestEnd: 'Nothing before this. It starts here.',
     },
+    share: {
+      label: 'Share',
+      /** The button's label, and what it reads for about 2 seconds after a copy. */
+      copy: 'Copy link',
+      copied: 'Copied',
+      /** Screen-reader messages in the box's live region. */
+      copiedStatus: 'Link copied',
+      fallbackStatus: 'Press Ctrl+C or Cmd+C to copy',
+      /** The share links, in order. Labels are plain words: no logos or icons. */
+      networks: [
+        { id: 'email', label: 'Email' },
+        { id: 'linkedin', label: 'LinkedIn' },
+        { id: 'bluesky', label: 'Bluesky' },
+        { id: 'x', label: 'X' },
+      ],
+    },
   },
 
   /** `1 entry`, `3 entries`. */

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { postMeta, prevNext, replyHref, replySubject } from '../src/lib/post';
+import { neighbourLink, postMeta, prevNext, replyHref, replySubject } from '../src/lib/post';
 
 const post = (no: number) => ({ id: `${no}`, data: { no } });
 /** Newest first, like getPosts returns them. */
@@ -33,6 +33,16 @@ describe('prevNext', () => {
 
   it('throws for an entry that is not in the list', () => {
     expect(() => prevNext(posts, 2)).toThrow(/Entry 2/);
+  });
+});
+
+describe('neighbourLink', () => {
+  it('gives the number, title and page of a neighbour', () => {
+    const p = { id: '003-deploy-check', data: { no: 3, title: 'Deploy check' } };
+    expect(neighbourLink(p)).toEqual({ no: 3, title: 'Deploy check', href: '/log/deploy-check/' });
+  });
+  it('is null at the end of the log', () => {
+    expect(neighbourLink(null)).toBeNull();
   });
 });
 

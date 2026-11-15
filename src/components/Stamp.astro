@@ -3,12 +3,14 @@ import type { PostType } from '../lib/home';
 
 interface Props {
   type: PostType;
+  /** The slightly larger stamp in a post's kicker. */
+  large?: boolean;
 }
 
-const { type } = Astro.props;
+const { type, large = false } = Astro.props;
 ---
 
-<span class:list={['stamp', { 'stamp--pen': type === 'rant' }]}>{type}</span>
+<span class:list={['stamp', { 'stamp--pen': type === 'rant', 'stamp--large': large }]}>{type}</span>
 
 <style>
   .stamp {
@@ -23,6 +25,9 @@ const { type } = Astro.props;
     border: 1.5px solid var(--ink);
     padding: 2px 7px;
     transform: rotate(-2deg);
+  }
+  .stamp--large {
+    font-size: 11px;
   }
   .stamp--pen {
     color: var(--pen);

@@ -3,7 +3,7 @@
  * and already-filtered, newest-first post lists.
  */
 import { site } from '../data/site';
-import { formatEntryNo, padEntryNo } from './entries';
+import { formatEntryNo, padEntryNo, postHref } from './entries';
 import { tagHref, tagLabel } from './tags';
 
 interface Numbered {
@@ -25,6 +25,18 @@ export function prevNext<T extends Numbered>(posts: readonly T[], no: number): N
   const i = posts.findIndex((p) => p.data.no === no);
   if (i === -1) throw new Error(`Entry ${no} is not in the list of posts`);
   return { previous: posts[i + 1] ?? null, next: posts[i - 1] ?? null };
+}
+
+/** What a previous/next cell shows. */
+export interface NeighbourLink {
+  no: number;
+  title: string;
+  href: string;
+}
+
+/** A neighbour as a previous/next link, or null at that end of the log. */
+export function neighbourLink(post: { id: string; data: { no: number; title: string } } | null): NeighbourLink | null {
+  return post ? { no: post.data.no, title: post.data.title, href: postHref(post.id) } : null;
 }
 
 /** The reply subject: `Re: № 015`. */

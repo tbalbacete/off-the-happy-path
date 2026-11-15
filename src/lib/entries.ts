@@ -8,6 +8,11 @@ export function slugFromId(id: string): string {
   return id.replace(/^\d+-/, '');
 }
 
+/** `001-hello-log` (file id) -> `/log/hello-log/` (the post's page). */
+export function postHref(id: string): string {
+  return `/log/${slugFromId(id)}/`;
+}
+
 /** 7 -> `007`. */
 export function padEntryNo(no: number): string {
   return String(no).padStart(3, '0');

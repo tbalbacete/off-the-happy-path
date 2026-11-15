@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { assertUniqueEntries, formatEntryNo, padEntryNo, slugFromId } from '../src/lib/entries';
+import { assertUniqueEntries, formatEntryNo, padEntryNo, postHref, slugFromId } from '../src/lib/entries';
 
 describe('slugFromId', () => {
   it('drops the number prefix', () => {
@@ -8,6 +8,12 @@ describe('slugFromId', () => {
   });
   it('leaves ids without a prefix alone', () => {
     expect(slugFromId('hello-log')).toBe('hello-log');
+  });
+});
+
+describe('postHref', () => {
+  it('links to the post page by slug', () => {
+    expect(postHref('004-nobody-reads-the-ticket')).toBe('/log/nobody-reads-the-ticket/');
   });
 });
 

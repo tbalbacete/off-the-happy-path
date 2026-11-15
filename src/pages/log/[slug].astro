@@ -1,37 +1,33 @@
 ---
 import type { GetStaticPaths } from 'astro';
 import { render } from 'astro:content';
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostLayout from '../../layouts/PostLayout.astro';
 import { getPosts, type Post } from '../../lib/posts';
-import { formatEntryNo, slugFromId } from '../../lib/entries';
+import { slugFromId } from '../../lib/entries';
+import { navItemForType } from '../../lib/home';
+import { postMeta, prevNext } from '../../lib/post';
 import { readingTime } from '../../lib/reading-time';
 
 export const getStaticPaths = (async () => {
   const posts = await getPosts();
-  return posts.map((post) => ({ params: { slug: slugFromId(post.id) }, props: { post } }));
+  return posts.map((post) => ({
+    params: { slug: slugFromId(post.id) },
+    props: { post, ...prevNext(posts, post.data.no) },
+  }));
 }) satisfies GetStaticPaths;
 
 interface Props {
   post: Post;
+  previous: Post | null;
+  next: Post | null;
 }
 
 const { post } = Astro.props;
 const { Content } = await render(post);
-const minutes = readingTime(post.body ?? '');
+const { no, title, dek, type, date } = post.data;
+const meta = postMeta(post, readingTime(post.body ?? ''));
 ---
 
-<BaseLayout title={post.data.title}>
-  <header>
-    <p><a href="/">Home</a></p>
-  </header>
-  <main>
-    <article>
-      <h1>{post.data.title}</h1>
-      <p class="mono">
-        {formatEntryNo(post.data.no)} · {post.data.date} · {minutes} min read
-        {post.data.draft && ' · draft'}
-      </p>
-      <Content />
-    </article>
-  </main>
-</BaseLayout>
+<PostLayout no={no} title={title} dek={dek} type={type} date={date} meta={meta} active={navItemForType(type)}>
+  <Content />
+</PostLayout>

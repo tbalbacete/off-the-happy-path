@@ -1,0 +1,64 @@
+---
+import { site } from '../data/site';
+import type { MetaRow } from '../lib/post';
+
+interface Props {
+  rows: MetaRow[];
+}
+
+const { rows } = Astro.props;
+---
+
+<aside aria-label={site.post.meta.label} class="post-meta">
+  <dl>
+    {
+      rows.map((row) => (
+        <div class="post-meta__row">
+          <dt class="label label--small">{row.label}</dt>
+          <dd>
+            {row.links
+              ? row.links.map((link, i) => (
+                  <>
+                    {i > 0 && ', '}
+                    <a href={link.href}>{link.label}</a>
+                  </>
+                ))
+              : row.value}
+          </dd>
+        </div>
+      ))
+    }
+  </dl>
+</aside>
+
+<style>
+  .post-meta dl {
+    margin: 0;
+    border-top: 2px solid var(--ink);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.45;
+  }
+  .post-meta__row {
+    padding: 9px 0;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .post-meta__row:last-child {
+    border-bottom: 0;
+  }
+  .post-meta dd {
+    margin: 2px 0 0;
+  }
+
+  /* Phones: the column sits above the article, its rows in two columns. */
+  @media (max-width: 720px) {
+    .post-meta dl {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap: 20px;
+    }
+    .post-meta__row:last-child {
+      border-bottom: 1px solid var(--hairline);
+    }
+  }
+</style>

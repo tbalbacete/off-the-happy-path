@@ -10,7 +10,23 @@
   /* The one allowed neutral tint, for hairline dividers. */
   --hairline: #c4c2b9;
 
-  --font-head: 'Archivo Variable', 'Arial Narrow', sans-serif;
+  /*
+   * Code colors (the Shiki theme in src/lib/code.ts). Ink for nearly
+   * everything, pencil for comments and punctuation, never pen.
+   */
+  --code-foreground: var(--ink);
+  --code-background: var(--paper);
+  --code-token-constant: var(--ink);
+  --code-token-string: var(--ink);
+  --code-token-comment: var(--pencil);
+  --code-token-keyword: var(--ink);
+  --code-token-parameter: var(--ink);
+  --code-token-function: var(--ink);
+  --code-token-string-expression: var(--ink);
+  --code-token-punctuation: var(--pencil);
+  --code-token-link: var(--ink);
+
+  --font-head:'Archivo Variable', 'Arial Narrow', sans-serif;
   --font-body: 'Source Serif 4 Variable', Georgia, serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
 

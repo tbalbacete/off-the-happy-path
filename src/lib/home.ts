@@ -2,6 +2,8 @@
  * Pure helpers for the home page and the type filter pages. No Astro imports;
  * they take already-filtered, newest-first posts.
  */
+import { slugFromId } from './entries';
+import { readingTime } from './reading-time';
 import { tagLabel } from './tags';
 
 export const POST_TYPES = ['essay', 'note', 'rant'] as const;
@@ -52,4 +54,45 @@ export function entryMeta(minutes: number, tags: readonly string[]): string {
   const parts = [`${minutes} MIN`];
   if (tags.length > 0) parts.push(tags.map((t) => tagLabel(t).toUpperCase()).join(', '));
   return parts.join(' · ');
+}
+
+interface Summarisable {
+  id: string;
+  body?: string;
+  data: {
+    no: number;
+    title: string;
+    dek: string;
+    type: PostType;
+    date: string;
+    tags: readonly string[];
+    draft: boolean;
+  };
+}
+
+/** What an entry row or the featured entry shows. */
+export interface EntrySummary {
+  no: number;
+  href: string;
+  title: string;
+  dek: string;
+  type: PostType;
+  date: string;
+  meta: string;
+  draft: boolean;
+}
+
+/** The props a list entry needs, from a post. */
+export function entrySummary(post: Summarisable): EntrySummary {
+  const { no, title, dek, type, date, tags, draft } = post.data;
+  return {
+    no,
+    href: `/log/${slugFromId(post.id)}/`,
+    title,
+    dek,
+    type,
+    date,
+    meta: entryMeta(readingTime(post.body ?? ''), tags),
+    draft,
+  };
 }

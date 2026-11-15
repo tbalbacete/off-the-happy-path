@@ -22,11 +22,16 @@ M0's and M1's records are in git history (`progress.md` as of commits 084f458 an
 - `src/lib/contrast.ts`: `relativeLuminance` and `contrastRatio` (WCAG 2). `tests/contrast.test.ts` reads the tokens from `global.css` and checks every pair in use: ink, pencil and pen on paper, paper on ink (the CURRENTLY bar), and ink on highlighter (the featured title band).
 - `src/data/site.ts` now holds all page copy: name lines, the long tagline, masthead cells, nav, log headings, filters, empty lines, aside copy, footer lines, and the real email (`tbalbacete@gmail.com`) and GitHub (`https://github.com/tbalbacete`). `src/data/currently.ts` holds `{ shipping, reading, annoyedBy }` with the artboard's placeholders. `BaseLayout` takes a `description` prop (defaults to the tagline) and renders `<meta name="description">`.
 - `src/components/`: `Stamp` (RANT in `--pen`), `Masthead` (form cells, name in a `clamp()` size, cells as a `<dl>`), `SiteNav` (tagline row, `nav aria-label="Main"`, active item in `--pen` with a 2px underline and `aria-current="page"`), `Footer`. `global.css` gains `.container` (1180px, 40/32/56 padding; 20/16/40 under 480px), `.label` / `.label--small`, link underline offset and the `--pen` hover. The home page uses them around the old list.
+- `LogHeader` (filters as a list labelled "Filter by type", active one ink, underlined, `aria-current="page"`), `FeaturedEntry` (h2, highlighter band, LATEST, `READ ENTRY →` in `--pen`), `EntryRow` (h3 by default, `level` prop for type pages), and a shared `EntryMetaColumn` (number, `<time>`, stamp, LATEST / DRAFT in `--pen`). `entrySummary` in `src/lib/home.ts` turns a post into their props (href, reading time, meta line), with tests. `index.astro` now shows the log: featured entry, up to six rows, and the older link when entries remain.
 
 ## Decisions
 - **`homeEntries` reads the older range from entry numbers, not positions**, so gaps (a removed post) still give the right `(008–001)`-style label.
 - **Mono labels are stored in sentence case and capitalised with CSS** (`text-transform: uppercase`), so screen readers read "Currently", not C-U-R-R-E-N-T-L-Y.
 - **The artboard's RSS links (nav and aside) point to `/rss.xml` now**, so the page matches the design. They 404 until M4 builds the feed.
+- **The highlighter is a thick underline** (`text-decoration-thickness: 0.32em`, `text-underline-offset: -0.24em`, `skip-ink: none`) on a span inside the featured title, because the artboard's `box-shadow: inset` breaks the no-shadow rule.
+- **Deks use `--ink`**, not the artboard's `#2B2A27`, to stay at five colors.
+- **The filter links are a `<ul aria-label="Filter by type">`, not a second `<nav>`**, so the page has exactly one labelled nav as the kickoff asks.
+- **Under 600px the meta column becomes one line above the content** (number, date, stamp, LATEST) instead of a 150px column, to save vertical space on phones.
 
 ## Deviations / deferred
 - The Currently box keeps the artboard's bracketed placeholders (Tony's choice). M5 fills `src/data/currently.ts`.

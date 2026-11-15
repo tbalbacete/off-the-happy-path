@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { entryMeta, homeEntries, postsOfType, type PostType } from '../src/lib/home';
+import { entryMeta, entrySummary, homeEntries, postsOfType, type PostType } from '../src/lib/home';
 
 const post = (no: number, type: PostType = 'essay') => ({ id: `${no}`, data: { no, type } });
 /** Newest first, like getPosts returns them. */
@@ -79,5 +79,40 @@ describe('entryMeta', () => {
   });
   it('shows only the minutes when there are no tags', () => {
     expect(entryMeta(1, [])).toBe('1 MIN');
+  });
+});
+
+describe('entrySummary', () => {
+  const base = {
+    id: '015-nobody-reads-the-ticket',
+    body: Array.from({ length: 2000 }, () => 'word').join(' '),
+    data: {
+      no: 15,
+      title: 'Nobody reads the ticket',
+      dek: 'On where requirements actually live.',
+      type: 'essay' as const,
+      date: '2026-11-12',
+      tags: ['process', 'requirements'],
+      draft: false,
+    },
+  };
+
+  it('builds the link, reading time and meta line from the post', () => {
+    expect(entrySummary(base)).toEqual({
+      no: 15,
+      href: '/log/nobody-reads-the-ticket/',
+      title: 'Nobody reads the ticket',
+      dek: 'On where requirements actually live.',
+      type: 'essay',
+      date: '2026-11-12',
+      meta: '9 MIN · PROCESS, REQUIREMENTS',
+      draft: false,
+    });
+  });
+
+  it('counts a missing body as one minute and passes the draft flag through', () => {
+    const s = entrySummary({ ...base, body: undefined, data: { ...base.data, tags: [], draft: true } });
+    expect(s.meta).toBe('1 MIN');
+    expect(s.draft).toBe(true);
   });
 });

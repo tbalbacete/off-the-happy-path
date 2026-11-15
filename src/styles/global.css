@@ -111,3 +111,31 @@ hr {
   border: 0;
   border-top: 1px solid var(--hairline);
 }
+
+/* Home and type pages: the log column on the left, the aside on the right. */
+.columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px 56px;
+  padding-top: 32px;
+}
+
+.log {
+  flex: 999 1 600px;
+  min-width: 0;
+}
+
+.log-empty {
+  margin: 0;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.older {
+  margin: 0;
+  padding-top: 20px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}

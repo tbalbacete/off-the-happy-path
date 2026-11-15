@@ -3,7 +3,7 @@
 **Current milestone:** M6 - Sharing
 **Status:** COMPLETE   <!-- IN PROGRESS | BLOCKED | COMPLETE -->
 **Kickoff:** docs/kickoffs/M6-kickoff.md
-**Branch:** `feature/sharePosts`
+**Branch:** `feature/sharePosts` (PR #16)
 
 M0's to M5's records are in git history (`progress.md` as of commits 084f458, 9406219, ef48ec2, b8c049f, fe98946 and ffa3d0d).
 
@@ -18,7 +18,7 @@ M0's to M5's records are in git history (`progress.md` as of commits 084f458, 94
 - [x] `npm run publish` generates the card before building, and fails without changing anything if Chrome is missing - verified by: `tests/scripts-workflow.test.ts` and `tests/scripts-integration.test.ts` with a stubbed card step (card before the file changes, card failure writes nothing, undo after a failed build). Manually on a throwaway draft never committed: `CHROME_PATH=/nope npm run publish -- 3` exited 1 with the one-line message and the post's checksum unchanged. A real run wrote the card and built with it as `og:image`.
 - [x] The share box doesn't print - verified by: print emulation on № 002 (computed `display: none` on `.share`, along with the reply box and prev/next; title, article and footnotes still `block`), no share text in the print-mode page text, and a Letter PDF of № 002: four pages, as in M5.
 - [x] Lighthouse still scores 100 for accessibility and best practices and 95+ for performance (median of three) on № 002, mobile and desktop, against `astro preview` - verified by: Lighthouse 13.6.0 (scratchpad, system Chrome headless). **Desktop:** 100/100/100 performance, 100 accessibility, 100 best practices; LCP 0.2 s, TBT 0 ms, CLS 0.017–0.019 (M5: 100, LCP 0.20 s, CLS at most 0.019). **Mobile, first three runs:** performance 96/96/100 (median 96), accessibility 100, best practices 100; LCP 2.7/2.7/0.9 s, TBT 0 ms, CLS 0. The LCP element in every run is the article's first paragraph, with about 75 ms of measured render delay. The 2.7 s figures are Lighthouse's simulated throttling on the first runs. **Mobile, three more runs:** 100/100/100, LCP 0.9 s. M5 had 100 and 0.75 s on mobile.
-- [x] Tests pass for all new logic (`share.ts`, the canonical-URL helper, `og-card.mjs`, the card-size steps, the build guard, `pageMeta`'s image option, the publish workflow). CI is green on the PR - verified by: 262 Vitest tests (from 225) in `tests/share.test.ts`, `tests/meta.test.ts`, `tests/scripts-og-card.test.ts`, `tests/og.test.ts`, `tests/scripts-workflow.test.ts` and `tests/scripts-integration.test.ts`. `npm test`, `npm run check`, `npm run build` and `npm run links` exited 0 before every commit. **CI hasn't run yet:** the branch is local until Tony asks for the push and PR.
+- [x] Tests pass for all new logic (`share.ts`, the canonical-URL helper, `og-card.mjs`, the card-size steps, the build guard, `pageMeta`'s image option, the publish workflow). CI is green on the PR - verified by: 262 Vitest tests (from 225) in `tests/share.test.ts`, `tests/meta.test.ts`, `tests/scripts-og-card.test.ts`, `tests/og.test.ts`, `tests/scripts-workflow.test.ts` and `tests/scripts-integration.test.ts`. `npm test`, `npm run check`, `npm run build` and `npm run links` exited 0 before every commit. CI `verify` (check, test, build, links) passed on PR #16, and the Vercel preview deployed.
 - [x] progress.md is complete and status is COMPLETE - verified by: this file.
 
 ## Completed
@@ -63,6 +63,6 @@ M0's to M5's records are in git history (`progress.md` as of commits 084f458, 94
 - Open from M4: a tag named like a page ("notes", "archive") would duplicate that page's `<title>`.
 
 ## Notes for the next kickoff
-- Waiting on Tony: push `feature/sharePosts` and open the PR (then confirm CI is green), and after the merge, the production link-preview check of a post card (fetch № 002 with a bot user agent and check `og:image` returns the card).
+- Waiting on Tony: after the merge of PR #16, the production link-preview check of a post card (fetch № 002 with a bot user agent and check `og:image` returns the card).
 - A manual click on COPY LINK in real Safari and Firefox is still worth doing once; the automated checks used Playwright's WebKit and Firefox builds.
 - `npm run publish` on a draft whose body is still only the template's comments fails at `npm run build`, because the feed refuses a post with no rendered HTML. The message names the feed, and the post and card are restored, so nothing breaks, but the error could say "the post has no body yet".

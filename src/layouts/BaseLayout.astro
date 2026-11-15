@@ -7,16 +7,22 @@ import '@fontsource/ibm-plex-mono/500.css';
 import '@fontsource/ibm-plex-mono/600.css';
 import '../styles/global.css';
 import { site } from '../data/site';
+import { pageMeta } from '../lib/meta';
 
 interface Props {
   /** Page title; omitted on the home page. */
   title?: string;
   /** The `<meta name="description">`. Defaults to the site tagline. */
   description?: string;
+  /** `article` on posts. */
+  type?: 'website' | 'article';
+  /** Keep the page out of search results (the 404). */
+  noindex?: boolean;
 }
 
-const { title, description = site.tagline } = Astro.props;
-const fullTitle = title ? `${title} - ${site.name}` : site.name;
+const { title, description, type, noindex } = Astro.props;
+if (!Astro.site) throw new Error('Set `site` in astro.config.mjs; canonical and Open Graph URLs need it.');
+const meta = pageMeta({ title, description, type, noindex, path: Astro.url.pathname, origin: Astro.site });
 ---
 
 <!doctype html>
@@ -24,8 +30,10 @@ const fullTitle = title ? `${title} - ${site.name}` : site.name;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{fullTitle}</title>
-    <meta name="description" content={description} />
+    <title>{meta.title}</title>
+    {meta.canonical && <link rel="canonical" href={meta.canonical} />}
+    {meta.tags.map((t) => (t.attr === 'property' ? <meta property={t.key} content={t.content} /> : <meta name={t.key} content={t.content} />))}
+    <link rel="alternate" type="application/rss+xml" title={site.name} href={site.rss} />
   </head>
   <body>
     <slot />

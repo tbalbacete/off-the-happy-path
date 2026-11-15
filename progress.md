@@ -22,8 +22,10 @@ M0's to M3's records are in git history (`progress.md` as of commits 084f458, 94
 ## Completed
 - Branch `feature/navigationAndFeeds` created from `main` at d4f27fc.
 - Tag display names: `site.tagNames` (`ai: 'AI, honestly'`) and `tagLabel(slug, names = site.tagNames)`, which checks the map (own keys only) and falls back to sentence case. The home aside, entry meta lines and post FILED UNDER all go through it. Fixed `postMeta` calling `tags.map(tagLabel)`, which would have passed the index as the map. Tests in `tags.test.ts`, `home.test.ts` and `post.test.ts`.
+- `src/lib/meta.ts`: `pageMeta({ title, description, path, type, origin, noindex })` returns the full title, description, canonical URL (absolute, trailing slash) and the meta tags (description, robots on noindex pages, `og:site_name/type/title/description/url/image` with image width, height and alt, `twitter:card`). `BaseLayout` renders it from `Astro.url.pathname` and `Astro.site`, plus the RSS `<link rel="alternate">`. Posts pass `type="article"`; type pages get their own descriptions (`site.log.descriptions`). OG image details in `site.og`. Tests in `tests/meta.test.ts`.
 
 ## Decisions
+- **The 404 page has no canonical link.** It is `noindex`, and a canonical pointing at `/404/` (which doesn't exist) would be worse than none. Every other page has one.
 
 ## Deviations / deferred
 

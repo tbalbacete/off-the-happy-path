@@ -14,6 +14,14 @@ export const site = {
   github: 'https://github.com/tbalbacete',
   rss: '/rss.xml',
 
+  /** The shared Open Graph image in `public/`. */
+  og: {
+    image: '/og.png',
+    width: 1200,
+    height: 630,
+    alt: 'Off the Happy Path: notes on software engineering as it actually goes.',
+  },
+
   /** Display names for tags, by slug. Any tag not listed shows in sentence case. */
   tagNames: {
     ai: 'AI, honestly',
@@ -56,6 +64,12 @@ export const site = {
       essay: 'No essays yet.',
       note: 'No notes yet.',
       rant: 'No rants yet.',
+    },
+    /** The meta description of each type page. */
+    descriptions: {
+      essay: 'Essays from Off the Happy Path, newest first.',
+      note: 'Short notes from Off the Happy Path, newest first.',
+      rant: 'Rants from Off the Happy Path, newest first.',
     },
     noEntries: 'No entries yet.',
     latest: 'Latest',

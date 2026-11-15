@@ -24,7 +24,7 @@ interface Props {
 const { no, title, dek, type, date, meta, active } = Astro.props;
 ---
 
-<BaseLayout title={title} description={dek}>
+<BaseLayout title={title} description={dek} type="article">
   <div class="container container--post">
     <SiteHeader active={active} />
     <main class="post">

@@ -40,6 +40,7 @@
 - **Strict frontmatter schema** (`z.strictObject`), so a mistyped key such as `tag:` fails the build instead of being silently dropped.
 - **Added `@types/node`** (dev). TS 6 / `astro check` needs it for the `node:fs/promises` import in the content config.
 - **Branch and commit rules added to CLAUDE.md** at Tony's request: one branch per milestone, one commit per logical step, each commit verified.
+- **GitHub Actions CI added** (`.github/workflows/ci.yml`) at Tony's request. It is not in the plan or kickoff. Vercel previews (M1) only build, so nothing would run `astro check` or the tests on a PR. On every PR and every push to `main` it runs `npm ci`, `npm run check`, `npm test` and `npm run build` on the Node version from `.nvmrc`, with read-only permissions and Astro telemetry off.
 
 ## Deviations / deferred
 - No `site` in `astro.config.mjs` yet (M1, with the Vercel URL).
@@ -53,6 +54,7 @@
 ## Plan changes to consider
 - Plan §3/§4: say explicitly that the URL slug is derived from the file name (not from a frontmatter field), which is what makes the duplicate-slug check possible.
 - Plan §4: note that impossible unquoted dates are caught by a raw-text check, because YAML rolls them over.
+- Plan §2/§8: add the GitHub Actions CI (check, test, build on every PR) to the stack and testing sections. Consider making it a required status check on `main` in the GitHub branch settings.
 
 ## Notes for the next kickoff
 - Branch for M1 from `main` after this branch is merged, e.g. `feature/newPostWorkflow`.

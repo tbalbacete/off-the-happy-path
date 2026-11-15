@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { tagCounts, tagLabel } from '../src/lib/tags';
+import { tagCounts, tagHref, tagLabel } from '../src/lib/tags';
 
 describe('tagLabel', () => {
   it('turns hyphens into spaces and uses sentence case', () => {
@@ -39,5 +39,11 @@ describe('tagCounts', () => {
 
   it('returns an empty list when no post has tags', () => {
     expect(tagCounts([post(), post()])).toEqual([]);
+  });
+});
+
+describe('tagHref', () => {
+  it('points at the tag page', () => {
+    expect(tagHref('legacy-code')).toBe('/tag/legacy-code/');
   });
 });

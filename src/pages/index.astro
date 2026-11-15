@@ -5,14 +5,17 @@ import SiteNav from '../components/SiteNav.astro';
 import LogHeader from '../components/LogHeader.astro';
 import FeaturedEntry from '../components/FeaturedEntry.astro';
 import EntryRow from '../components/EntryRow.astro';
+import HomeAside from '../components/HomeAside.astro';
 import Footer from '../components/Footer.astro';
 import { site } from '../data/site';
 import { getPosts } from '../lib/posts';
 import { padEntryNo } from '../lib/entries';
 import { entrySummary, homeEntries } from '../lib/home';
+import { tagCounts } from '../lib/tags';
 
 const posts = await getPosts();
 const { featured, rows, older } = homeEntries(posts);
+const tags = tagCounts(posts);
 ---
 
 <BaseLayout>
@@ -34,6 +37,7 @@ const { featured, rows, older } = homeEntries(posts);
           )
         }
       </main>
+      <HomeAside tags={tags} />
     </div>
     <Footer />
   </div>

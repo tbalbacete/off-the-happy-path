@@ -25,3 +25,8 @@ export function tagCounts(posts: Tagged[]): TagCount[] {
     .map(([tag, count]) => ({ tag, count }))
     .sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag));
 }
+
+/** A tag's page: `legacy-code` -> `/tag/legacy-code/`. M4 builds these pages. */
+export function tagHref(slug: string): string {
+  return `/tag/${slug}/`;
+}

@@ -3,7 +3,7 @@
 **Current milestone:** M3 - Post page to design
 **Status:** COMPLETE   <!-- IN PROGRESS | BLOCKED | COMPLETE -->
 **Kickoff:** docs/kickoffs/M3-kickoff.md
-**Branch:** `feature/postPageDesign` (PR #8)
+**Branch:** `feature/postPageDesign` (PR #8, merged into `main` as bff06bc)
 
 M0's, M1's and M2's records are in git history (`progress.md` as of commits 084f458, 9406219 and ef48ec2).
 

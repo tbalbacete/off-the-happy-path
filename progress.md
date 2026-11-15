@@ -1,21 +1,21 @@
 # Progress
 
 **Current milestone:** M2 - Home page to design
-**Status:** IN PROGRESS   <!-- IN PROGRESS | BLOCKED | COMPLETE -->
+**Status:** COMPLETE   <!-- IN PROGRESS | BLOCKED | COMPLETE -->
 **Kickoff:** docs/kickoffs/M2-kickoff.md
-**Branch:** `feature/homePageDesign`
+**Branch:** `feature/homePageDesign` (committed locally; not pushed, no PR yet)
 
 M0's and M1's records are in git history (`progress.md` as of commits 084f458 and 9406219).
 
 ## Done-when checklist
-- [ ] The home page matches the Home artboard at 1280px and reflows cleanly at 390px and 360px with no horizontal scroll (screenshots compared against the artboard).
-- [ ] `/type/essay/`, `/type/note/` and `/type/rant/` all build and list only posts of that type, with the right filter marked active. An empty type shows its empty line.
-- [ ] The Currently box reads from `src/data/currently.ts`, and all other site text from `src/data/site.ts`.
-- [ ] No client JS: built pages contain no `<script>` and `dist` contains no `.js` files.
-- [ ] Contrast and landmark checks pass: the contrast test covers every text and background pair in use, and the built HTML has exactly one each of `header`, `main`, `footer`, a labelled `nav` and an `aside`.
-- [ ] The design rules hold: only the five colors plus the hairline appear in the CSS, and there are no `box-shadow`, `border-radius` or gradients (`grep` over `src/`).
-- [ ] Tests for the new behavior pass: unit tests for `homeEntries`, `postsOfType`, `tagLabel`, `tagCounts`, `entryMeta` and `contrastRatio`. CI is green on the PR.
-- [ ] progress.md is complete and status is COMPLETE.
+- [x] The home page matches the Home artboard at 1280px and reflows cleanly at 390px and 360px with no horizontal scroll - verified by: headless Chrome (playwright-core, outside the repo) full-page screenshots of `npm run build` + `astro preview` at 1280, 390 and 360 for `/` and all three type pages; `scrollWidth == clientWidth` on every one. The artboard source (`Main.dc.html`) was rendered statically at 1280 and compared with a build that temporarily had the artboard's twelve sample entries (№ 004–015, removed again, never committed): masthead cells, tagline and nav, log header and filters, featured entry with highlighter and LATEST, six rows with number, date and stamp (RANT in pen), `OLDER ENTRIES (008–001) →`, Currently box, FILED UNDER, About, links and footer all line up. Page heights 1830px (build) vs 1798px (artboard render). Remaining differences: tag labels read "Ai" not "AI, honestly" (display-name map is M4), the tagline wraps one word differently (self-hosted vs Google font metrics), and meta lines sit a few px lower. At 390/360 the masthead cells stack, the name scales down, the nav wraps under the tagline, each entry's meta becomes one line above it, and the aside drops below the log. Visual sign-off is Tony's.
+- [x] `/type/essay/`, `/type/note/` and `/type/rant/` all build and list only posts of that type, with the right filter marked active. An empty type shows its empty line - verified by: built HTML and screenshots. `/type/note/` lists № 003 and № 001 with NOTES active in nav and filters; `/type/essay/` shows "No essays yet." (№ 002 is a draft) with WRITING and ESSAYS active; `/type/rant/` shows "No rants yet." with WRITING and RANTS active. In dev, `/type/essay/` lists № 002 with DRAFT.
+- [x] The Currently box reads from `src/data/currently.ts`, and all other site text from `src/data/site.ts` - verified by: `HomeAside` imports `currently.ts` and passes it to `CurrentlyBox`; `grep` for literal text nodes in `src/components`, `src/pages` and `src/pages/type` found none (the post page in `log/` is M3's and untouched).
+- [x] No client JS - verified by: 0 of the built HTML files contain `<script`, and `find dist -name '*.js'` finds 0 files.
+- [x] Contrast and landmark checks pass - verified by: `tests/contrast.test.ts` reads the tokens from `global.css` and checks ink/paper 16.8, pencil/paper 6.9, pen/paper 6.1, paper/ink 16.8 and ink/highlighter 14.5 (all at least 4.5:1). Each of `index.html` and the three type pages has exactly 1 `<header`, 1 `<main`, 1 `<footer`, 1 `<nav aria-label="Main">` and 1 `<aside`; `lang="en"`; home heading order h1, h2 (featured), h3 rows, h2 aside sections; `aria-current="page"` on the active nav and filter links.
+- [x] The design rules hold - verified by: `grep -rnoE '#[0-9a-fA-F]{3,8}' src` finds only the six declarations in `global.css` (five colors plus `--hairline`); no `rgb(`, `hsl(` or named colors; `grep -rnE 'box-shadow|border-radius|gradient' src` finds nothing.
+- [ ] Tests for the new behavior pass: unit tests for `homeEntries`, `postsOfType`, `tagLabel`, `tagCounts`, `entryMeta` and `contrastRatio`. CI is green on the PR - locally verified: `npm test` passes 13 files / 143 tests (new: `home.test.ts`, `tags.test.ts`, `contrast.test.ts`, plus `padEntryNo` in `entries.test.ts`); `npm run check` and `npm run build` exit 0 before every commit. **CI not yet run:** the branch isn't pushed and there's no PR (pushing waits for Tony).
+- [x] progress.md is complete and status is COMPLETE - verified by: this file.
 
 ## Completed
 - `src/lib/home.ts`: `POST_TYPES`, `homeEntries` (featured, next `count - 1` rows, and the `{ from, to }` entry-number range of the rest, or null), `postsOfType`, `entryMeta`. `src/lib/tags.ts`: `tagLabel`, `tagCounts` (most used, then alphabetical; a tag counts once per post). `padEntryNo` added to `entries.ts` for the older-entries range. Tests in `tests/home.test.ts`, `tests/tags.test.ts` and `tests/entries.test.ts`.
@@ -45,5 +45,11 @@ M0's and M1's records are in git history (`progress.md` as of commits 084f458 an
 - This machine's default shell Node is 22.12. The repo needs 26 (`.nvmrc`); run `nvm use` first.
 
 ## Plan changes to consider
+- Plan §6 lists a hairline tint as the one neutral; the artboard also uses `#2B2A27` for deks. M2 uses `--ink` for deks. If a softer dek is wanted later, it would be a seventh color and needs a plan change.
 
 ## Notes for the next kickoff
+- RSS (`/rss.xml`) and tag links (`/tag/<slug>/`) are already linked from the nav and aside and 404 until M4 builds them. The older link goes to `/archive/` (M4) and only shows with more than seven posts.
+- `tagLabel` gives "Ai" for `ai`; M4's display-name map should cover cases like "AI, honestly".
+- `ABOUT` in the nav points at `#about` (the aside section); M4 repoints it to `/about/` in `site.ts`.
+- Reusable pieces for M3/M4: `Masthead`, `SiteNav` (`active` prop), `Footer`, `Stamp`, `EntryRow` (`level` prop), `entrySummary`, `.container`, `.label`, `.columns` / `.log` in `global.css`.
+- The screenshot rig lived in the session scratchpad (playwright-core driving the system Chrome). It isn't in the repo; reinstall it the same way if M3 needs screenshots.

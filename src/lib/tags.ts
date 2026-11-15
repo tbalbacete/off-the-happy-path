@@ -7,7 +7,7 @@ interface Tagged {
 
 /**
  * A tag's display name: the one in `site.tagNames` if there is one
- * (`ai` -> `AI, honestly`), otherwise hyphens to spaces in sentence case
+ * (`ai` -> `AI (honestly)`), otherwise hyphens to spaces in sentence case
  * (`legacy-code` -> `Legacy code`).
  */
 export function tagLabel(slug: string, names: Readonly<Record<string, string>> = site.tagNames): string {

@@ -24,7 +24,7 @@ export const site = {
 
   /** Display names for tags, by slug. Any tag not listed shows in sentence case. */
   tagNames: {
-    ai: 'AI, honestly',
+    ai: 'AI (honestly)',
   } as Record<string, string>,
 
   masthead: {

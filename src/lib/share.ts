@@ -17,7 +17,8 @@ export interface ShareLink {
 const e = encodeURIComponent;
 
 const builders: Record<ShareNetwork, (url: string, title: string) => string> = {
-  email: (url, title) => `mailto:?subject=${e(title)}&body=${e(url)}`,
+  // The subject names the blog, in the same form as the page's <title>.
+  email: (url, title) => `mailto:?subject=${e(`${title} - ${site.name}`)}&body=${e(url)}`,
   linkedin: (url) => `https://www.linkedin.com/sharing/share-offsite/?url=${e(url)}`,
   bluesky: (url, title) => `https://bsky.app/intent/compose?text=${e(`${title} ${url}`)}`,
   x: (url, title) => `https://x.com/intent/post?text=${e(title)}&url=${e(url)}`,

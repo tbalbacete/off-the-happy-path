@@ -48,6 +48,7 @@ M0's to M5's records are in git history (`progress.md` as of commits 084f458, 94
 - README: the Chrome requirement (and `CHROME_PATH`) under Setup, the card in the publish description and the `git add` line, a "Share cards and the share box" section with `npm run og`, `npm run og -- 16` in the day-to-day loop and under editing a published post, and `npm run links` in Checks (CI already ran it; the README said three checks).
 
 ## Decisions
+- **The share email's subject names the blog: `The time we didn’t save - Off the Happy Path`.** The kickoff specified `subject=<title>`. When Tony checked the mailto in Outlook he asked for the site name in the email, and chose the subject (in the page `<title>`'s `Title - Site` form) over a lead-in line in the body. The body is still the URL alone. The other networks are unchanged.
 - **The permalink has `user-select: all`.** One click or tap selects the whole URL, which helps readers without JS (the button is hidden for them) and matches what the fallback does.
 
 ## Deviations / deferred

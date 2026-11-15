@@ -16,8 +16,11 @@ describe('shareLinks', () => {
     expect(links.map((l) => l.label)).toEqual(['Email', 'LinkedIn', 'Bluesky', 'X']);
   });
 
-  it('builds a mailto with the title as subject and the URL as body', () => {
-    expect(href('email')).toBe(`mailto:?subject=${encodedTitle}&body=${encodedUrl}`);
+  it('builds a mailto with the title and blog name as subject and the URL as body', () => {
+    expect(href('email')).toBe(
+      `mailto:?subject=${encodedTitle}${encodeURIComponent(` - ${site.name}`)}&body=${encodedUrl}`,
+    );
+    expect(href('email')).toContain('%20-%20Off%20the%20Happy%20Path&body=');
   });
 
   it('builds the LinkedIn share-offsite URL with the post URL only', () => {
@@ -52,7 +55,7 @@ describe('shareLinks', () => {
 
   it('round-trips the title and URL exactly as typed', () => {
     const params = (h: string) => new URLSearchParams(h.slice(h.indexOf('?') + 1));
-    expect(params(href('email')).get('subject')).toBe(title);
+    expect(params(href('email')).get('subject')).toBe(`${title} - Off the Happy Path`);
     expect(params(href('email')).get('body')).toBe(url);
     expect(params(href('linkedin')).get('url')).toBe(url);
     expect(params(href('bluesky')).get('text')).toBe(`${title} ${url}`);

@@ -346,3 +346,24 @@ hr {
     display: block;
   }
 }
+
+/* Phones: slightly smaller body and headings, same rhythm. */
+@media (max-width: 480px) {
+  .prose {
+    font-size: 18px;
+    line-height: 1.62;
+  }
+  .prose p,
+  .prose ul,
+  .prose ol,
+  .prose blockquote {
+    margin-bottom: 20px;
+  }
+  .prose h2 {
+    margin-top: 36px;
+    font-size: 26px;
+  }
+  .code-box pre {
+    font-size: 14px;
+  }
+}

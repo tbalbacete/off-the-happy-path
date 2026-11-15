@@ -4,12 +4,14 @@ import type { MetaRow } from '../lib/post';
 
 interface Props {
   rows: MetaRow[];
+  /** The aside's accessible name. Defaults to "Entry details". */
+  label?: string;
 }
 
-const { rows } = Astro.props;
+const { rows, label = site.post.meta.label } = Astro.props;
 ---
 
-<aside aria-label={site.post.meta.label} class="post-meta">
+<aside aria-label={label} class="post-meta">
   <dl>
     {
       rows.map((row) => (

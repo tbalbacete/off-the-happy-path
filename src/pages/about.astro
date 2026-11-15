@@ -1,0 +1,39 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import PostMeta from '../components/PostMeta.astro';
+import { site } from '../data/site';
+
+const a = site.about;
+const { intro, reply } = site.aside.about;
+const rows = site.masthead.cells.map((cell) => ({ label: cell.label, value: cell.value }));
+---
+
+<PageLayout title={a.title} metaTitle={a.metaTitle} kicker={a.kicker} description={a.description} active="about">
+  <div class="about-columns">
+    <PostMeta rows={rows} label={a.metaLabel} />
+    <div class="about-body prose">
+      <p>{intro}</p>
+      <p>{reply.before}<a href={`mailto:${site.email}`} class="pen-link">{reply.link}</a>{reply.after}</p>
+    </div>
+  </div>
+</PageLayout>
+
+<style>
+  /* The post's meta column and article widths, without the sidenote track. */
+  .about-columns {
+    display: grid;
+    grid-template-columns: 170px minmax(0, 660px);
+    gap: 32px 48px;
+  }
+  .about-body {
+    min-width: 0;
+  }
+  .pen-link {
+    color: var(--pen);
+  }
+  @media (max-width: 720px) {
+    .about-columns {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

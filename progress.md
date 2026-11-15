@@ -30,9 +30,13 @@ M0's to M3's records are in git history (`progress.md` as of commits 084f458, 94
 - Archive `src/pages/archive.astro`: kicker ARCHIVE, `h1` "Every entry", dek `N entries, grouped by year, newest first.`, then a section per year (mono `h2` over a 2px ink rule) with an `ol` of hairline-separated rows: number, date, stamp, title link. On phones (≤600px) the title drops under the other three. `archiveByYear` in `src/lib/archive.ts` reads the year from the date string and sorts years and entries newest first. Copy in `site.archive`. Tests in `tests/archive.test.ts` (empty list, one year, a 2026/2027 boundary, unsorted input, no mutation).
 - About `src/pages/about.astro`: kicker ABOUT, `h1` "About this log", a meta column (AUTHOR, COVERAGE, STATUS from the masthead cells, via `PostMeta` with a new `label` prop so the aside is named "About the log") beside `.prose` paragraphs at 660px: the home aside's intro and the reply line with a `--pen` `mailto:` link. ABOUT in `site.nav` now points to `/about/`; the home aside keeps its ABOUT THIS LOG section.
 - 404 `src/pages/404.astro` (built as `dist/404.html`): kicker `№ 404 · Not found`, `h1` "Nothing filed here", a one-line dek, and three mono links (the log, the archive, RSS). `noindex`, no canonical, WRITING active. Placeholder copy in `site.about` and `site.notFound`.
+- RSS `src/pages/rss.xml.ts` with `@astrojs/rss`: channel title, tagline as description, link, `<language>en</language>`; one item per `getPosts()` post with title, absolute link, `pubDate`, the dek as `description`, and the full post HTML as `content:encoded`. `feedHtml` (`src/lib/feed.ts`) parses with `rehype-parse`, drops every `span.sidenote` (end notes stay) and makes root-relative `href`/`src` absolute, then serialises with `rehype-stringify`. Tests in `tests/feed.test.ts`: notes, two sidenotes, a code box, relative and absolute links, mailto/in-page/protocol-relative links untouched, a URL object as the site, and a no-notes post unchanged. Added `@astrojs/rss`, `rehype-parse`, `rehype-stringify`; moved `unified` to `dependencies` since the build now uses it.
 
 ## Decisions
 - **The 404 page has no canonical link.** It is `noindex`, and a canonical pointing at `/404/` (which doesn't exist) would be worse than none. Every other page has one.
+
+- **The feed's full content comes from `post.rendered.html`.** The glob loader fills it with the `unified()` processor's output (sidenotes, code boxes and end notes included), so the container API wasn't needed. The feed throws if a post has no rendered HTML rather than shipping an empty item.
+- **`pubDate` is noon UTC on the post's date**, so readers between UTC−12 and UTC+11 show the same calendar date the site does.
 
 ## Deviations / deferred
 

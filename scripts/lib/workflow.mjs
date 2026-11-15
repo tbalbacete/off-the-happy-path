@@ -6,10 +6,10 @@
  */
 import { readdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { nextEntryNumber, slugFromFile } from './entries.mjs';
-import { readFrontmatter } from './frontmatter.mjs';
+import { findPost, nextEntryNumber, slugFromFile } from './entries.mjs';
+import { readFrontmatter, setDate, setDraft } from './frontmatter.mjs';
 import { postFileName, slugify } from './slug.mjs';
-import { fillTemplate, templateValues } from './template.mjs';
+import { DEK_PLACEHOLDER, fillTemplate, templateValues } from './template.mjs';
 
 /** A problem with the user's input. Scripts print the message and exit 1. */
 export class UsageError extends Error {
@@ -122,4 +122,54 @@ export async function createPost({ postsDir, template, title, type, tags, dek, d
     throw error;
   }
   return { file, path, slug, no };
+}
+
+/**
+ * @typedef {object} PublishInput
+ * @property {string} postsDir
+ * @property {string} query  Slug or entry number.
+ * @property {string} date  Today, `YYYY-MM-DD`.
+ * @property {boolean} [keepDate]  Keep the post's existing date.
+ * @property {() => Promise<boolean>} verify  Runs check and build; true if both pass.
+ */
+
+/**
+ * @typedef {object} PublishResult
+ * @property {boolean} ok  False if verify failed; the post was restored.
+ * @property {PostFile} post  The post as it was before publishing.
+ * @property {string} date  The date the post now has (or would have had).
+ * @property {boolean} wasDraft
+ */
+
+/**
+ * Flip a post to published, set its date, then verify. If verify fails or
+ * throws, the file is put back exactly as it was.
+ *
+ * @param {PublishInput} input
+ * @returns {Promise<PublishResult>}
+ */
+export async function publishPost({ postsDir, query, date, keepDate = false, verify }) {
+  const posts = await listPosts(postsDir);
+  const post = findPost(posts, query);
+  if (!post) {
+    const known = posts.map((p) => `${p.no ?? '?'} ${p.slug}`).join(', ');
+    throw new UsageError(`No post matches "${query}". Posts: ${known || 'none'}.`);
+  }
+  if (post.data.dek === DEK_PLACEHOLDER) {
+    throw new UsageError(`${post.file} still has the placeholder dek. Write a real one first.`);
+  }
+
+  const original = post.source;
+  let updated = setDraft(original, false);
+  if (!keepDate) updated = setDate(updated, date);
+  const finalDate = String(readFrontmatter(updated).date ?? '');
+
+  await writeFile(post.path, updated);
+  let ok = false;
+  try {
+    ok = await verify();
+  } finally {
+    if (!ok) await writeFile(post.path, original);
+  }
+  return { ok, post, date: finalDate, wasDraft: post.data.draft === true };
 }

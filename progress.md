@@ -39,7 +39,40 @@ M0's to M4's records are in git history (`progress.md` as of commits 084f458, 94
 - Tony edited the draft: a sprints aside in the opening, and a new paragraph on how the hidden cost never reaches the next plan. Its "key stakeholders and the bean counters at large" pointed at a group of people, against the post's tone rules; Tony chose a reworded version ("the people who plan and budget the next project…") that keeps his point and closing question. Trailing spaces removed.
 - Published with `npm run publish -- 2` after Tony's go-ahead (exit 0; it ran check and build): `draft: false`, dated 2026-11-15. The build has `/log/the-time-we-didnt-save/` as the home page's featured entry, `/tag/requirements/` and `/tag/process/` back, 2 feed items (№ 002, № 001), 11 sitemap URLs. SmartyPants renders the aside as "… or ‘concepts’ of sprints". The recreated M4 page audit passes on every built page, and `npm run links` passes.
 
+## Design-rules review (plan §6), page by page
+Checked on the build with everything in place (№ 001 and № 002 published). "Browser" means a playwright script (scratchpad) over every visible element's computed style at 1280 and 360 on `/`, `/type/rant/`, `/log/the-time-we-didnt-save/`, `/tag/requirements/`, `/archive/`, `/about/` and the 404. Every page passed every row it applies to; no fixes were needed.
+
+| Rule | Home | Type | Post | Tag | Archive | About | 404 | OG image | Favicon |
+|---|---|---|---|---|---|---|---|---|---|
+| Five colors + hairline | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Three fonts | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Lines and boxes: no radius, shadow, gradient | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| No emoji | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Numbered and dated | ✓ 2/2 | ✓ 1/1 | ✓ | ✓ 1/1 | ✓ 2/2 | n/a | n/a | n/a | n/a |
+| Asymmetric, nothing centered but the container | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | n/a |
+| Stamps to spec | ✓ | ✓ | ✓ | ✓ | ✓ | n/a | n/a | n/a | n/a |
+| Highlighter at most once | ✓ featured title | ✓ none | ✓ see Decisions | ✓ none | ✓ none | ✓ none | ✓ none | ✓ none | ✓ none |
+| `--pen` focus styles | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | n/a | n/a |
+| Works at 360px | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | n/a | n/a |
+| Landmarks | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | n/a | n/a |
+| Contrast ≥ 4.5:1 | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | n/a | n/a |
+| Zero JS | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | n/a | n/a |
+
+How each row was checked:
+- **Five colors + hairline:** browser: every visible element's text color (where it has its own text), background, text-decoration color and each drawn border is one of the six token values or transparent (pages use 3 to 6 of them). Source: `grep` finds hex only in the `global.css` token block; the built CSS holds exactly `#f2f2ee`, `#111`, `#55534d`, `#b3190f`, `#ffe14d`, `#c4c2b9`. OG image and favicon PNG: every pixel within 0.78 (OG) and 0.71 (180px icon) RGB units of a token color or a blend of two; `favicon.svg` uses only `#f2f2ee`, `#111111`, `#b3190f`.
+- **Three fonts:** browser: every element with its own text has Archivo Variable, Source Serif 4 Variable or IBM Plex Mono first in its stack, and exactly those three families load. No remote font URLs in the build (the only external `href` is the GitHub link). The OG image loads the same three from `node_modules`; the favicon's letters are Archivo outlines.
+- **Lines and boxes:** browser: every visible element has `border-radius: 0px`, no `box-shadow` or `text-shadow`, and no gradient or image background. `grep` for `border-radius|box-shadow|text-shadow|gradient` over `src` and the built CSS finds nothing. The OG source has none; the favicon's `rect` has no `rx`.
+- **No emoji:** browser: no Emoji_Presentation character (or VS16) in each page's text. A Python scan of `src`, every built page and the feed finds none. The footnote back-link ↩ is a text arrow without the emoji selector.
+- **Numbered and dated:** browser: every featured entry, entry row, archive row and post title block contains `№ NNN` and a `YYYY-MM-DD` date (counts in the table).
+- **Asymmetric:** browser: no element with its own text has `text-align: center`, and no block other than `.container` has equal non-zero horizontal margins.
+- **Stamps:** browser: each stamp is IBM Plex Mono at 10.5px (11px in the post kicker), uppercase, with a solid border rotated −2° (`matrix(0.999391, -0.0348995, …)`); RANT is pen for text and border, the others ink. Chrome reports the border as 1px at 1× and 2× (it rounds the computed width); the CSS declares `1.5px solid`, as specified.
+- **Highlighter:** browser: count of `mark`, `.highlight` and code blocks with highlighted lines.
+- **`--pen` focus styles, landmarks, zero JS:** the keyboard pass (step 2) and the page audit; the design script also counts one `header`/`main`/`footer` and 0 scripts per page.
+- **Works at 360px:** `scrollWidth == clientWidth` at 360 on every page in the design script, plus the screenshots.
+- **Contrast:** browser: every visible element with its own text, against its nearest non-transparent background, is at least 4.5:1. `tests/contrast.test.ts` covers the token pairs.
+
 ## Decisions
+- **Highlighted code lines don't count against "highlighter once per page".** № 002 has one `<mark>` and one code box with highlighted lines. The Post artboard itself uses both on one page (M3 matched it: the `<mark>` band plus line 3 of `TICKET-4127.md`), so the rule is read as one `<mark>` (or featured highlight) per page, with code-line highlights part of the code box.
 - **The first entry is drafted by the agent from Tony's input**, as he asked (a deliberate exception to "the agent doesn't write Tony's copy"). The argument and every story come from his answers. One claim he hadn't made ("in my experience it's the one that gets skipped most") was cut from the draft.
 - **`ai` displays as "AI (honestly)".** Tony chose to drop the comma but didn't name a replacement; parentheses keep the voice without the comma clash in tag lists. One line in `site.tagNames` to change.
 

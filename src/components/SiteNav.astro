@@ -1,0 +1,79 @@
+---
+import { site, type NavId } from '../data/site';
+
+interface Props {
+  /** The nav item for the current page, if any. */
+  active?: NavId;
+}
+
+const { active } = Astro.props;
+---
+
+<div class="tagline-row">
+  <p class="tagline">{site.tagline}</p>
+  <nav aria-label="Main" class="site-nav">
+    <ul>
+      {
+        site.nav.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              class:list={{ active: item.id === active }}
+              aria-current={item.id === active ? 'page' : undefined}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</div>
+
+<style>
+  .tagline-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px 32px;
+    padding: 22px 0 20px;
+    border-bottom: 1px solid var(--ink);
+  }
+  .tagline {
+    margin: 0;
+    max-width: 640px;
+    font-style: italic;
+    font-size: 21px;
+    line-height: 1.45;
+  }
+  .site-nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 22px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .site-nav a {
+    text-decoration: none;
+  }
+  .site-nav a:hover {
+    text-decoration: underline;
+  }
+  .site-nav a.active {
+    color: var(--pen);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+  }
+
+  @media (max-width: 480px) {
+    .tagline {
+      font-size: 19px;
+    }
+  }
+</style>

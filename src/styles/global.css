@@ -63,6 +63,38 @@ pre,
 
 a {
   color: var(--ink);
+  text-underline-offset: 3px;
+}
+
+a:hover {
+  color: var(--pen);
+}
+
+/* The page container: the one thing that is centered. */
+.container {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 40px 32px 56px;
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 20px 16px 40px;
+  }
+}
+
+/* Mono labels: masthead cells, aside headings, Currently terms. */
+.label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.4;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--pencil);
+}
+
+.label--small {
+  font-size: 10.5px;
 }
 
 :focus-visible {

@@ -8,7 +8,7 @@ M1 is complete and merged (PRs #3 and #4). From progress.md:
 - Astro 7 on Node 26, TypeScript strict, static output, zero client JS. Live at `https://off-the-happy-path.vercel.app`, and `site` is set to it. Every push to `main` deploys. PRs get preview URLs, but those sit behind Vercel login, so an agent can't curl them.
 - CI runs `check`, `test` and `build` on every PR and on every push to `main`. 105 Vitest tests.
 - `src/lib`: `posts.ts` (`getPosts`, `filterDrafts`, `sortNewestFirst`), `entries.ts` (`slugFromId`, `formatEntryNo`), `dates.ts`, `reading-time.ts`.
-- `src/data/site.ts`: name, author, tagline, placeholder email, placeholder GitHub link.
+- `src/data/site.ts`: name, author, tagline, and placeholder email and GitHub link (M2 sets the real ones; see Needs Tony).
 - `src/styles/global.css`: the five color tokens, `--hairline`, font tokens, base body type, `:focus-visible` in `--pen`. Fonts are self-hosted with `@fontsource`.
 - `index.astro` is a bare list. `log/[slug].astro` is a bare post page (M3 designs it). There is no `src/components/` yet.
 - Posts: `001-hello-log.md` (published), `002-draft-example.md` (draft), and `003-deploy-check.md` (published, a throwaway that M5 removes). Production therefore lists № 003 and № 001.
@@ -44,7 +44,7 @@ The Home artboard (`Main.dc.html`) on the "Off the Happy Path — blog design" c
 - **Components in `src/components/`** with typed props and no data fetching: `Masthead` (form cells), `SiteNav` (the tagline row; takes the active item), `LogHeader` (takes the active filter), `Stamp`, `FeaturedEntry`, `EntryRow`, `CurrentlyBox`, `HomeAside`, `Footer`.
 - **Data:**
   - `src/data/site.ts` gains the masthead cells (author line, coverage, status), the long tagline, the About this log copy, the footer lines, and the nav items.
-  - New `src/data/currently.ts` holds `{ shipping, reading, annoyedBy }`. Keep the artboard's bracketed placeholders until Tony gives real text. M5 fills them at the latest.
+  - New `src/data/currently.ts` holds `{ shipping, reading, annoyedBy }`. Keep the artboard's bracketed placeholders (Tony's choice); M5 fills them.
 - **`src/pages/index.astro`:** masthead, nav, log header with `ALL` active, featured entry, rows, older link, aside, footer.
 - **`src/pages/type/[type].astro`:** `getStaticPaths` always generates all three types, even when a type has no posts. Same masthead, nav, aside and footer. The log header reads `LOG: ESSAYS, NEWEST FIRST` (etc.) with that filter active, and every matching post is listed as an `EntryRow`, with no featured entry and no highlighter. An empty type shows one plain line, e.g. "No rants yet."
 - **Link targets in M2:**
@@ -100,7 +100,8 @@ The Home artboard (`Main.dc.html`) on the "Off the Happy Path — blog design" c
 - [ ] progress.md is complete and status is COMPLETE.
 
 ## Needs Tony
-- **Currently box and About copy:** optional now. If Tony gives real Shipping / Reading / Mildly annoyed by text, a real email and a GitHub URL, use them. Otherwise keep the placeholders and list them under Deviations / deferred for M5.
+- **Contact details (given by Tony):** set `email` in `site.ts` to `tbalbacete@gmail.com` and the GitHub link to `https://github.com/tbalbacete`. The EMAIL link and "email me" use `mailto:`.
+- **Currently box:** Tony chose to keep the artboard's bracketed placeholders. List them under Deviations / deferred for M5. Use the artboard's About this log copy as written.
 - **Visual sign-off:** the agent can compare screenshots against the artboard, but Tony gets the final say. Ask him to look at the PR preview (behind Vercel login) or at the production URL after the merge.
 
 ## Suggested order of work

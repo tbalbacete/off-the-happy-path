@@ -9,6 +9,7 @@ import { site, type NavId } from '../data/site';
 import { formatEntryNo } from '../lib/entries';
 import type { PostType } from '../lib/home';
 import type { MetaRow } from '../lib/post';
+import type { OgImage } from '../lib/meta';
 
 interface Props {
   no: number;
@@ -20,12 +21,14 @@ interface Props {
   meta: MetaRow[];
   /** The main nav item to mark active. */
   active: NavId;
+  /** The post's Open Graph card. */
+  image: OgImage;
 }
 
-const { no, title, dek, type, date, meta, active } = Astro.props;
+const { no, title, dek, type, date, meta, active, image } = Astro.props;
 ---
 
-<BaseLayout title={title} description={dek} type="article">
+<BaseLayout title={title} description={dek} type="article" image={image}>
   <div class="container container--post">
     <SiteHeader active={active} />
     <main id="main" class="post">

@@ -69,6 +69,19 @@ describe('pageMeta', () => {
     expect(get(tags, 'twitter:card')).toBe('summary_large_image');
   });
 
+  it('takes a post image and its alt, keeping the size', () => {
+    const { tags } = pageMeta({
+      path: '/log/the-time-we-didnt-save/',
+      type: 'article',
+      origin,
+      image: { path: '/og/the-time-we-didnt-save.png', alt: '№ 002: The time we didn’t save' },
+    });
+    expect(get(tags, 'og:image')).toBe(`${origin}/og/the-time-we-didnt-save.png`);
+    expect(get(tags, 'og:image:alt')).toBe('№ 002: The time we didn’t save');
+    expect(get(tags, 'og:image:width')).toBe('1200');
+    expect(get(tags, 'og:image:height')).toBe('630');
+  });
+
   it('uses property for Open Graph tags and name for the rest', () => {
     for (const tag of pageMeta({ path: '/', origin }).tags) {
       expect(tag.attr).toBe(tag.key.startsWith('og:') ? 'property' : 'name');

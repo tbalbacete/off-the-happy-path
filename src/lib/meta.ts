@@ -17,6 +17,14 @@ export interface PageMetaInput {
   origin: string | URL;
   /** Pages that shouldn't be indexed (the 404) get a robots tag and no canonical. */
   noindex?: boolean;
+  /** The Open Graph image (1200x630) and its alt text. Defaults to the shared `site.og`. */
+  image?: OgImage;
+}
+
+export interface OgImage {
+  /** Root-relative, such as `/og/hello-log.png`. */
+  path: string;
+  alt: string;
 }
 
 /** One `<meta>`: Open Graph uses `property`, everything else `name`. */
@@ -55,9 +63,10 @@ export function pageMeta({
   type = 'website',
   origin,
   noindex = false,
+  image = { path: site.og.image, alt: site.og.alt },
 }: PageMetaInput): PageMeta {
   const url = canonicalUrl(path, origin);
-  const image = new URL(site.og.image, origin).href;
+  const imageUrl = new URL(image.path, origin).href;
   const ogTitle = title ?? site.name;
 
   const tags: MetaTag[] = [
@@ -68,10 +77,10 @@ export function pageMeta({
     { attr: 'property', key: 'og:title', content: ogTitle },
     { attr: 'property', key: 'og:description', content: description },
     { attr: 'property', key: 'og:url', content: url },
-    { attr: 'property', key: 'og:image', content: image },
+    { attr: 'property', key: 'og:image', content: imageUrl },
     { attr: 'property', key: 'og:image:width', content: String(site.og.width) },
     { attr: 'property', key: 'og:image:height', content: String(site.og.height) },
-    { attr: 'property', key: 'og:image:alt', content: site.og.alt },
+    { attr: 'property', key: 'og:image:alt', content: image.alt },
     { attr: 'name', key: 'twitter:card', content: 'summary_large_image' },
   ];
 

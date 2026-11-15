@@ -391,3 +391,17 @@ hr {
     font-size: 14px;
   }
 }
+
+/* Print: no paper tint, no skip link. The post layout has the rest. */
+@media print {
+  @page {
+    margin: 16mm 16mm 18mm;
+  }
+  html,
+  body {
+    background: none;
+  }
+  .skip-link {
+    display: none;
+  }
+}

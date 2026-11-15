@@ -27,6 +27,7 @@ M0's record is in git history (`progress.md` as of commit 084f458).
 - `tests/scripts-integration.test.ts`: new then publish against a temp folder seeded with copies of the two sample posts and the real template. Covers numbering after existing posts (003, then 004), duplicate-title refusal, a failed verify leaving the file byte-identical, publish by `003` changing only the `date:` and `draft:` lines, `keepDate`, and that the real posts folder is untouched. Its stand-in for check + build applies the site's own `assertUniqueEntries`, `rawDateProblems`, `isDateString` and the tag/type rules.
 - `README.md`: setup, the day-to-day loop (new, dev, publish, commit, push), flags, editing a published post with `revised:`, the checks, and where the plan and progress files live.
 - Vercel project imported by Tony (preset Astro, no environment variables). Production is `https://off-the-happy-path.vercel.app`, and `site` in `astro.config.mjs` is set to it. Before this branch, production already served `main` with only № 001 listed.
+- Throwaway post `003-deploy-check.md`: `npm run new -- "Deploy check" --type note --tags meta --dek "…"`, one body paragraph added by hand, then `npm run publish -- 3` (check and build passed, dated 2026-11-14, built to `dist/log/deploy-check/`).
 
 ## Decisions
 - **One slug rule, imported rather than copied.** `scripts/lib/slug.mjs` imports `slugFromId` from `src/lib/entries.ts`. That file uses only erasable TypeScript, so Node 26 runs it natively with type stripping, Vitest handles it, and `astro check` accepts the `.ts` import (`allowImportingTsExtensions` is on in Astro's base tsconfig). A test asserts the scripts' `slugFromId` is the very same function the site uses.
@@ -44,6 +45,7 @@ M0's record is in git history (`progress.md` as of commit 084f458).
 - **The printed commit message is `Entry NNN`**, as in plan §5. The title isn't put in the shell command, so quotes in a title can't break it.
 
 ## Deviations / deferred
+- `003-deploy-check.md` is a throwaway post (Tony's choice), made with `npm run new` and published with `npm run publish`. Remove it with the sample posts in M5.
 
 ## Known issues
 - This machine's default shell Node is 22.12 (nvm default). The repo needs 26 (`.nvmrc`); run `nvm use` first. Node 22 can't import the `.ts` slug rule from the scripts.

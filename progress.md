@@ -1,11 +1,13 @@
 # Progress
 
 **Current milestone:** M1 - New-post workflow and live deploy
-**Status:** IN PROGRESS   <!-- IN PROGRESS | BLOCKED | COMPLETE -->
+**Status:** BLOCKED   <!-- IN PROGRESS | BLOCKED | COMPLETE -->
 **Kickoff:** docs/kickoffs/M1-kickoff.md
 **Branch:** `feature/newPostWorkflow` (local, not pushed)
 
 M0's record is in git history (`progress.md` as of commit 084f458).
+
+**Waiting on Tony:** import the repo into Vercel and send the assigned URL; OK to push the branch for a preview.
 
 ## Done-when checklist
 - [ ] `npm run new` creates a correctly numbered and slugged draft from the template, both interactively and with flags, and refuses a duplicate slug
@@ -39,6 +41,7 @@ M0's record is in git history (`progress.md` as of commit 084f458).
 - **Prompts read lines from readline's async iterator** instead of `rl.question`, so the same code works in a terminal and with piped answers (piped lines can be lost with `rl.question`). Bad answers (taken slug, unknown type, empty title) are asked again; Ctrl-C or end of input exits without writing.
 - **`publish` restores in a `finally`**, so the original text goes back if verify fails, throws, or is interrupted. While check and build run, it catches SIGINT (the child still gets it and stops) so the parent lives long enough to restore.
 - **`publish` accepts an already-published post** and just re-dates it (or does nothing with `--keep-date`), and says so. Useful if a publish needs redoing; nothing in the plan rules it out.
+- **Node 26 on Vercel needs no change.** Vercel lists 26.x (the default for new projects), 24.x and 22.x, and a `>=26` range resolves to 26 ([Vercel docs](https://vercel.com/docs/functions/runtimes/node-js/node-js-versions)). `engines.node` stays `>=26`.
 - **The printed commit message is `Entry NNN`**, as in plan §5. The title isn't put in the shell command, so quotes in a title can't break it.
 
 ## Deviations / deferred

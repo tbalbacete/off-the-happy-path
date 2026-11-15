@@ -12,6 +12,8 @@
     "preview": "astro preview",
     "check": "astro check",
     "test": "vitest run",
+    "new": "node scripts/new-post.mjs",
+    "publish": "node scripts/publish-post.mjs",
     "astro": "astro"
   },
   "dependencies": {

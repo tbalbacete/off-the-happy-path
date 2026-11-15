@@ -1,64 +1,65 @@
 # Progress
 
-**Current milestone:** M0 - Running skeleton
-**Status:** COMPLETE   <!-- IN PROGRESS | BLOCKED | COMPLETE -->
-**Kickoff:** docs/kickoffs/M0-kickoff.md
-**Branch:** `feature/runningSkeleton` (local, not pushed)
+**Current milestone:** M1 - New-post workflow and live deploy
+**Status:** IN PROGRESS   <!-- IN PROGRESS | BLOCKED | COMPLETE -->
+**Kickoff:** docs/kickoffs/M1-kickoff.md
+**Branch:** `feature/newPostWorkflow` (pushed; PR #3 open)
+
+M0's record is in git history (`progress.md` as of commit 084f458).
 
 ## Done-when checklist
-- [x] `npm run dev` serves the home page and both sample posts; the draft appears only in dev - verified by: `astro dev --background`, then curl. `/`, `/log/hello-log/` and `/log/draft-example/` all returned 200. The home list showed № 002 (marked "(draft)") above № 001, and the draft page rendered its title, `№ 002 · 2026-11-14 · 1 min read · draft` and its body.
-- [x] `npm run build` succeeds and the built output excludes the draft - verified by: the build generated only `/index.html` and `/log/hello-log/index.html`. `grep -rl draft-example dist` found nothing. The built pages have 0 `<script>` tags, there are 0 `.js` files in `dist`, and the HTML and CSS reference no remote URLs (the fonts are bundled in `dist/_astro`).
-- [x] `npm run check` passes - verified by: `astro check` reported 0 errors, 0 warnings, 0 hints (16 files).
-- [x] `npm test` passes with tests for sorting, draft filtering, and reading time - verified by: `vitest run` passed 4 files and 24 tests (`tests/posts.test.ts`, `reading-time.test.ts`, `entries.test.ts`, `dates.test.ts`).
-- [x] An invalid frontmatter field (and a duplicate `no`) fails the build with a clear message - verified by: breaking a sample post on purpose, running `npm run build` (exit 1 each time), then restoring it:
-  - `type: blog` → `[InvalidContentEntryDataError] posts → 001-hello-log … type: Invalid option: expected one of "essay"|"note"|"rant"`
-  - typo `tag:` → `Unrecognized key: "tag"` (the schema is strict)
-  - `date: "11/14/2026"` → `date: Must be a real date written as YYYY-MM-DD`
-  - unquoted `date: 2026-02-30` / `2026-13-40` and `revised: 2026-11-31` → `Invalid dates in src/content/posts: - src/content/posts/001-hello-log.md → date: "2026-02-30" is not a real date written as YYYY-MM-DD`
-  - a second post with `no: 1` → `Duplicate posts in src/content/posts: - Entry number 1 is used by more than one post: 001-hello-log, 003-another`
-  - a second `…-hello-log.md` file → `Slug "hello-log" is used by more than one post: 001-hello-log, 009-hello-log`
-- [x] Tests for the new behavior pass - verified by: same `npm test` run as above. Every commit on the branch was checked against just its staged files with `npm test` and `npm run build`, plus `npm run check` from the content step onward.
-- [x] progress.md is complete and status is COMPLETE - verified by: this file.
+**Waiting on Tony:** open the preview URL (behind Vercel login) to confirm `/log/deploy-check/`; merge PR #3; then the production check.
+
+- [x] `npm run new` creates a correctly numbered and slugged draft from the template, both interactively and with flags, and refuses a duplicate slug - verified by: flags, piped answers and a real TTY via `expect`, a duplicate slug refused with nothing written (details under Completed), plus `createPost` unit tests and the integration test.
+- [x] `npm run publish -- <n>` flips the draft, sets the date (or keeps it with `--keep-date`), and runs check and build; on failure it exits non-zero and leaves the post unchanged - verified by: by hand on a probe post (`--keep-date`, today, a schema failure and Ctrl-C mid-build, each restoring the file with an unchanged SHA-1 and exit 1), plus `publishPost` unit tests and the integration test.
+- [x] The site is live on a `vercel.app` URL, and `site` in `astro.config.mjs` is set to it - verified by: `curl https://off-the-happy-path.vercel.app/` returned 200 with title "Off the Happy Path" and only № 001 listed (draft excluded); `site: 'https://off-the-happy-path.vercel.app'` committed.
+- [ ] A post created with `npm run new` and published with `npm run publish` appears on the live site after it reaches `main` - partly verified: `003-deploy-check.md` was made with both scripts, the Vercel preview deployment for PR #3 succeeded, and the local build has `/log/deploy-check/`. The preview URL (`https://off-the-happy-path-git-feature-newp-181cdd-tbalbacetes-projects.vercel.app/log/deploy-check/`) answers 302 to anonymous requests because of Vercel deployment protection, so Tony checks it in a signed-in browser. Production check after Tony merges: `https://off-the-happy-path.vercel.app/log/deploy-check/` should return 200, and the home page should list № 003 and № 001.
+- [x] `README.md` covers the day-to-day loop - verified by: README has setup, new / dev / publish / commit / push, flags, editing with `revised:`, checks, and where the plan and progress live.
+- [x] Tests for the new behavior pass: unit tests for every `scripts/lib` helper, and the temp-directory integration test for new and publish; CI is green on the PR - verified by: `npm test` passed 10 files / 105 tests (`scripts-slug`, `scripts-entries`, `scripts-frontmatter`, `scripts-template`, `scripts-workflow`, `scripts-integration` plus the four M0 files); CI `verify` passed on PR #3 (check, test, build) and the Vercel check passed.
+- [ ] progress.md is complete and status is COMPLETE
 
 ## Completed
-- Astro 7.4 (minimal template), TypeScript strict (`astro/tsconfigs/strict`), `output: 'static'`. `.nvmrc` = `26`, `engines.node` = `>=26`.
-- npm scripts: `dev`, `build`, `preview`, `check`, `test`.
-- Vitest 5 runs through `getViteConfig` so `astro:content` resolves in tests.
-- `src/content.config.ts`: the `posts` collection with the full plan §4 schema (strict object). Its loader wraps `glob` and fails the build on duplicate `no`, duplicate slug, or an impossible raw date.
-- `src/lib/posts.ts` (`filterDrafts`, the only place the draft rule lives; `sortNewestFirst`; `getPosts`). `src/lib/reading-time.ts` (230 wpm, rounded up, min 1). `src/lib/entries.ts` (`slugFromId`, `formatEntryNo`, `assertUniqueEntries`). `src/lib/dates.ts` (`isDateString`, `toDateString`, `rawDateProblems`). Each has tests.
-- Fonts from `@fontsource-variable/archivo` (`wdth.css`, width axis 62–125%), `@fontsource-variable/source-serif-4` (wght + italic) and `@fontsource/ibm-plex-mono` (400/500/600), imported once in `BaseLayout`.
-- `src/styles/global.css`: the five color tokens, `--hairline`, font tokens, base body type (Source Serif 17px / 1.6), Archivo condensed headings, `:focus-visible` in `--pen`.
-- `src/data/site.ts`: name, author, tagline, placeholder email and link.
-- Sample posts `001-hello-log.md` (published) and `002-draft-example.md` (draft). Bare `index.astro` and `log/[slug].astro`.
+- `scripts/lib/slug.mjs`: `slugify` (NFKD + a small map for letters like ß/æ/ø/ł, apostrophes dropped, hyphens, cut at 60 on a word boundary), `postFileName`, and `slugFromId` re-exported from `src/lib/entries.ts`.
+- `scripts/lib/dates.mjs`: `today()` from local date parts.
+- `scripts/lib/entries.mjs`: `nextEntryNumber`, `findPost` (`16`, `016`, `the-slug`, `016-the-slug`), and file name helpers.
+- `scripts/lib/frontmatter.mjs`: `readFrontmatter` (the small YAML subset posts use) and `setField` / `setDraft` / `setDate`, which rewrite only the one line and keep spacing, trailing comments, quote style and CRLF.
+- `templates/post.md` and `scripts/lib/template.mjs` (`fillTemplate`, `templateValues`, `parseTags`, `parseType`, `yamlString`). Checked by hand: a filled draft passes `npm run check` and the build skips it; the same file with `draft: false` and a footnote built to `/log/probe/` with the title escaped correctly and none of the reminder text in the HTML.
+- `scripts/new-post.mjs` as `npm run new` (flags or prompts) and `createPost` / `listPosts` / `titleProblem` / `existingTags` in `scripts/lib/workflow.mjs`. Tried by hand: flags (`--type rant --tags "process, Meetings" --dek 'Say "no": twice.'` → `003-…md` with `tags: [process, meetings]` and the dek escaped); a duplicate slug, `--type blog` and an unknown `--tag` flag each exit 1 and write nothing; piped answers re-ask on a taken slug, an empty title and a bad type; driven through a real TTY with `expect` (`Café déjà vu` → `005-cafe-deja-vu.md`, default type essay, existing tags listed); Ctrl-C exits 130 with nothing written. The created drafts passed `npm run check` and the build skipped them.
+- `scripts/publish-post.mjs` as `npm run publish` and `publishPost` in `workflow.mjs`. Tried by hand on a throwaway `003-publish-probe.md`: `--keep-date` kept `2026-10-01` and the page built to `dist/log/publish-probe/`; without it the date became `2026-11-14`; with `tags: [Bad Tag]` it printed the schema error, `npm run check failed … was restored`, exited 1, and the file's SHA-1 was unchanged; Ctrl-C during the build (via `expect`) printed `Interrupted … was restored`, exited 1, SHA-1 unchanged; an unknown number and a missing argument exit 1 with a message.
+- `tests/scripts-integration.test.ts`: new then publish against a temp folder seeded with copies of the two sample posts and the real template. Covers numbering after existing posts (003, then 004), duplicate-title refusal, a failed verify leaving the file byte-identical, publish by `003` changing only the `date:` and `draft:` lines, `keepDate`, and that the real posts folder is untouched. Its stand-in for check + build applies the site's own `assertUniqueEntries`, `rawDateProblems`, `isDateString` and the tag/type rules.
+- `README.md`: setup, the day-to-day loop (new, dev, publish, commit, push), flags, editing a published post with `revised:`, the checks, and where the plan and progress files live.
+- Vercel project imported by Tony (preset Astro, no environment variables). Production is `https://off-the-happy-path.vercel.app`, and `site` in `astro.config.mjs` is set to it. Before this branch, production already served `main` with only № 001 listed.
+- Throwaway post `003-deploy-check.md`: `npm run new -- "Deploy check" --type note --tags meta --dek "…"`, one body paragraph added by hand, then `npm run publish -- 3` (check and build passed, dated 2026-11-14, built to `dist/log/deploy-check/`).
 
 ## Decisions
-- **Moved `plan.md`, `M0-kickoff.md`, `_TEMPLATE.md` into `docs/` and `docs/kickoffs/`.** They were at the repo root, but CLAUDE.md, this file and plan §3 all expect `docs/`.
-- **Node 26.** It is the current Active LTS (Node 24 is now in maintenance) and Astro 7 needs `>=22.23.4`.
-- **Entry id = file name (`001-hello-log`), URL slug = `slugFromId(id)`.** If the slug were the loader id, two files with the same slug would silently overwrite each other in the store before any check could see them. The filesystem keeps file names unique, so the duplicate-slug check runs over derived slugs instead.
-- **Duplicate check lives in a loader wrapper** around `glob`, so it runs at content sync and fails both `build` and `check`, even if no page queries the collection.
-- **Raw-date check.** YAML turns an unquoted impossible date (`2026-02-30`) into a Date that has already rolled over to `2026-03-02`, so the Zod schema can't see the error. `rawDateProblems` reads the frontmatter text instead, and the loader runs it per file. Valid unquoted dates are normalised to strings in UTC by `toDateString`, so no timezone shift is possible.
-- **Strict frontmatter schema** (`z.strictObject`), so a mistyped key such as `tag:` fails the build instead of being silently dropped.
-- **Added `@types/node`** (dev). TS 6 / `astro check` needs it for the `node:fs/promises` import in the content config.
-- **Branch and commit rules added to CLAUDE.md** at Tony's request: one branch per milestone, one commit per logical step, each commit verified.
-- **GitHub Actions CI added** (`.github/workflows/ci.yml`) at Tony's request. It is not in the plan or kickoff. Vercel previews (M1) only build, so nothing would run `astro check` or the tests on a PR. On every PR and every push to `main` it runs `npm ci`, `npm run check`, `npm test` and `npm run build` on the Node version from `.nvmrc`, with read-only permissions and Astro telemetry off.
+- **One slug rule, imported rather than copied.** `scripts/lib/slug.mjs` imports `slugFromId` from `src/lib/entries.ts`. That file uses only erasable TypeScript, so Node 26 runs it natively with type stripping, Vitest handles it, and `astro check` accepts the `.ts` import (`allowImportingTsExtensions` is on in Astro's base tsconfig). A test asserts the scripts' `slugFromId` is the very same function the site uses.
+- **`// @ts-check` on every script file**, so `npm run check` type-checks the scripts' JSDoc (confirmed by planting a bad call and seeing `astro check` fail).
+- **`nextEntryNumber` counts both the frontmatter `no` and the file name prefix**, so a file whose prefix and `no` disagree can never lead to a collision.
+- **Template reminders are YAML comments inside the frontmatter**, not HTML comments in the body. An HTML comment survives into the built HTML; a frontmatter comment can never render. The body starts empty.
+- **Placeholders cover the fields the script fills** (`no`, `title`, `dek`, `type`, `date`, `tags`, `draft`). `revised:` is written blank (the schema allows null), and `confidence` is a commented example, because a blank `confidence:` would be null and fail the schema.
+- **A skipped dek becomes `"TODO: one or two sentences for the home page."`**, because the schema requires a non-empty dek and a fresh draft must build. `publish` refuses a post whose dek is still that placeholder.
+- **Titles and deks are written as JSON strings** (valid YAML double-quoted), so quotes, colons and backslashes are safe. Tags are slugified, so `Code Review` becomes `code-review`.
+- **File I/O for new and publish lives in `scripts/lib/workflow.mjs`** with the posts folder passed in, so tests run it against a temp directory. The scripts only parse flags, prompt, and print.
+- **Prompts read lines from readline's async iterator** instead of `rl.question`, so the same code works in a terminal and with piped answers (piped lines can be lost with `rl.question`). Bad answers (taken slug, unknown type, empty title) are asked again; Ctrl-C or end of input exits without writing.
+- **`publish` restores in a `finally`**, so the original text goes back if verify fails, throws, or is interrupted. While check and build run, it catches SIGINT (the child still gets it and stops) so the parent lives long enough to restore.
+- **`publish` accepts an already-published post** and just re-dates it (or does nothing with `--keep-date`), and says so. Useful if a publish needs redoing; nothing in the plan rules it out.
+- **Node 26 on Vercel needs no change.** Vercel lists 26.x (the default for new projects), 24.x and 22.x, and a `>=26` range resolves to 26 ([Vercel docs](https://vercel.com/docs/functions/runtimes/node-js/node-js-versions)). `engines.node` stays `>=26`.
+- **The printed commit message is `Entry NNN`**, as in plan §5. The title isn't put in the shell command, so quotes in a title can't break it.
 
 ## Deviations / deferred
-- No `site` in `astro.config.mjs` yet (M1, with the Vercel URL).
-- No favicon. The scaffold's Astro favicons were not copied, and a favicon from the OTHP mark is M5. Browsers will get a 404 for `/favicon.ico` until then.
-- Fonts include every unicode subset fontsource ships (latin, latin-ext, cyrillic, greek, vietnamese). Browsers only download the subsets a page uses, so this costs nothing at runtime. Trimming to latin is an option for M5.
+- `003-deploy-check.md` is a throwaway post (Tony's choice), made with `npm run new` and published with `npm run publish`. Remove it with the sample posts in M5.
 
 ## Known issues
-- Dev mode only: the page includes Astro's dev client `<script>` (dev toolbar / HMR). Built output has none.
-- `npm install` warns that the `fsevents` install script was not run (npm's install-script approval). It is an optional macOS file-watcher dependency and dev works without it.
+- Commit "Publish a throwaway deploy-check post made with the scripts" fails one test on its own: the integration test asserted the real posts folder held only the two samples. My pre-commit run piped `npm test` into `grep`, which hid the failure. Fixed in the next commit (the test now compares the real folder before and after). It was already pushed, so it was not amended.
+- This machine's default shell Node is 22.12 (nvm default). The repo needs 26 (`.nvmrc`); run `nvm use` first. Node 22 can't import the `.ts` slug rule from the scripts.
 
 ## Plan changes to consider
-- Plan §3/§4: say explicitly that the URL slug is derived from the file name (not from a frontmatter field), which is what makes the duplicate-slug check possible.
-- Plan §4: note that impossible unquoted dates are caught by a raw-text check, because YAML rolls them over.
-- Plan §2/§8: add the GitHub Actions CI (check, test, build on every PR) to the stack and testing sections. Consider making it a required status check on `main` in the GitHub branch settings.
+- Plan §5: `npm run new` writes a placeholder dek when none is given (the schema needs one), and `publish` refuses it. Plan says the dek "can be filled in later"; this keeps that true while stopping an empty dek from going live.
+- Plan §5: the template's syntax reminders are frontmatter comments, not body comments.
+- Plan §7: Vercel previews are behind deployment protection by default.
 
 ## Notes for the next kickoff
-- Branch for M1 from `main` after this branch is merged, e.g. `feature/newPostWorkflow`.
-- `scripts/lib` helpers for M1 can reuse `slugFromId` / `formatEntryNo` / `isDateString` logic. Keep the rules identical: the file name is `NNN-<slug>.md` and the slug is everything after the first `<digits>-`.
-- `npm run publish` should run `npm run check` and `npm run build`. Both already fail on bad frontmatter, duplicates and impossible dates.
-- Astro's anonymous build telemetry is on by default (it reports nothing about readers). Run `astro telemetry disable` if you don't want it.
-- Use `astro dev --background` / `astro dev stop` to drive the dev server from an agent session.
+- Remove `003-deploy-check.md` (throwaway) along with the M0 samples in M5. Entry numbers keep counting from the highest existing file, so the first real post after removal gets the next free number unless the folder is emptied.
+- Vercel previews are behind Vercel's deployment protection (302 when not signed in). An agent can't check a preview by curl; Tony checks it, or protection is relaxed for previews.
+- Run the scripts with Node 26 (`nvm use`). Their slug rule imports `src/lib/entries.ts` directly, which relies on Node's type stripping.
+- `site` is set, so M4 can build absolute RSS, sitemap and canonical URLs.

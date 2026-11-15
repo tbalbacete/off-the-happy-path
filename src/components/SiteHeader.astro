@@ -1,0 +1,38 @@
+---
+import MainNav from './MainNav.astro';
+import { site, type NavId } from '../data/site';
+
+interface Props {
+  /** The nav item for the current page, if any. */
+  active?: NavId;
+}
+
+const { active } = Astro.props;
+---
+
+<header class="site-header">
+  <a href="/" class="site-header__name">{site.name}</a>
+  <MainNav active={active} />
+</header>
+
+<style>
+  .site-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px 24px;
+    padding-bottom: 14px;
+    border-bottom: 2px solid var(--ink);
+  }
+  .site-header__name {
+    font-family: var(--font-head);
+    font-stretch: 72%;
+    font-weight: 900;
+    font-size: 26px;
+    line-height: 1.1;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+</style>

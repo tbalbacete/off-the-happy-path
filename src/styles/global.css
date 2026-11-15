@@ -118,9 +118,20 @@ a:hover {
   outline-offset: 2px;
 }
 
+/*
+ * The highlighter band over the lower third of the text, drawn as a thick
+ * underline: the featured title on the home page and <mark> in posts. The
+ * artboards use an inset shadow, which plan §6 rules out.
+ */
+.highlight,
 mark {
-  background: var(--highlighter);
-  color: var(--ink);
+  background: none;
+  color: inherit;
+  text-decoration-line: underline;
+  text-decoration-color: var(--highlighter);
+  text-decoration-thickness: 0.32em;
+  text-underline-offset: -0.24em;
+  text-decoration-skip-ink: none;
 }
 
 hr {

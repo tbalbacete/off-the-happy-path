@@ -14,7 +14,7 @@ revised:
 tags: [requirements, process]
 # Optional. Uncomment to show it in the post's meta column.
 confidence: "Sure of the problem. Less sure we’ll make the time."
-draft: true
+draft: false
 #
 # Writing reminders. Comments up here never render.
 #   Sidenote:    a claim.[^1]   ...then anywhere below:   [^1]: The note.

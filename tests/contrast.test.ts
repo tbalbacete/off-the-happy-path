@@ -39,7 +39,8 @@ describe('text and background pairs in use', () => {
     ['pencil', 'paper'], // labels, dates, meta
     ['pen', 'paper'], // active nav, RANT stamp, key links, LATEST
     ['paper', 'ink'], // the CURRENTLY header bar
-    ['ink', 'highlighter'], // the featured title over the highlighter band
+    ['ink', 'highlighter'], // the featured title, <mark>, highlighted code lines
+    ['pencil', 'highlighter'], // code comments and punctuation on a highlighted line
   ];
 
   it('finds every token it needs in global.css', () => {

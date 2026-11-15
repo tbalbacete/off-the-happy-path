@@ -218,3 +218,131 @@ hr {
   border-left: 2px solid var(--ink);
   font-style: italic;
 }
+
+/* Code "file" box (see transformerCodeFigure in src/lib/code.ts). */
+.code-box {
+  margin: 0 0 28px;
+  border: 1.5px solid var(--ink);
+  background: var(--paper);
+}
+.code-box__caption {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 16px;
+  padding: 7px 14px;
+  border-bottom: 1.5px solid var(--ink);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  line-height: 1.5;
+  letter-spacing: 0.08em;
+  color: var(--pencil);
+}
+/* File names stay as written; the note is a label, set in capitals. */
+.code-box__note {
+  text-transform: uppercase;
+}
+.code-box pre {
+  margin: 0;
+  padding: 14px 0;
+  font-size: 15px;
+  line-height: 1.7;
+  overflow-x: auto;
+}
+/* Lines as wide as the longest one, so a highlight spans the whole box. */
+.code-box code {
+  display: block;
+  width: max-content;
+  min-width: 100%;
+}
+.code-box .line {
+  display: inline-block;
+  min-width: 100%;
+  padding: 0 16px;
+}
+.code-box .line.highlighted {
+  background: var(--highlighter);
+}
+
+/* Footnote references. */
+.prose sup {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 0;
+  color: var(--pen);
+}
+.prose sup a {
+  padding: 0 1px;
+  color: var(--pen);
+  text-decoration: none;
+}
+.prose sup a:hover {
+  text-decoration: underline;
+}
+
+/*
+ * Notes: sidenotes in the right margin on wide screens, end notes under the
+ * article on narrower ones. Exactly one copy is shown (src/lib/rehype-sidenotes.ts).
+ */
+.sidenote,
+.footnotes {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 1.55;
+  font-style: normal;
+  font-weight: 400;
+  color: var(--pen);
+}
+.sidenote a,
+.footnotes a {
+  color: var(--pen);
+}
+.sidenote code,
+.footnotes code {
+  font-size: 1em;
+}
+.sidenote {
+  /* Floats into the empty third grid track: 48px gap plus a 200px column. */
+  float: right;
+  clear: right;
+  width: 200px;
+  margin: 0 -248px 22px 0;
+  padding-top: 10px;
+  border-top: 1.5px solid var(--pen);
+}
+.sidenote__no {
+  font-weight: 600;
+}
+.footnotes {
+  display: none;
+  margin-top: 40px;
+}
+.footnotes ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: note;
+}
+.footnotes li {
+  counter-increment: note;
+  margin: 0 0 18px;
+  padding-top: 10px;
+  border-top: 1.5px solid var(--pen);
+}
+.footnotes li p {
+  margin: 0 0 6px;
+}
+.footnotes li > p:first-child::before {
+  content: counter(note) ' ';
+  font-weight: 600;
+}
+
+@media (max-width: 1099px) {
+  .sidenote {
+    display: none;
+  }
+  .footnotes {
+    display: block;
+  }
+}

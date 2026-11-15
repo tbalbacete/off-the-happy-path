@@ -1,0 +1,43 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Masthead from '../../components/Masthead.astro';
+import SiteNav from '../../components/SiteNav.astro';
+import LogHeader from '../../components/LogHeader.astro';
+import EntryRow from '../../components/EntryRow.astro';
+import HomeAside from '../../components/HomeAside.astro';
+import Footer from '../../components/Footer.astro';
+import { site } from '../../data/site';
+import { getPosts } from '../../lib/posts';
+import { POST_TYPES, entrySummary, navItemForType, postsOfType, type PostType } from '../../lib/home';
+import { tagCounts } from '../../lib/tags';
+
+// Every type gets a page, even one with no posts yet.
+export const getStaticPaths = (() => POST_TYPES.map((type) => ({ params: { type } }))) satisfies GetStaticPaths;
+
+const type = Astro.params.type as PostType;
+const posts = await getPosts();
+const entries = postsOfType(posts, type);
+const filter = site.log.filters.find((f) => f.id === type);
+---
+
+<BaseLayout title={filter?.label}>
+  <div class="container">
+    <Masthead />
+    <SiteNav active={navItemForType(type)} />
+    <div class="columns">
+      <main id="log" class="log">
+        <LogHeader active={type} />
+        {
+          entries.length > 0 ? (
+            entries.map((post) => <EntryRow entry={entrySummary(post)} level={2} />)
+          ) : (
+            <p class="log-empty">{site.log.empty[type]}</p>
+          )
+        }
+      </main>
+      <HomeAside tags={tagCounts(posts)} />
+    </div>
+    <Footer />
+  </div>
+</BaseLayout>

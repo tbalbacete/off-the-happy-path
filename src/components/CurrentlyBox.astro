@@ -1,0 +1,63 @@
+---
+import { site } from '../data/site';
+
+interface Props {
+  currently: { shipping: string; reading: string; annoyedBy: string };
+}
+
+const { currently } = Astro.props;
+const { labels } = site.aside.currently;
+const items = [
+  { term: labels.shipping, value: currently.shipping },
+  { term: labels.reading, value: currently.reading },
+  { term: labels.annoyedBy, value: currently.annoyedBy },
+];
+---
+
+<section class="currently" aria-labelledby="currently-heading">
+  <h2 id="currently-heading" class="currently__heading">{site.aside.currently.heading}</h2>
+  <dl class="currently__list">
+    {
+      items.map((item) => (
+        <div class="currently__item">
+          <dt class="label label--small">{item.term}</dt>
+          <dd>{item.value}</dd>
+        </div>
+      ))
+    }
+  </dl>
+</section>
+
+<style>
+  .currently {
+    border: 2px solid var(--ink);
+  }
+  .currently__heading {
+    margin: 0;
+    padding: 7px 12px;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 1.5;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .currently__list {
+    margin: 0;
+    padding: 4px 14px 10px;
+    font-size: 16px;
+    line-height: 1.4;
+  }
+  .currently__item {
+    padding: 9px 0;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .currently__item:last-child {
+    border-bottom: 0;
+  }
+  .currently__item dd {
+    margin: 2px 0 0;
+  }
+</style>

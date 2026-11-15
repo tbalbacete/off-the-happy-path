@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { assertUniqueEntries, formatEntryNo, slugFromId } from '../src/lib/entries';
+import { assertUniqueEntries, formatEntryNo, padEntryNo, slugFromId } from '../src/lib/entries';
 
 describe('slugFromId', () => {
   it('drops the number prefix', () => {
@@ -8,6 +8,16 @@ describe('slugFromId', () => {
   });
   it('leaves ids without a prefix alone', () => {
     expect(slugFromId('hello-log')).toBe('hello-log');
+  });
+});
+
+describe('padEntryNo', () => {
+  it('pads to three digits', () => {
+    expect(padEntryNo(8)).toBe('008');
+    expect(padEntryNo(42)).toBe('042');
+  });
+  it('leaves four-digit numbers alone', () => {
+    expect(padEntryNo(1234)).toBe('1234');
   });
 });
 

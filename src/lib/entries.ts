@@ -8,9 +8,14 @@ export function slugFromId(id: string): string {
   return id.replace(/^\d+-/, '');
 }
 
+/** 7 -> `007`. */
+export function padEntryNo(no: number): string {
+  return String(no).padStart(3, '0');
+}
+
 /** 7 -> `№ 007`. */
 export function formatEntryNo(no: number): string {
-  return `№ ${String(no).padStart(3, '0')}`;
+  return `№ ${padEntryNo(no)}`;
 }
 
 export interface EntryIdentity {

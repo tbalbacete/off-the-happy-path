@@ -1,0 +1,31 @@
+---
+import type { PostType } from '../lib/home';
+
+interface Props {
+  type: PostType;
+}
+
+const { type } = Astro.props;
+---
+
+<span class:list={['stamp', { 'stamp--pen': type === 'rant' }]}>{type}</span>
+
+<style>
+  .stamp {
+    align-self: flex-start;
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    line-height: 1.5;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink);
+    border: 1.5px solid var(--ink);
+    padding: 2px 7px;
+    transform: rotate(-2deg);
+  }
+  .stamp--pen {
+    color: var(--pen);
+    border-color: var(--pen);
+  }
+</style>

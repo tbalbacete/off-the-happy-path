@@ -1,29 +1,44 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Masthead from '../components/Masthead.astro';
+import SiteNav from '../components/SiteNav.astro';
+import LogHeader from '../components/LogHeader.astro';
+import FeaturedEntry from '../components/FeaturedEntry.astro';
+import EntryRow from '../components/EntryRow.astro';
+import HomeAside from '../components/HomeAside.astro';
+import Footer from '../components/Footer.astro';
 import { site } from '../data/site';
 import { getPosts } from '../lib/posts';
-import { formatEntryNo, slugFromId } from '../lib/entries';
+import { padEntryNo } from '../lib/entries';
+import { entrySummary, homeEntries } from '../lib/home';
+import { tagCounts } from '../lib/tags';
 
 const posts = await getPosts();
+const { featured, rows, older } = homeEntries(posts);
+const tags = tagCounts(posts);
 ---
 
 <BaseLayout>
-  <header>
-    <h1>{site.name}</h1>
-    <p>{site.tagline}</p>
-  </header>
-  <main>
-    <ul>
-      {
-        posts.map((post) => (
-          <li>
-            <span class="mono">{formatEntryNo(post.data.no)}</span>{' '}
-            <span class="mono">{post.data.date}</span>{' '}
-            <a href={`/log/${slugFromId(post.id)}/`}>{post.data.title}</a>
-            {post.data.draft && <span class="mono"> (draft)</span>}
-          </li>
-        ))
-      }
-    </ul>
-  </main>
+  <div class="container">
+    <Masthead />
+    <SiteNav active="writing" />
+    <div class="columns">
+      <main id="log" class="log">
+        <LogHeader active="all" />
+        {featured ? <FeaturedEntry entry={entrySummary(featured)} /> : <p class="log-empty">{site.log.noEntries}</p>}
+        {rows.map((post) => <EntryRow entry={entrySummary(post)} />)}
+        {
+          older && (
+            <p class="older">
+              <a href={site.log.olderHref}>
+                {site.log.older} ({padEntryNo(older.from)}–{padEntryNo(older.to)}) →
+              </a>
+            </p>
+          )
+        }
+      </main>
+      <HomeAside tags={tags} />
+    </div>
+    <Footer />
+  </div>
 </BaseLayout>

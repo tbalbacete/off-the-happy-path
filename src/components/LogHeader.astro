@@ -1,0 +1,68 @@
+---
+import { site, type FilterId } from '../data/site';
+
+interface Props {
+  /** The filter for the current page. */
+  active: FilterId;
+}
+
+const { active } = Astro.props;
+---
+
+<div class="log-header">
+  <p class="log-header__heading">{site.log.headings[active]}</p>
+  <ul class="log-header__filters" aria-label="Filter by type">
+    {
+      site.log.filters.map((filter) => (
+        <li>
+          <a
+            href={filter.href}
+            class:list={{ active: filter.id === active }}
+            aria-current={filter.id === active ? 'page' : undefined}
+          >
+            {filter.label}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<style>
+  .log-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--ink);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.5;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--pencil);
+  }
+  .log-header__heading {
+    margin: 0;
+  }
+  .log-header__filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 14px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .log-header__filters a {
+    color: var(--pencil);
+    text-decoration: none;
+  }
+  .log-header__filters a:hover {
+    color: var(--pen);
+  }
+  .log-header__filters a.active {
+    color: var(--ink);
+    text-decoration: underline;
+  }
+</style>

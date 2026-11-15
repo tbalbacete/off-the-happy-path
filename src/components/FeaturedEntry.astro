@@ -1,0 +1,79 @@
+---
+import EntryMetaColumn from './EntryMetaColumn.astro';
+import { site } from '../data/site';
+import type { EntrySummary } from '../lib/home';
+
+interface Props {
+  entry: EntrySummary;
+}
+
+const { entry } = Astro.props;
+---
+
+<article class="featured">
+  <EntryMetaColumn entry={entry} latest />
+  <div class="featured__body">
+    <h2 class="featured__title">
+      <a href={entry.href}><span class="highlight">{entry.title}</span></a>
+    </h2>
+    <p class="featured__dek">{entry.dek}</p>
+    <p class="featured__meta">
+      {entry.meta} · <a href={entry.href} class="read-entry">{site.log.readEntry}</a>
+    </p>
+  </div>
+</article>
+
+<style>
+  .featured {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 24px;
+    padding: 30px 0 32px;
+    border-bottom: 1px solid var(--ink);
+  }
+  .featured__body {
+    flex: 1 1 380px;
+    min-width: 0;
+  }
+  .featured__title {
+    margin: 0 0 14px;
+    font-family: var(--font-head);
+    font-stretch: 80%;
+    font-weight: 800;
+    font-size: clamp(34px, 8vw, 48px);
+    line-height: 1.02;
+    letter-spacing: -0.01em;
+  }
+  .featured__title a {
+    text-decoration: none;
+  }
+  /*
+   * The highlighter band over the lower third of the title, drawn as a thick
+   * underline. The artboard uses an inset shadow, which plan §6 rules out.
+   */
+  .highlight {
+    text-decoration-line: underline;
+    text-decoration-color: var(--highlighter);
+    text-decoration-thickness: 0.32em;
+    text-underline-offset: -0.24em;
+    text-decoration-skip-ink: none;
+  }
+  .featured__dek {
+    margin: 0 0 14px;
+    font-size: 19px;
+    line-height: 1.55;
+  }
+  .featured__meta {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.5;
+    letter-spacing: 0.04em;
+    color: var(--pencil);
+  }
+  .read-entry {
+    color: var(--pen);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+</style>

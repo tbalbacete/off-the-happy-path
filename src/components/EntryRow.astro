@@ -1,0 +1,60 @@
+---
+import EntryMetaColumn from './EntryMetaColumn.astro';
+import type { EntrySummary } from '../lib/home';
+
+interface Props {
+  entry: EntrySummary;
+  /** Heading level for the title: 3 under the featured entry, 2 on type pages. */
+  level?: 2 | 3;
+}
+
+const { entry, level = 3 } = Astro.props;
+const Heading = `h${level}` as 'h2' | 'h3';
+---
+
+<article class="entry-row">
+  <EntryMetaColumn entry={entry} />
+  <div class="entry-row__body">
+    <Heading class="entry-row__title"><a href={entry.href}>{entry.title}</a></Heading>
+    <p class="entry-row__dek">{entry.dek}</p>
+    <p class="entry-row__meta">{entry.meta}</p>
+  </div>
+</article>
+
+<style>
+  .entry-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 24px;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .entry-row__body {
+    flex: 1 1 380px;
+    min-width: 0;
+  }
+  .entry-row__title {
+    margin: 0 0 8px;
+    font-family: var(--font-head);
+    font-stretch: 85%;
+    font-weight: 750;
+    font-size: clamp(23px, 6vw, 27px);
+    line-height: 1.15;
+  }
+  .entry-row__title a {
+    text-decoration: none;
+  }
+  .entry-row__dek {
+    margin: 0 0 8px;
+    font-size: 17px;
+    line-height: 1.55;
+  }
+  .entry-row__meta {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.5;
+    letter-spacing: 0.04em;
+    color: var(--pencil);
+  }
+</style>

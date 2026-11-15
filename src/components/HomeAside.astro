@@ -1,0 +1,104 @@
+---
+import CurrentlyBox from './CurrentlyBox.astro';
+import { site } from '../data/site';
+import { currently } from '../data/currently';
+import { tagHref, tagLabel, type TagCount } from '../lib/tags';
+
+interface Props {
+  /** Tags in use, most used first (from tagCounts). */
+  tags: TagCount[];
+}
+
+const { tags } = Astro.props;
+const { about, links } = site.aside;
+const mailto = `mailto:${site.email}`;
+---
+
+<aside class="home-aside">
+  <CurrentlyBox currently={currently} />
+
+  {
+    tags.length > 0 && (
+      <section aria-labelledby="filed-under-heading">
+        <h2 id="filed-under-heading" class="aside-heading">{site.aside.filedUnder}</h2>
+        <ul class="tag-list">
+          {tags.map(({ tag }) => (
+            <li>
+              <a href={tagHref(tag)}>{tagLabel(tag)}</a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  <section id="about" aria-labelledby="about-heading">
+    <h2 id="about-heading" class="aside-heading">{about.heading}</h2>
+    <p class="about-text">{about.intro}</p>
+    <p class="about-text">
+      {about.reply.before}<a href={mailto} class="pen-link">{about.reply.link}</a>{about.reply.after}
+    </p>
+  </section>
+
+  <ul class="aside-links">
+    <li><a href={site.rss}>{links.rss}</a></li>
+    <li><a href={site.github}>{links.github}</a></li>
+    <li><a href={mailto}>{links.email}</a></li>
+  </ul>
+</aside>
+
+<style>
+  .home-aside {
+    flex: 1 1 260px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    min-width: 0;
+  }
+  .aside-heading {
+    margin: 0 0 10px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--ink);
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 1.5;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--pencil);
+  }
+  .tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 17px;
+    line-height: 1.6;
+  }
+  .about-text {
+    margin: 0 0 12px;
+    font-size: 17px;
+    line-height: 1.55;
+  }
+  .about-text:last-child {
+    margin-bottom: 0;
+  }
+  .pen-link {
+    color: var(--pen);
+  }
+  .aside-links {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.5;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+</style>

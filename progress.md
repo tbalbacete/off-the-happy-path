@@ -3,7 +3,7 @@
 **Current milestone:** M2 - Home page to design
 **Status:** COMPLETE   <!-- IN PROGRESS | BLOCKED | COMPLETE -->
 **Kickoff:** docs/kickoffs/M2-kickoff.md
-**Branch:** `feature/homePageDesign` (committed locally; not pushed, no PR yet)
+**Branch:** `feature/homePageDesign` (PR #6, open)
 
 M0's and M1's records are in git history (`progress.md` as of commits 084f458 and 9406219).
 
@@ -14,7 +14,7 @@ M0's and M1's records are in git history (`progress.md` as of commits 084f458 an
 - [x] No client JS - verified by: 0 of the built HTML files contain `<script`, and `find dist -name '*.js'` finds 0 files.
 - [x] Contrast and landmark checks pass - verified by: `tests/contrast.test.ts` reads the tokens from `global.css` and checks ink/paper 16.8, pencil/paper 6.9, pen/paper 6.1, paper/ink 16.8 and ink/highlighter 14.5 (all at least 4.5:1). Each of `index.html` and the three type pages has exactly 1 `<header`, 1 `<main`, 1 `<footer`, 1 `<nav aria-label="Main">` and 1 `<aside`; `lang="en"`; home heading order h1, h2 (featured), h3 rows, h2 aside sections; `aria-current="page"` on the active nav and filter links.
 - [x] The design rules hold - verified by: `grep -rnoE '#[0-9a-fA-F]{3,8}' src` finds only the six declarations in `global.css` (five colors plus `--hairline`); no `rgb(`, `hsl(` or named colors; `grep -rnE 'box-shadow|border-radius|gradient' src` finds nothing.
-- [ ] Tests for the new behavior pass: unit tests for `homeEntries`, `postsOfType`, `tagLabel`, `tagCounts`, `entryMeta` and `contrastRatio`. CI is green on the PR - locally verified: `npm test` passes 13 files / 143 tests (new: `home.test.ts`, `tags.test.ts`, `contrast.test.ts`, plus `padEntryNo` in `entries.test.ts`); `npm run check` and `npm run build` exit 0 before every commit. **CI not yet run:** the branch isn't pushed and there's no PR (pushing waits for Tony).
+- [x] Tests for the new behavior pass: unit tests for `homeEntries`, `postsOfType`, `tagLabel`, `tagCounts`, `entryMeta` and `contrastRatio`. CI is green on the PR - locally verified: `npm test` passes 13 files / 143 tests (new: `home.test.ts`, `tags.test.ts`, `contrast.test.ts`, plus `padEntryNo` in `entries.test.ts`); `npm run check` and `npm run build` exit 0 before every commit. CI `verify` passed on PR #6 (check, test, build), and the Vercel preview deployed.
 - [x] progress.md is complete and status is COMPLETE - verified by: this file.
 
 ## Completed

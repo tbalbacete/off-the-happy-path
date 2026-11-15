@@ -23,8 +23,12 @@ M0's to M4's records are in git history (`progress.md` as of commits 084f458, 94
 
 ## Completed
 - Branch `feature/polishAndLaunch` created from `main` at b4cb250.
+- Tony's answers (asked at the start): the rant opens on a composite: a ticket that is only a title with no description, created six months ago, and when you ask, nobody really knows what the work is. Costs to lean on: rework, and burnout / morale. What has worked: asking early, and time in planning. Title: "The time we didn't save". Nothing off-limits beyond the kickoff's tone rules. The "On AI" wording is approved as written in the kickoff. The `ai` tag drops its comma: Tony chose "drop the comma" without a new name, so it is "AI (honestly)" (see Decisions).
+- Skip link: "Skip to content" (`site.skipLink`) is the first element in `BaseLayout`'s `body`, linking to `#main`; every page's `main` now has `id="main"` (home and type pages had `id="log"`, which nothing linked to). Off screen until `:focus-visible`, then a mono uppercase label on paper in a 2px ink box at the top left.
+- Keyboard pass (playwright-core, system Chrome, `astro preview`): tabbed through home, `/type/note/`, № 004, `/tag/process/`, `/archive/`, `/about/` and the 404 at 1280 and 390. On every page the first stop is the skip link, and Enter then Tab lands inside `main`; every stop is visible and has a `solid 2px rgb(179, 25, 15)` outline; no stop jumps back up the page (home: skip link, masthead name, nav, filters, featured title and READ ENTRY, rows, tags, the aside's email link, RSS / GitHub / Email). № 004's code box (`pre tabindex="0"`) is a tab stop after the article's links, with no clipping ancestor. Screenshots of the focus states (skip link, nav, filter, featured title on the highlighter, aside tag and link, prev/next cell, meta tag, reply link, footnote reference, code box) show the outline whole. No focus fixes were needed.
 
 ## Decisions
+- **`ai` displays as "AI (honestly)".** Tony chose to drop the comma but didn't name a replacement; parentheses keep the voice without the comma clash in tag lists. One line in `site.tagNames` to change.
 
 ## Deviations / deferred
 

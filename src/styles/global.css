@@ -180,6 +180,30 @@ hr {
   border: 0;
 }
 
+/*
+ * The skip link: off screen until it has keyboard focus, then a mono label
+ * in a 2px ink box at the top left.
+ */
+.skip-link {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 10;
+  padding: 8px 12px;
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.5;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transform: translateY(calc(-100% - 16px));
+}
+.skip-link:focus-visible {
+  transform: none;
+}
+
 /* Post body: the Markdown inside a post's article. */
 .prose {
   font-size: 20px;

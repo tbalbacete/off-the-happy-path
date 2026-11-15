@@ -13,6 +13,8 @@ export const site = {
   email: 'tbalbacete@gmail.com',
   github: 'https://github.com/tbalbacete',
   rss: '/rss.xml',
+  /** The first link on every page, for keyboard users. */
+  skipLink: 'Skip to content',
 
   /** The shared Open Graph image in `public/`. */
   og: {

@@ -26,7 +26,7 @@ const filter = site.log.filters.find((f) => f.id === type);
     <Masthead />
     <SiteNav active={navItemForType(type)} />
     <div class="columns">
-      <main id="log" class="log">
+      <main id="main" class="log">
         <LogHeader active={type} />
         {
           entries.length > 0 ? (

@@ -28,7 +28,7 @@ const { no, title, dek, type, date, meta, active } = Astro.props;
 <BaseLayout title={title} description={dek} type="article">
   <div class="container container--post">
     <SiteHeader active={active} />
-    <main class="post">
+    <main id="main" class="post">
       <TitleBlock title={title} dek={dek}>
         <Fragment slot="kicker">
           {formatEntryNo(no)} · <Stamp type={type} large /> · {site.post.filed}{' '}<time datetime={date}>{date}</time>

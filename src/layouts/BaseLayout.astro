@@ -39,6 +39,7 @@ const meta = pageMeta({ title, description, type, noindex, path: Astro.url.pathn
     <link rel="alternate" type="application/rss+xml" title={site.name} href={site.rss} />
   </head>
   <body>
+    <a class="skip-link" href="#main">{site.skipLink}</a>
     <slot />
   </body>
 </html>

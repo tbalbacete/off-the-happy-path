@@ -23,7 +23,7 @@ const tags = tagCounts(posts);
     <Masthead />
     <SiteNav active="writing" />
     <div class="columns">
-      <main id="log" class="log">
+      <main id="main" class="log">
         <LogHeader active="all" />
         {featured ? <FeaturedEntry entry={entrySummary(featured)} /> : <p class="log-empty">{site.log.noEntries}</p>}
         {rows.map((post) => <EntryRow entry={entrySummary(post)} />)}

@@ -1,25 +1,25 @@
 # Progress
 
 **Current milestone:** M5 - Polish and launch
-**Status:** IN PROGRESS   <!-- IN PROGRESS | BLOCKED | COMPLETE -->
+**Status:** COMPLETE   <!-- IN PROGRESS | BLOCKED | COMPLETE -->
 **Kickoff:** docs/kickoffs/M5-kickoff.md
 **Branch:** `feature/polishAndLaunch`
 
 M0's to M4's records are in git history (`progress.md` as of commits 084f458, 9406219, ef48ec2, b8c049f and fe98946).
 
 ## Done-when checklist
-- [ ] Lighthouse scores 100 for accessibility and best practices and 95+ for performance (median of three) on the home page and a post page, mobile and desktop, against `astro preview`. Record the numbers. After the merge, the same run against production when Tony asks.
-- [ ] Every page type is usable by keyboard alone: skip link first and working, visible `--pen` focus on every focusable element, logical order, scrollable code boxes reachable. Verified by tabbing in the browser and recorded with screenshots of the focus states.
-- [ ] Posts print cleanly: no nav, reply box, prev/next or sidenotes; end notes, title, meta and article present; code wraps; external links show their URLs. Verified with print-emulation screenshots and a PDF.
-- [ ] No sample posts in production: № 002, № 003 and № 004 are deleted, the built HTML, feed and sitemap contain none of them, and `npm run links` passes.
-- [ ] The Currently box carries Tony's real values, the About page keeps its approved copy, and no bracketed placeholder text is left anywhere in `src` or `dist`.
-- [ ] `/about/` has the "On AI" section with Tony's approved wording, and every page's footer links to `/about/#on-ai`. The link resolves (`npm run links`) and the footer reads well at 1280, 390 and 360px.
-- [ ] The design-rules checklist from plan §6 is filled in page by page in progress.md, with how each cell was checked, and every failure fixed or recorded as a decision.
-- [ ] Every page makes only same-origin requests, and the M4 page audit passes again on every built page.
-- [ ] The first real entry (№ 002, the requirements rant) follows the tone rules above, uses a code box, a sidenote and one `<mark>`, has Tony's explicit sign-off, is published with `npm run publish` on this branch, and is live on production after the merge.
-- [ ] The production feed passes the W3C Feed Validator and the OG image shows in a link-preview check (after the merge, when Tony asks; record the result).
-- [ ] Tests pass for any new logic. CI is green on the PR.
-- [ ] progress.md is complete and status is COMPLETE.
+- [x] Lighthouse scores 100 for accessibility and best practices and 95+ for performance (median of three) on the home page and a post page, mobile and desktop, against `astro preview` - verified by: Lighthouse 13.6.0 (scratchpad, system Chrome headless), three runs each, default mobile and `--preset=desktop`. Final run on `/` and `/log/the-time-we-didnt-save/`: performance 100/100/100 in every group, accessibility 100, best practices 100. Medians: LCP 0.75 s mobile / 0.20 s desktop, TBT 0 ms, CLS at most 0.019. The baseline (home, `/type/note/`, № 004) was the same. The production run waits for the merge, when Tony asks.
+- [x] Every page type is usable by keyboard alone - verified by: tabbing in the browser on home, `/type/note/`, № 002, `/tag/requirements/`, `/archive/`, `/about/` and the 404 at 1280 and 390, before and after the content changes. Skip link first on every page and Enter then Tab lands in `main`; every stop visible with the 2px `--pen` outline; no stop jumps back up the page. № 002's code box is a tab stop and scrolls 168px with arrow keys at 360 (no overflow at 1280). Focus-state screenshots (skip link, nav, filter, featured title, aside links, prev/next, meta tag, reply, footnote ref, code box) show whole outlines.
+- [x] Posts print cleanly - verified by: print emulation (computed `display` of each part) and Letter PDFs of № 004 (before removal), the temporary features post and № 002. Nav, reply box, prev/next and sidenotes hidden; title, meta, article, end notes and the copyright line present; code wraps with its highlight; the temporary post's external link printed its URL. № 002 prints on four pages with nothing clipped.
+- [x] No sample posts in production - verified by: № 002–004 deleted (the entry now numbered № 002 is the real rant); grepping `dist` for the old slugs and titles finds nothing; the feed has № 002 and № 001 only; the sitemap lists 11 URLs, none of them old; `npm run links` passes.
+- [x] The Currently box carries Tony's real values, the About page keeps its approved copy, and no bracketed placeholder text is left - verified by: `currently.ts` has Tony's three values; About keeps `site.aside.about`; a scan of `src`, every built page and the feed for `[Capitalised text]` finds only code in `dates.ts`.
+- [x] `/about/` has the "On AI" section with Tony's approved wording, and every page's footer links to `/about/#on-ai` - verified by: `id="on-ai"` in `dist/about/index.html`; the link is on all built pages and `npm run links` resolves it; footer screenshots at 1280, 390 and 360 (the link wraps whole at 360).
+- [x] The design-rules checklist from plan §6 is filled in page by page - verified by: the "Design-rules review" section below, with how each row was checked. Every cell passed; the one judgement call (highlighted code lines) is under Decisions.
+- [x] Every page makes only same-origin requests, and the M4 page audit passes again - verified by: the request listener over all 13 pages at 1280 and 390 after publishing (ALL SAME-ORIGIN), and the recreated audit on every built page (unique titles, meta, canonical, Open Graph, landmarks, one active nav item, heading order, no scripts, feed and sitemap) passes. Screenshots of all nine page types at 1280, 390 and 360: no horizontal scroll, 16px gutters on phones.
+- [ ] The first real entry is published with `npm run publish` on this branch, and is live on production after the merge - on the branch: drafted from Tony's answers, edited by Tony, his sign-off given, published with `npm run publish -- 2` (exit 0) and committed as "Entry 002"; it has a code box, two sidenotes and one `<mark>`. Live on production after the merge.
+- [ ] The production feed passes the W3C Feed Validator and the OG image shows in a link-preview check - after the merge, when Tony asks.
+- [ ] Tests pass for any new logic. CI is green on the PR - locally: `npm test` (224 tests), `npm run check`, `npm run build` and `npm run links` exit 0 on every commit. No new logic needed tests this milestone (the test change moved fixtures). CI runs when the branch is pushed.
+- [x] progress.md is complete and status is COMPLETE - verified by: this file. The three open items above wait on the push and the merge.
 
 ## Completed
 - Branch `feature/polishAndLaunch` created from `main` at b4cb250.
@@ -77,6 +77,7 @@ How each row was checked:
 - **`ai` displays as "AI (honestly)".** Tony chose to drop the comma but didn't name a replacement; parentheses keep the voice without the comma clash in tag lists. One line in `site.tagNames` to change.
 
 ## Deviations / deferred
+- Waiting on the push and merge: CI on the PR, the production Lighthouse run, № 002 live, the W3C Feed Validator and a link-preview check of the OG image.
 
 ## Known issues
 - This machine's default shell Node is 22. The repo needs 26 (`.nvmrc`); run `nvm use` first.
@@ -84,3 +85,6 @@ How each row was checked:
 ## Plan changes to consider
 
 ## Notes for the next kickoff
+- M5 is the last milestone in the plan. After the merge: run the production checks above when Tony asks.
+- The checking scripts (page audit, keyboard pass, design-rules check, Lighthouse runner, print renderer) lived in the session scratchpad. If they're wanted again, they're worth moving into `scripts/` as a single `npm run verify-site`.
+- Open from M4: a tag named like a page ("notes", "archive") would duplicate that page's `<title>`.

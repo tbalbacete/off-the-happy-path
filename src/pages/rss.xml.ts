@@ -14,7 +14,9 @@ export const GET: APIRoute = async (context) => {
     title: site.name,
     description: site.tagline,
     site: origin,
-    customData: '<language>en</language>',
+    xmlns: { atom: 'http://www.w3.org/2005/Atom' },
+    // `atom:link rel="self"` is what feed validators recommend for RSS 2.0.
+    customData: `<language>en</language><atom:link href="${new URL(site.rss, origin).href}" rel="self" type="application/rss+xml"/>`,
     items: posts.map((post) => {
       const html = post.rendered?.html;
       if (!html) throw new Error(`Post ${post.id} has no rendered HTML for the feed.`);

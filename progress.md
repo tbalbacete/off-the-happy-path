@@ -1,23 +1,23 @@
 # Progress
 
 **Current milestone:** M4 - Navigation, feeds, and the rest of the pages
-**Status:** IN PROGRESS   <!-- IN PROGRESS | BLOCKED | COMPLETE -->
+**Status:** COMPLETE   <!-- IN PROGRESS | BLOCKED | COMPLETE -->
 **Kickoff:** docs/kickoffs/M4-kickoff.md
 **Branch:** `feature/navigationAndFeeds`
 
 M0's to M3's records are in git history (`progress.md` as of commits 084f458, 9406219, ef48ec2 and b8c049f).
 
 ## Done-when checklist
-- [ ] Every tag, type, archive, About and RSS link on every built page resolves: `npm run links` passes on the production build and runs in CI.
-- [ ] Tag pages exist for every tag on a visible post, list only that tag's posts newest first, and show display names from `site.tagNames` (checked with a temporary `ai`-tagged post that is never committed). Verified in the built HTML.
-- [ ] The archive lists every published entry grouped by year, newest first, and the home page's OLDER ENTRIES link lands on it.
-- [ ] `/about/` and the 404 page are styled like the post page's frame and read well at 1280, 390 and 360px with no horizontal scroll. Verify with headless-browser screenshots and record them.
-- [ ] The RSS feed validates and excludes drafts: it parses as XML, has one item per published post with full content and absolute links, contains no `class="sidenote"`, and passes the W3C Feed Validator on the production URL after the merge (or a local check against the same rules before it; record which).
-- [ ] `sitemap-index.xml` and its sitemap list every public page (home, the three type pages, every post, every tag page, archive, About) and not the 404.
-- [ ] Every built page has a unique `<title>`, a description, a canonical URL with the production origin and a trailing slash, and the Open Graph and Twitter tags listed in scope; `og:image` is absolute and `public/og.png` is 1200×630 and uses only token colors.
-- [ ] No client JS, and the landmark, active-nav and heading checks pass on every built page.
-- [ ] Tests pass for the new behavior: `tagLabel` with the map, `postsWithTag`, `archiveByYear`, `feedHtml`, `pageMeta`, and the link checker. CI is green on the PR.
-- [ ] progress.md is complete and status is COMPLETE.
+- [x] Every tag, type, archive, About and RSS link on every built page resolves: `npm run links` passes on the production build and runs in CI - verified by: `npm run links` on `npm run build` output: "Links OK: 13 pages checked" (21 pages with the temporary posts below). Removing `dist/archive` and `dist/rss.xml` made it list each broken link and exit 1. The CI workflow has an "Internal links" step after Build; it runs for the first time on the PR.
+- [x] Tag pages exist for every tag on a visible post, list only that tag's posts newest first, and show display names from `site.tagNames` - verified by: built HTML. `dist/tag/` has `meta`, `process`, `requirements` (the tags on № 001, № 003, № 004; draft № 002 contributes none), each listing only its posts. With a temporary № 005 tagged `ai` and `process` (deleted, never committed): `/tag/ai/` had title and `h1` "AI, honestly" and only № 005; `/tag/process/` listed № 005 then № 004; the home aside and the post's FILED UNDER showed "AI, honestly".
+- [x] The archive lists every published entry grouped by year, newest first, and the home page's OLDER ENTRIES link lands on it - verified by: built HTML. Today: one 2026 group, № 004, № 003, № 001 (no draft). With eight temporary posts № 005–012 (2026 and 2027 dates; deleted, never committed): the archive showed 2027 (№ 012–007) then 2026 (№ 006, 005, 004, 003, 001), and the home page showed `Older entries (005–001) →` linking `/archive/`, which `npm run links` resolved.
+- [x] `/about/` and the 404 page are styled like the post page's frame and read well at 1280, 390 and 360px with no horizontal scroll - verified by: playwright-core (session scratchpad) driving the system Chrome against `astro preview`, full-page screenshots of `/about/`, a missing URL (served the 404 with status 404), `/archive/` and `/tag/process/` at 1280, 390 and 360. `scrollWidth == clientWidth` at every width, `main` starts at x 82 at 1280 and x 16 on phones, 0 scripts. Compact header, kicker, condensed `h1`, dek, footer as on posts; About's meta column moves above the text in two columns on phones; archive rows put number, date and stamp on one line over the title. No layout changes were needed in the responsive pass. Visual sign-off is Tony's.
+- [x] The RSS feed validates and excludes drafts - verified by: a local check against the same rules (the production URL check is for after the merge). `dist/rss.xml` parses with Python's `xml.etree`; RSS 2.0 root; channel title, link, description, `language` and `atom:link rel="self"`; 3 items, № 004, № 003, № 001, matching the non-draft posts (no № 002); each has an absolute `/log/…/` link equal to its permalink `guid`, an RFC 822 `pubDate`, the dek, and full `content:encoded`; 0 `class="sidenote"`; no root-relative `href`/`src` left. The remaining relative references are in-page footnote anchors (`#user-content-fn-…`), which the W3C validator may flag as a warning.
+- [x] `sitemap-index.xml` and its sitemap list every public page and not the 404 - verified by: the 12 URLs in `sitemap-0.xml` equal every built `index.html` (home, about, archive, 3 posts, 3 tags, 3 types); no 404.
+- [x] Every built page has a unique `<title>`, a description, a canonical URL with the production origin and a trailing slash, and the Open Graph and Twitter tags; `og:image` is absolute and `public/og.png` is 1200×630 and uses only token colors - verified by: a scratchpad script over all 13 built pages: 13 distinct titles; description, `og:title`, `og:description`, `og:image:alt` on each; canonical equals production origin + page path with a trailing slash and matches `og:url` (404: none, plus `robots noindex`); `og:type` `article` on posts and `website` elsewhere; `og:image` `https://off-the-happy-path.vercel.app/og.png`, 1200, 630; `twitter:card` `summary_large_image`; the RSS alternate link. The PNG is 1200×630 and every pixel is a token color or an anti-aliased blend of two (max deviation 0.78).
+- [x] No client JS, and the landmark, active-nav and heading checks pass on every built page - verified by: the same script: 0 `<script>` in 13 pages, 0 `.js` files in `dist`; exactly one `header`, `main`, `footer` and `nav aria-label="Main"` each; exactly one `aria-current="page"` item (About on About; Writing on home, archive, tags, 404, essay and rant pages; Notes on the note page); one `h1` first and no skipped levels; `lang="en"`. New text pairs are ink, pencil and pen on paper, all in `tests/contrast.test.ts`.
+- [ ] Tests pass for the new behavior. CI is green on the PR - locally verified: `npm test` passes 21 files / 224 tests (new: `meta.test.ts`, `feed.test.ts`, `archive.test.ts`, `pages.test.ts`, `scripts-links.test.ts`; additions in `tags.test.ts`, `home.test.ts`, `post.test.ts`). `npm test`, `npm run check`, `npm run build` (and `npm run links` once it existed) exited 0 before every commit. CI on the PR is still to run: the branch isn't pushed yet.
+- [x] progress.md is complete and status is COMPLETE - verified by: this file.
 
 ## Completed
 - Branch `feature/navigationAndFeeds` created from `main` at d4f27fc.
@@ -33,20 +33,29 @@ M0's to M3's records are in git history (`progress.md` as of commits 084f458, 94
 - RSS `src/pages/rss.xml.ts` with `@astrojs/rss`: channel title, tagline as description, link, `<language>en</language>`; one item per `getPosts()` post with title, absolute link, `pubDate`, the dek as `description`, and the full post HTML as `content:encoded`. `feedHtml` (`src/lib/feed.ts`) parses with `rehype-parse`, drops every `span.sidenote` (end notes stay) and makes root-relative `href`/`src` absolute, then serialises with `rehype-stringify`. Tests in `tests/feed.test.ts`: notes, two sidenotes, a code box, relative and absolute links, mailto/in-page/protocol-relative links untouched, a URL object as the site, and a no-notes post unchanged. Added `@astrojs/rss`, `rehype-parse`, `rehype-stringify`; moved `unified` to `dependencies` since the build now uses it.
 - Sitemap: `@astrojs/sitemap` in `astro.config.mjs`, with a filter that leaves out `/404`. The build writes `sitemap-index.xml` and `sitemap-0.xml`.
 - Link check: `scripts/lib/links.mjs` (`extractHrefs` on a parsed tree, `isInternal`, `pagePath`, `candidateFiles`, `findBrokenLinks`) and the `scripts/check-links.mjs` CLI behind `npm run links`. It reads every `.html` in `dist`, resolves each internal `href` (on any element, so `<link>` too) against its page, and fails listing page and link for any that has no built file. CI runs it after the build. Tests in `tests/scripts-links.test.ts`. Checked by hand that removing `dist/archive` and `dist/rss.xml` makes it list every affected link and exit 1.
+- The feed gained `atom:link rel="self"` (the W3C validator recommends it for RSS 2.0).
+- Responsive pass and verification (see the checklist). No layout changes were needed.
 
 ## Decisions
 - **The 404 page has no canonical link.** It is `noindex`, and a canonical pointing at `/404/` (which doesn't exist) would be worse than none. Every other page has one.
-
+- **About reuses `PostMeta`** for its AUTHOR / COVERAGE / STATUS column (the optional column the kickoff allowed); a `label` prop names its aside "About the log".
 - **The feed's full content comes from `post.rendered.html`.** The glob loader fills it with the `unified()` processor's output (sidenotes, code boxes and end notes included), so the container API wasn't needed. The feed throws if a post has no rendered HTML rather than shipping an empty item.
 - **`pubDate` is noon UTC on the post's date**, so readers between UTC−12 and UTC+11 show the same calendar date the site does.
 
 ## Deviations / deferred
+- The W3C Feed Validator run on the production URL waits for the merge; a local check against the same rules was done instead.
+- CI on the PR: the branch is committed locally and not pushed (pushing and the PR are Tony's call).
 
 ## Known issues
 - This machine's default shell Node is 22. The repo needs 26 (`.nvmrc`); run `nvm use` first.
 
 ## Plan changes to consider
 - A display name with a comma ("AI, honestly") reads awkwardly in comma-separated tag lists ("4 MIN · AI, HONESTLY, PROCESS"). Either avoid commas in names or switch the list separator; left as is for now.
+- Tag pages use the bare tag name as their `<title>`. A future tag called "notes" or "archive" would duplicate a type or archive page title; a prefix such as "Filed under: …" would rule that out.
 - Plan §3 lists `tags/[tag].astro`; the site uses `/tag/<slug>/` (singular), the path `tagHref` and every existing link already use.
 
 ## Notes for the next kickoff
+- M5: real About and 404 copy go in `site.about` / `site.notFound` (About currently reuses `site.aside.about`). Removing № 003 and № 004 also removes the `process` and `requirements` tag pages; `npm run links` will catch any link left behind.
+- After the merge, run the W3C Feed Validator on `https://off-the-happy-path.vercel.app/rss.xml` and check the OG image with a link-preview tool.
+- Secondary pages use `PageLayout` (title, kicker, dek, active, noindex); `TitleBlock` is the shared post/page title.
+- CI now runs `npm run links` after the build.

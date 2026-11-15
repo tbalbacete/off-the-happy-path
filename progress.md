@@ -26,8 +26,10 @@ M0's to M5's records are in git history (`progress.md` as of commits 084f458, 94
 - Wording (asked at the start): Tony kept the defaults. SHARE, COPY LINK → COPIED, screen-reader messages "Link copied" and "Press Ctrl+C or Cmd+C to copy", links Email · LinkedIn · Bluesky · X. All in `site.post.share`.
 - `canonicalUrl(path, origin)` in `src/lib/meta.ts`: the origin plus the path with a trailing slash. `pageMeta` now uses it for the canonical and `og:url`, and the share box will use it for the permalink, so they can't disagree.
 - `shareLinks(url, title)` in `src/lib/share.ts`: Email, LinkedIn, Bluesky, X in `site.post.share.networks` order, every value through `encodeURIComponent`. Tests (`tests/share.test.ts`, plus `canonicalUrl` in `tests/meta.test.ts`) use a title with curly quotes, `&`, `?`, `#` and `№`: exact hrefs per network, no `+` or raw spaces, no raw `?#“”’№` in any query, round-trip through `URLSearchParams`, and the post URL never appears unencoded. 236 tests.
+- `ShareBox.astro` (props `url`, `title`): a `section` named "Share", in the `after` slot between `ReplyBox` and `PrevNext`, with a 2px ink box and 18px 20px padding like the reply box. The permalink is a mono 14px `p` with `overflow-wrap: anywhere`, and the links are a `ul` of `--pen` links with `--pencil` middots (`aria-hidden`). The post route builds the URL with `canonicalUrl(postHref(post.id), Astro.site)`. `PostLayout`'s print block hides `.share` with the reply box. Screenshots (playwright-core, system Chrome, `astro preview`) of № 002 and № 001 at 1280, 390 and 360: the box sits between REPLY and MORE ENTRIES, `scrollWidth == clientWidth` at every width, 16px gutters on phones. At 360 the URL wraps onto three lines inside the box. The first try put each middot before its link, so at 360 the X link wrapped with a dot at the start of its line. Each middot now follows its link instead.
 
 ## Decisions
+- **The permalink has `user-select: all`.** One click or tap selects the whole URL, which helps readers without JS (the button is hidden for them) and matches what the fallback does.
 
 ## Deviations / deferred
 

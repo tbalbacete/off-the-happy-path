@@ -86,9 +86,9 @@ const { no, title, dek, type, date, meta, active } = Astro.props;
   }
   /*
    * Print: the post on the page's own white. The title, the meta rows as one
-   * compact block, the article and the end notes; no nav, reply box,
-   * previous/next or sidenotes. Long code lines wrap, external links print
-   * their URLs, and code boxes and headings don't split across pages.
+   * compact block, the article and the end notes; no nav, reply box, share
+   * box, previous/next or sidenotes. Long code lines wrap, external links
+   * print their URLs, and code boxes and headings don't split across pages.
    */
   @media print {
     .container--post {
@@ -97,6 +97,7 @@ const { no, title, dek, type, date, meta, active } = Astro.props;
     }
     .container--post :global(.main-nav),
     .post :global(.reply),
+    .post :global(.share),
     .post :global(.prev-next),
     .post-body :global(.sidenote) {
       display: none;

@@ -1,0 +1,81 @@
+---
+import { site } from '../data/site';
+import { shareLinks } from '../lib/share';
+
+interface Props {
+  /** The post's canonical URL, from `canonicalUrl` (the same as `<link rel="canonical">`). */
+  url: string;
+  /** The post's title, as typed (curly quotes kept). */
+  title: string;
+}
+
+const { url, title } = Astro.props;
+const s = site.post.share;
+const links = shareLinks(url, title);
+---
+
+<section aria-label={s.label} class="share">
+  <span class="label">{s.label}</span>
+  <div class="share__permalink">
+    <p class="share__url">{url}</p>
+  </div>
+  <ul class="share__links">
+    {
+      links.map((l, i) => (
+        <li>
+          <a href={l.href}>{l.label}</a>
+          {i < links.length - 1 && <span class="share__sep" aria-hidden="true">·</span>}
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<style>
+  .share {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 28px;
+    padding: 18px 20px;
+    border: 2px solid var(--ink);
+  }
+  .share .label {
+    letter-spacing: 0.12em;
+  }
+  .share__permalink {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 20px;
+  }
+  /* Selectable as one piece, and wraps anywhere so it never widens the page. */
+  .share__url {
+    flex: 1 1 260px;
+    min-width: 0;
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+    user-select: all;
+  }
+  .share__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 18px;
+    line-height: 1.5;
+  }
+  .share__links a {
+    color: var(--pen);
+  }
+  /* After each link but the last, so a wrapped row never starts with a dot. */
+  .share__sep {
+    padding: 0 10px;
+    color: var(--pencil);
+  }
+</style>

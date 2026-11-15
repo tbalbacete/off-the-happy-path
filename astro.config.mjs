@@ -2,6 +2,7 @@
 import { defineConfig } from 'astro/config';
 import { unified } from '@astrojs/markdown-remark';
 import { codeTheme, codeTransformers } from './src/lib/code.ts';
+import rehypeSidenotes from './src/lib/rehype-sidenotes.ts';
 
 // https://astro.build/config
 export default defineConfig({
@@ -9,7 +10,7 @@ export default defineConfig({
   output: 'static',
   markdown: {
     // The remark/rehype pipeline, so posts get GFM footnotes and local rehype plugins.
-    processor: unified(),
+    processor: unified({ rehypePlugins: [rehypeSidenotes] }),
     shikiConfig: {
       theme: codeTheme,
       transformers: codeTransformers(),

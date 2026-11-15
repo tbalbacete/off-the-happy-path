@@ -1,6 +1,6 @@
 /**
- * New and publish end to end, against a temp copy of the posts folder and
- * the real template. No real src/content/posts, no real build: `verify`
+ * New and publish end to end, against a temp folder seeded with the fixture
+ * posts in tests/fixtures/posts (one published, one draft) and the real template. No real src/content/posts, no real build: `verify`
  * stands in for check + build and applies the site's own rules instead.
  */
 import { copyFile, mkdtemp, readdir, readFile, rm } from 'node:fs/promises';
@@ -35,7 +35,7 @@ beforeAll(async () => {
   realBefore = await snapshotRealPosts();
   dir = await mkdtemp(join(tmpdir(), 'othp-integration-'));
   for (const file of SAMPLES) {
-    await copyFile(new URL(`src/content/posts/${file}`, ROOT), join(dir, file));
+    await copyFile(new URL(`tests/fixtures/posts/${file}`, ROOT), join(dir, file));
   }
   template = await readFile(new URL('templates/post.md', ROOT), 'utf8');
 });

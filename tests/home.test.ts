@@ -78,7 +78,7 @@ describe('entryMeta', () => {
     expect(entryMeta(3, ['legacy-code'])).toBe('3 MIN · LEGACY CODE');
   });
   it('uses tag display names', () => {
-    expect(entryMeta(4, ['ai'])).toBe('4 MIN · AI, HONESTLY');
+    expect(entryMeta(4, ['ai'])).toBe('4 MIN · AI (HONESTLY)');
   });
   it('shows only the minutes when there are no tags', () => {
     expect(entryMeta(1, [])).toBe('1 MIN');

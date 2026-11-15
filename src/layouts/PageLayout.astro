@@ -32,7 +32,7 @@ const { title, kicker, dek, metaTitle, description, active, noindex } = Astro.pr
 <BaseLayout title={metaTitle ?? title} description={description ?? dek} noindex={noindex}>
   <div class="container container--page">
     <SiteHeader active={active} />
-    <main class="page">
+    <main id="main" class="page">
       <TitleBlock title={title} dek={dek}>
         <Fragment slot="kicker">{kicker}</Fragment>
       </TitleBlock>

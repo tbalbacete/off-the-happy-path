@@ -48,6 +48,7 @@ M0's record is in git history (`progress.md` as of commit 084f458).
 - `003-deploy-check.md` is a throwaway post (Tony's choice), made with `npm run new` and published with `npm run publish`. Remove it with the sample posts in M5.
 
 ## Known issues
+- Commit "Publish a throwaway deploy-check post made with the scripts" fails one test on its own: the integration test asserted the real posts folder held only the two samples. My pre-commit run piped `npm test` into `grep`, which hid the failure. Fixed in the next commit (the test now compares the real folder before and after). It was already pushed, so it was not amended.
 - This machine's default shell Node is 22.12 (nvm default). The repo needs 26 (`.nvmrc`); run `nvm use` first. Node 22 can't import the `.ts` slug rule from the scripts.
 
 ## Plan changes to consider

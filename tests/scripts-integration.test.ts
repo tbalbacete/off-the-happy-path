@@ -19,8 +19,20 @@ const TAG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 let dir: string;
 let template: string;
+let realBefore: Record<string, string>;
+
+/** Every file in the real posts folder, with its contents. */
+async function snapshotRealPosts(): Promise<Record<string, string>> {
+  const realDir = new URL('src/content/posts/', ROOT);
+  const files = (await readdir(realDir)).sort();
+  const entries = await Promise.all(
+    files.map(async (f) => [f, await readFile(new URL(f, realDir), 'utf8')] as const),
+  );
+  return Object.fromEntries(entries);
+}
 
 beforeAll(async () => {
+  realBefore = await snapshotRealPosts();
   dir = await mkdtemp(join(tmpdir(), 'othp-integration-'));
   for (const file of SAMPLES) {
     await copyFile(new URL(`src/content/posts/${file}`, ROOT), join(dir, file));
@@ -144,6 +156,6 @@ describe('new, then publish', () => {
   });
 
   it('never touched the real posts folder', async () => {
-    expect((await readdir(new URL('src/content/posts/', ROOT))).sort()).toEqual(SAMPLES);
+    expect(await snapshotRealPosts()).toEqual(realBefore);
   });
 });

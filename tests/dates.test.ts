@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { isDateString, toDateString } from '../src/lib/dates';
+import { isDateString, rawDateProblems, toDateString } from '../src/lib/dates';
 
 describe('isDateString', () => {
   it('accepts real YYYY-MM-DD days', () => {
@@ -21,5 +21,24 @@ describe('toDateString', () => {
   it('passes strings and other values through', () => {
     expect(toDateString('2026-11-12')).toBe('2026-11-12');
     expect(toDateString(42)).toBe(42);
+  });
+});
+
+describe('rawDateProblems', () => {
+  const fm = (body: string) => `---\ntitle: "x"\n${body}\n---\n\nBody date: 2026-99-99\n`;
+
+  it('accepts valid, quoted, blank and commented values', () => {
+    expect(rawDateProblems(fm('date: 2026-11-14\nrevised:'))).toEqual([]);
+    expect(rawDateProblems(fm('date: "2026-11-14"\nrevised: \'2026-11-15\''))).toEqual([]);
+    expect(rawDateProblems(fm('date: 2026-11-14   # published\nrevised: null'))).toEqual([]);
+  });
+  it('flags impossible days that YAML would silently roll over', () => {
+    expect(rawDateProblems(fm('date: 2026-02-30'))).toEqual([
+      'date: "2026-02-30" is not a real date written as YYYY-MM-DD',
+    ]);
+    expect(rawDateProblems(fm('date: 2026-11-14\nrevised: 2026-13-40'))).toHaveLength(1);
+  });
+  it('only looks inside the frontmatter', () => {
+    expect(rawDateProblems('no frontmatter\ndate: 2026-99-99')).toEqual([]);
   });
 });

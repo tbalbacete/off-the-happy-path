@@ -27,3 +27,28 @@ export function toDateString(value: unknown): unknown {
   }
   return value;
 }
+
+/**
+ * Check the raw `date:` and `revised:` values in a file's frontmatter.
+ *
+ * The YAML parser turns an unquoted impossible date such as `2026-02-30` into
+ * a Date that has already rolled over (2026-03-02), so the schema never sees
+ * the mistake. This reads the source text instead. Returns one message per
+ * bad value; empty values (e.g. a blank `revised:`) are allowed.
+ */
+export function rawDateProblems(source: string): string[] {
+  const fm = /^---\r?\n([\s\S]*?)\r?\n---/.exec(source);
+  if (!fm) return [];
+  const problems: string[] = [];
+  for (const line of fm[1].split(/\r?\n/)) {
+    const m = /^(date|revised):[ \t]*(.*?)[ \t]*(?:#.*)?$/.exec(line);
+    if (!m) continue;
+    const [, key, raw] = m;
+    const value = raw.replace(/^(['"])(.*)\1$/, '$2');
+    if (value === '' || value === 'null' || value === '~') continue;
+    if (!isDateString(value)) {
+      problems.push(`${key}: "${value}" is not a real date written as YYYY-MM-DD`);
+    }
+  }
+  return problems;
+}

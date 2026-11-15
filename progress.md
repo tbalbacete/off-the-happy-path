@@ -18,8 +18,10 @@ M0's and M1's records are in git history (`progress.md` as of commits 084f458 an
 - [ ] progress.md is complete and status is COMPLETE.
 
 ## Completed
+- `src/lib/home.ts`: `POST_TYPES`, `homeEntries` (featured, next `count - 1` rows, and the `{ from, to }` entry-number range of the rest, or null), `postsOfType`, `entryMeta`. `src/lib/tags.ts`: `tagLabel`, `tagCounts` (most used, then alphabetical; a tag counts once per post). `padEntryNo` added to `entries.ts` for the older-entries range. Tests in `tests/home.test.ts`, `tests/tags.test.ts` and `tests/entries.test.ts`.
 
 ## Decisions
+- **`homeEntries` reads the older range from entry numbers, not positions**, so gaps (a removed post) still give the right `(008–001)`-style label.
 
 ## Deviations / deferred
 

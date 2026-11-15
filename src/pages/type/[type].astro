@@ -21,7 +21,7 @@ const entries = postsOfType(posts, type);
 const filter = site.log.filters.find((f) => f.id === type);
 ---
 
-<BaseLayout title={filter?.label}>
+<BaseLayout title={filter?.label} description={site.log.descriptions[type]}>
   <div class="container">
     <Masthead />
     <SiteNav active={navItemForType(type)} />

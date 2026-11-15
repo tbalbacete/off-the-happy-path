@@ -1,0 +1,63 @@
+---
+/**
+ * The title block at the top of posts and secondary pages: a mono kicker
+ * (the `kicker` slot), the condensed h1, and an optional italic dek.
+ */
+interface Props {
+  title: string;
+  dek?: string;
+}
+
+const { title, dek } = Astro.props;
+---
+
+<div class="title-block">
+  <p class="title-block__kicker"><slot name="kicker" /></p>
+  <h1 class="title-block__title">{title}</h1>
+  {dek && <p class="title-block__dek">{dek}</p>}
+</div>
+
+<style>
+  .title-block {
+    max-width: 900px;
+    padding: 56px 0 36px;
+    border-bottom: 1px solid var(--ink);
+  }
+  .title-block__kicker {
+    margin: 0 0 18px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.5;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--pencil);
+  }
+  .title-block__title {
+    margin: 0 0 20px;
+    font-family: var(--font-head);
+    font-stretch: 76%;
+    font-weight: 900;
+    font-size: clamp(40px, 7.5vw + 12px, 84px);
+    line-height: 0.95;
+    letter-spacing: -0.015em;
+  }
+  .title-block__title:last-child {
+    margin-bottom: 0;
+  }
+  .title-block__dek {
+    margin: 0;
+    max-width: 720px;
+    font-style: italic;
+    font-size: 25px;
+    line-height: 1.4;
+  }
+
+  @media (max-width: 720px) {
+    .title-block {
+      padding: 40px 0 28px;
+    }
+    .title-block__dek {
+      font-size: 21px;
+    }
+  }
+</style>

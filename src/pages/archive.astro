@@ -1,0 +1,118 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import Stamp from '../components/Stamp.astro';
+import { site } from '../data/site';
+import { getPosts } from '../lib/posts';
+import { archiveByYear } from '../lib/archive';
+import { formatEntryNo } from '../lib/entries';
+import { entrySummary } from '../lib/home';
+import { entryCount } from '../lib/pages';
+
+const posts = await getPosts();
+const years = archiveByYear(posts);
+const a = site.archive;
+---
+
+<PageLayout
+  title={a.title}
+  metaTitle={a.metaTitle}
+  kicker={a.kicker}
+  dek={`${entryCount(posts.length)}${a.dekAfter}`}
+  description={a.description}
+  active="writing"
+>
+  {years.length === 0 && <p class="archive-empty">{a.empty}</p>}
+  {
+    years.map(({ year, posts }) => (
+      <section class="archive-year" aria-labelledby={`year-${year}`}>
+        <h2 id={`year-${year}`} class="archive-year__heading">{year}</h2>
+        <ol class="archive-list">
+          {posts.map((post) => {
+            const entry = entrySummary(post);
+            return (
+              <li class="archive-row">
+                <span class="archive-row__no">{formatEntryNo(entry.no)}</span>
+                <time class="archive-row__date" datetime={entry.date}>{entry.date}</time>
+                <span class="archive-row__stamp"><Stamp type={entry.type} /></span>
+                <a class="archive-row__title" href={entry.href}>{entry.title}</a>
+              </li>
+            );
+          })}
+        </ol>
+      </section>
+    ))
+  }
+</PageLayout>
+
+<style>
+  .archive-year {
+    max-width: 900px;
+  }
+  .archive-year + .archive-year {
+    margin-top: 40px;
+  }
+  .archive-year__heading {
+    margin: 0;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--ink);
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 1.5;
+    letter-spacing: 0.12em;
+    color: var(--pencil);
+  }
+  .archive-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  /* Number, date and stamp in fixed columns, then the title. */
+  .archive-row {
+    display: grid;
+    grid-template-columns: 64px 104px 72px minmax(0, 1fr);
+    align-items: baseline;
+    gap: 6px 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .archive-row__no {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 13px;
+  }
+  .archive-row__date {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--pencil);
+  }
+  .archive-row__stamp {
+    align-self: center;
+  }
+  .archive-row__title {
+    font-family: var(--font-head);
+    font-stretch: 85%;
+    font-weight: 750;
+    font-size: 20px;
+    line-height: 1.2;
+    text-decoration: none;
+  }
+  .archive-row__title:hover {
+    text-decoration: underline;
+  }
+  .archive-empty {
+    margin: 0;
+    font-style: italic;
+  }
+
+  /* Phones: number, date and stamp on one line, the title under them. */
+  @media (max-width: 600px) {
+    .archive-row {
+      grid-template-columns: auto auto 1fr;
+      gap: 6px 14px;
+    }
+    .archive-row__title {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

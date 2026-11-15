@@ -1,0 +1,68 @@
+---
+/**
+ * The frame for secondary pages (tags, archive, About, 404): the post page's
+ * compact header and title block, the page's content, then the footer.
+ */
+import BaseLayout from './BaseLayout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import TitleBlock from '../components/TitleBlock.astro';
+import Footer from '../components/Footer.astro';
+import type { NavId } from '../data/site';
+
+interface Props {
+  /** The h1. */
+  title: string;
+  /** The mono line above the title. */
+  kicker: string;
+  /** The italic line under the title. */
+  dek?: string;
+  /** The `<title>` (before the site name), when it differs from the h1. */
+  metaTitle?: string;
+  /** The meta description. Defaults to the dek. */
+  description?: string;
+  /** The main nav item to mark active. */
+  active: NavId;
+  /** Keep the page out of search results (the 404). */
+  noindex?: boolean;
+}
+
+const { title, kicker, dek, metaTitle, description, active, noindex } = Astro.props;
+---
+
+<BaseLayout title={metaTitle ?? title} description={description ?? dek} noindex={noindex}>
+  <div class="container container--page">
+    <SiteHeader active={active} />
+    <main class="page">
+      <TitleBlock title={title} dek={dek}>
+        <Fragment slot="kicker">{kicker}</Fragment>
+      </TitleBlock>
+      <div class="page-body">
+        <slot />
+      </div>
+    </main>
+    <Footer />
+  </div>
+</BaseLayout>
+
+<style>
+  .container--page {
+    padding-top: 28px;
+  }
+  .page-body {
+    padding-top: 40px;
+  }
+  .page + :global(.site-footer) {
+    margin-top: 64px;
+  }
+
+  @media (max-width: 720px) {
+    .page-body {
+      padding-top: 28px;
+    }
+  }
+  @media (max-width: 480px) {
+    .container--page {
+      padding-top: 20px;
+    }
+  }
+</style>

@@ -1,0 +1,44 @@
+---
+import type { GetStaticPaths } from 'astro';
+import PageLayout from '../../layouts/PageLayout.astro';
+import EntryRow from '../../components/EntryRow.astro';
+import { site } from '../../data/site';
+import { getPosts, type Post } from '../../lib/posts';
+import { entrySummary } from '../../lib/home';
+import { entryCount } from '../../lib/pages';
+import { postsWithTag, tagCounts, tagLabel } from '../../lib/tags';
+
+// One page per tag on a visible post (drafts only count in dev).
+export const getStaticPaths = (async () => {
+  const posts = await getPosts();
+  return tagCounts(posts).map(({ tag }) => ({ params: { tag }, props: { entries: postsWithTag(posts, tag) } }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  entries: Post[];
+}
+
+const { tag } = Astro.params;
+const { entries } = Astro.props;
+const name = tagLabel(tag);
+const t = site.tag;
+---
+
+<PageLayout
+  title={name}
+  kicker={t.kicker}
+  dek={`${entryCount(entries.length)}${t.dekAfter}`}
+  description={`${t.descriptionBefore}${name}${t.descriptionAfter}`}
+  active="writing"
+>
+  <div class="entry-list">
+    {entries.map((post) => <EntryRow entry={entrySummary(post)} level={2} />)}
+  </div>
+</PageLayout>
+
+<style>
+  .entry-list {
+    max-width: 900px;
+    border-top: 2px solid var(--ink);
+  }
+</style>

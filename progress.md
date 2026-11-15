@@ -22,6 +22,7 @@ M0's record is in git history (`progress.md` as of commit 084f458).
 - `scripts/lib/entries.mjs`: `nextEntryNumber`, `findPost` (`16`, `016`, `the-slug`, `016-the-slug`), and file name helpers.
 - `scripts/lib/frontmatter.mjs`: `readFrontmatter` (the small YAML subset posts use) and `setField` / `setDraft` / `setDate`, which rewrite only the one line and keep spacing, trailing comments, quote style and CRLF.
 - `templates/post.md` and `scripts/lib/template.mjs` (`fillTemplate`, `templateValues`, `parseTags`, `parseType`, `yamlString`). Checked by hand: a filled draft passes `npm run check` and the build skips it; the same file with `draft: false` and a footnote built to `/log/probe/` with the title escaped correctly and none of the reminder text in the HTML.
+- `scripts/new-post.mjs` as `npm run new` (flags or prompts) and `createPost` / `listPosts` / `titleProblem` / `existingTags` in `scripts/lib/workflow.mjs`. Tried by hand: flags (`--type rant --tags "process, Meetings" --dek 'Say "no": twice.'` → `003-…md` with `tags: [process, meetings]` and the dek escaped); a duplicate slug, `--type blog` and an unknown `--tag` flag each exit 1 and write nothing; piped answers re-ask on a taken slug, an empty title and a bad type; driven through a real TTY with `expect` (`Café déjà vu` → `005-cafe-deja-vu.md`, default type essay, existing tags listed); Ctrl-C exits 130 with nothing written. The created drafts passed `npm run check` and the build skipped them.
 
 ## Decisions
 - **One slug rule, imported rather than copied.** `scripts/lib/slug.mjs` imports `slugFromId` from `src/lib/entries.ts`. That file uses only erasable TypeScript, so Node 26 runs it natively with type stripping, Vitest handles it, and `astro check` accepts the `.ts` import (`allowImportingTsExtensions` is on in Astro's base tsconfig). A test asserts the scripts' `slugFromId` is the very same function the site uses.
@@ -31,6 +32,8 @@ M0's record is in git history (`progress.md` as of commit 084f458).
 - **Placeholders cover the fields the script fills** (`no`, `title`, `dek`, `type`, `date`, `tags`, `draft`). `revised:` is written blank (the schema allows null), and `confidence` is a commented example, because a blank `confidence:` would be null and fail the schema.
 - **A skipped dek becomes `"TODO: one or two sentences for the home page."`**, because the schema requires a non-empty dek and a fresh draft must build. `publish` refuses a post whose dek is still that placeholder.
 - **Titles and deks are written as JSON strings** (valid YAML double-quoted), so quotes, colons and backslashes are safe. Tags are slugified, so `Code Review` becomes `code-review`.
+- **File I/O for new and publish lives in `scripts/lib/workflow.mjs`** with the posts folder passed in, so tests run it against a temp directory. The scripts only parse flags, prompt, and print.
+- **Prompts read lines from readline's async iterator** instead of `rl.question`, so the same code works in a terminal and with piped answers (piped lines can be lost with `rl.question`). Bad answers (taken slug, unknown type, empty title) are asked again; Ctrl-C or end of input exits without writing.
 
 ## Deviations / deferred
 

@@ -14,6 +14,11 @@ export const site = {
   github: 'https://github.com/tbalbacete',
   rss: '/rss.xml',
 
+  /** Display names for tags, by slug. Any tag not listed shows in sentence case. */
+  tagNames: {
+    ai: 'AI, honestly',
+  } as Record<string, string>,
+
   masthead: {
     titleLabel: 'Title of document',
     cells: [

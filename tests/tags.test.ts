@@ -15,6 +15,20 @@ describe('tagLabel', () => {
   it('returns an empty string for an empty slug', () => {
     expect(tagLabel('')).toBe('');
   });
+  it('uses the display name from site.tagNames when there is one', () => {
+    expect(tagLabel('ai')).toBe('AI, honestly');
+  });
+  it('prefers a name from the map it is given', () => {
+    const names = { 'legacy-code': 'Legacy code (sigh)' };
+    expect(tagLabel('legacy-code', names)).toBe('Legacy code (sigh)');
+    expect(tagLabel('process', names)).toBe('Process');
+  });
+  it('falls back to sentence case with an empty map', () => {
+    expect(tagLabel('ai', {})).toBe('Ai');
+  });
+  it('ignores names inherited from Object.prototype', () => {
+    expect(tagLabel('constructor', {})).toBe('Constructor');
+  });
 });
 
 describe('tagCounts', () => {

@@ -87,7 +87,7 @@ export function postMeta(post: MetaSource, minutes: number): MetaRow[] {
     tags.length > 0
       ? {
           label: m.filedUnder,
-          value: tags.map(tagLabel).join(', '),
+          value: tags.map((t) => tagLabel(t)).join(', '),
           links: tags.map((t) => ({ label: tagLabel(t), href: tagHref(t) })),
         }
       : { label: m.filedUnder, value: m.none },

@@ -77,6 +77,16 @@ describe('postMeta', () => {
     ]);
   });
 
+  it('uses tag display names for FILED UNDER and its links', () => {
+    const rows = postMeta({ data: { ...base, tags: ['ai', 'process'] } }, 9);
+    const filed = rows.find((r) => r.label === 'Filed under');
+    expect(filed?.value).toBe('AI, honestly, Process');
+    expect(filed?.links).toEqual([
+      { label: 'AI, honestly', href: '/tag/ai/' },
+      { label: 'Process', href: '/tag/process/' },
+    ]);
+  });
+
   it('links each tag to its tag page', () => {
     const filedUnder = postMeta({ data: base }, 9)[4];
     expect(filedUnder.links).toEqual([

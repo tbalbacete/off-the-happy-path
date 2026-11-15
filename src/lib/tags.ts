@@ -1,11 +1,17 @@
 /** Pure helpers for tags. Tags are lowercase slugs such as `legacy-code`. */
+import { site } from '../data/site';
 
 interface Tagged {
   data: { tags: readonly string[] };
 }
 
-/** `legacy-code` -> `Legacy code`: hyphens to spaces, sentence case. */
-export function tagLabel(slug: string): string {
+/**
+ * A tag's display name: the one in `site.tagNames` if there is one
+ * (`ai` -> `AI, honestly`), otherwise hyphens to spaces in sentence case
+ * (`legacy-code` -> `Legacy code`).
+ */
+export function tagLabel(slug: string, names: Readonly<Record<string, string>> = site.tagNames): string {
+  if (Object.hasOwn(names, slug)) return names[slug];
   const words = slug.split('-').filter(Boolean).join(' ');
   return words.charAt(0).toUpperCase() + words.slice(1);
 }

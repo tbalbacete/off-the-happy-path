@@ -21,6 +21,7 @@ M0's to M3's records are in git history (`progress.md` as of commits 084f458, 94
 
 ## Completed
 - Branch `feature/navigationAndFeeds` created from `main` at d4f27fc.
+- Tag display names: `site.tagNames` (`ai: 'AI, honestly'`) and `tagLabel(slug, names = site.tagNames)`, which checks the map (own keys only) and falls back to sentence case. The home aside, entry meta lines and post FILED UNDER all go through it. Fixed `postMeta` calling `tags.map(tagLabel)`, which would have passed the index as the map. Tests in `tags.test.ts`, `home.test.ts` and `post.test.ts`.
 
 ## Decisions
 
@@ -30,6 +31,7 @@ M0's to M3's records are in git history (`progress.md` as of commits 084f458, 94
 - This machine's default shell Node is 22. The repo needs 26 (`.nvmrc`); run `nvm use` first.
 
 ## Plan changes to consider
+- A display name with a comma ("AI, honestly") reads awkwardly in comma-separated tag lists ("4 MIN · AI, HONESTLY, PROCESS"). Either avoid commas in names or switch the list separator; left as is for now.
 - Plan §3 lists `tags/[tag].astro`; the site uses `/tag/<slug>/` (singular), the path `tagHref` and every existing link already use.
 
 ## Notes for the next kickoff

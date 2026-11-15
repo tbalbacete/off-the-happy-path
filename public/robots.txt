@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://off-the-happy-path.vercel.app/sitemap-index.xml

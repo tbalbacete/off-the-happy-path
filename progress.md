@@ -34,6 +34,7 @@ M0's to M3's records are in git history (`progress.md` as of commits 084f458, 94
 - Sitemap: `@astrojs/sitemap` in `astro.config.mjs`, with a filter that leaves out `/404`. The build writes `sitemap-index.xml` and `sitemap-0.xml`.
 - Link check: `scripts/lib/links.mjs` (`extractHrefs` on a parsed tree, `isInternal`, `pagePath`, `candidateFiles`, `findBrokenLinks`) and the `scripts/check-links.mjs` CLI behind `npm run links`. It reads every `.html` in `dist`, resolves each internal `href` (on any element, so `<link>` too) against its page, and fails listing page and link for any that has no built file. CI runs it after the build. Tests in `tests/scripts-links.test.ts`. Checked by hand that removing `dist/archive` and `dist/rss.xml` makes it list every affected link and exit 1.
 - The feed gained `atom:link rel="self"` (the W3C validator recommends it for RSS 2.0).
+- Favicon (asked for by Tony after the PR opened; plan M5 scope): the OTHP mark as `public/favicon.svg` (paper square, 2.5-unit ink frame, OT over HP in Archivo 900 at 72% width converted to paths with fontkit so no font loads, red-pen period), plus `favicon.ico` (16, 32, 48px PNGs) and a 180px `apple-touch-icon.png` rendered from the SVG in headless Chrome. Linked in `BaseLayout`. Checked at real size in mock light and dark tab bars: the boxed two-line shape and the red period hold at 16px. Only token colors.
 - Responsive pass and verification (see the checklist). No layout changes were needed.
 
 ## Decisions
@@ -43,6 +44,7 @@ M0's to M3's records are in git history (`progress.md` as of commits 084f458, 94
 - **`pubDate` is noon UTC on the post's date**, so readers between UTC−12 and UTC+11 show the same calendar date the site does.
 
 ## Deviations / deferred
+- The favicon was planned for M5; Tony asked for it on this branch, so M5 can drop it.
 - The W3C Feed Validator run on the production URL waits for the merge; a local check against the same rules was done instead.
 
 ## Known issues

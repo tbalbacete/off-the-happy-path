@@ -31,6 +31,9 @@ const meta = pageMeta({ title, description, type, noindex, path: Astro.url.pathn
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{meta.title}</title>
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     {meta.canonical && <link rel="canonical" href={meta.canonical} />}
     {meta.tags.map((t) => (t.attr === 'property' ? <meta property={t.key} content={t.content} /> : <meta name={t.key} content={t.content} />))}
     <link rel="alternate" type="application/rss+xml" title={site.name} href={site.rss} />

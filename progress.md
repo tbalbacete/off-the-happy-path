@@ -3,7 +3,7 @@
 **Current milestone:** M4 - Navigation, feeds, and the rest of the pages
 **Status:** COMPLETE   <!-- IN PROGRESS | BLOCKED | COMPLETE -->
 **Kickoff:** docs/kickoffs/M4-kickoff.md
-**Branch:** `feature/navigationAndFeeds`
+**Branch:** `feature/navigationAndFeeds` (PR #10)
 
 M0's to M3's records are in git history (`progress.md` as of commits 084f458, 9406219, ef48ec2 and b8c049f).
 
@@ -16,7 +16,7 @@ M0's to M3's records are in git history (`progress.md` as of commits 084f458, 94
 - [x] `sitemap-index.xml` and its sitemap list every public page and not the 404 - verified by: the 12 URLs in `sitemap-0.xml` equal every built `index.html` (home, about, archive, 3 posts, 3 tags, 3 types); no 404.
 - [x] Every built page has a unique `<title>`, a description, a canonical URL with the production origin and a trailing slash, and the Open Graph and Twitter tags; `og:image` is absolute and `public/og.png` is 1200×630 and uses only token colors - verified by: a scratchpad script over all 13 built pages: 13 distinct titles; description, `og:title`, `og:description`, `og:image:alt` on each; canonical equals production origin + page path with a trailing slash and matches `og:url` (404: none, plus `robots noindex`); `og:type` `article` on posts and `website` elsewhere; `og:image` `https://off-the-happy-path.vercel.app/og.png`, 1200, 630; `twitter:card` `summary_large_image`; the RSS alternate link. The PNG is 1200×630 and every pixel is a token color or an anti-aliased blend of two (max deviation 0.78).
 - [x] No client JS, and the landmark, active-nav and heading checks pass on every built page - verified by: the same script: 0 `<script>` in 13 pages, 0 `.js` files in `dist`; exactly one `header`, `main`, `footer` and `nav aria-label="Main"` each; exactly one `aria-current="page"` item (About on About; Writing on home, archive, tags, 404, essay and rant pages; Notes on the note page); one `h1` first and no skipped levels; `lang="en"`. New text pairs are ink, pencil and pen on paper, all in `tests/contrast.test.ts`.
-- [ ] Tests pass for the new behavior. CI is green on the PR - locally verified: `npm test` passes 21 files / 224 tests (new: `meta.test.ts`, `feed.test.ts`, `archive.test.ts`, `pages.test.ts`, `scripts-links.test.ts`; additions in `tags.test.ts`, `home.test.ts`, `post.test.ts`). `npm test`, `npm run check`, `npm run build` (and `npm run links` once it existed) exited 0 before every commit. CI on the PR is still to run: the branch isn't pushed yet.
+- [x] Tests pass for the new behavior. CI is green on the PR - verified by: CI `verify` (check, test, build, links) passed on PR #10 and the Vercel preview deployed. Locally: `npm test` passes 21 files / 224 tests (new: `meta.test.ts`, `feed.test.ts`, `archive.test.ts`, `pages.test.ts`, `scripts-links.test.ts`; additions in `tags.test.ts`, `home.test.ts`, `post.test.ts`). `npm test`, `npm run check`, `npm run build` (and `npm run links` once it existed) exited 0 before every commit.
 - [x] progress.md is complete and status is COMPLETE - verified by: this file.
 
 ## Completed
@@ -44,7 +44,6 @@ M0's to M3's records are in git history (`progress.md` as of commits 084f458, 94
 
 ## Deviations / deferred
 - The W3C Feed Validator run on the production URL waits for the merge; a local check against the same rules was done instead.
-- CI on the PR: the branch is committed locally and not pushed (pushing and the PR are Tony's call).
 
 ## Known issues
 - This machine's default shell Node is 22. The repo needs 26 (`.nvmrc`); run `nvm use` first.

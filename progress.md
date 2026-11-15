@@ -1,13 +1,11 @@
 # Progress
 
 **Current milestone:** M1 - New-post workflow and live deploy
-**Status:** BLOCKED   <!-- IN PROGRESS | BLOCKED | COMPLETE -->
+**Status:** IN PROGRESS   <!-- IN PROGRESS | BLOCKED | COMPLETE -->
 **Kickoff:** docs/kickoffs/M1-kickoff.md
 **Branch:** `feature/newPostWorkflow` (local, not pushed)
 
 M0's record is in git history (`progress.md` as of commit 084f458).
-
-**Waiting on Tony:** import the repo into Vercel and send the assigned URL; OK to push the branch for a preview.
 
 ## Done-when checklist
 - [ ] `npm run new` creates a correctly numbered and slugged draft from the template, both interactively and with flags, and refuses a duplicate slug
@@ -28,6 +26,7 @@ M0's record is in git history (`progress.md` as of commit 084f458).
 - `scripts/publish-post.mjs` as `npm run publish` and `publishPost` in `workflow.mjs`. Tried by hand on a throwaway `003-publish-probe.md`: `--keep-date` kept `2026-10-01` and the page built to `dist/log/publish-probe/`; without it the date became `2026-11-14`; with `tags: [Bad Tag]` it printed the schema error, `npm run check failed … was restored`, exited 1, and the file's SHA-1 was unchanged; Ctrl-C during the build (via `expect`) printed `Interrupted … was restored`, exited 1, SHA-1 unchanged; an unknown number and a missing argument exit 1 with a message.
 - `tests/scripts-integration.test.ts`: new then publish against a temp folder seeded with copies of the two sample posts and the real template. Covers numbering after existing posts (003, then 004), duplicate-title refusal, a failed verify leaving the file byte-identical, publish by `003` changing only the `date:` and `draft:` lines, `keepDate`, and that the real posts folder is untouched. Its stand-in for check + build applies the site's own `assertUniqueEntries`, `rawDateProblems`, `isDateString` and the tag/type rules.
 - `README.md`: setup, the day-to-day loop (new, dev, publish, commit, push), flags, editing a published post with `revised:`, the checks, and where the plan and progress files live.
+- Vercel project imported by Tony (preset Astro, no environment variables). Production is `https://off-the-happy-path.vercel.app`, and `site` in `astro.config.mjs` is set to it. Before this branch, production already served `main` with only № 001 listed.
 
 ## Decisions
 - **One slug rule, imported rather than copied.** `scripts/lib/slug.mjs` imports `slugFromId` from `src/lib/entries.ts`. That file uses only erasable TypeScript, so Node 26 runs it natively with type stripping, Vitest handles it, and `astro check` accepts the `.ts` import (`allowImportingTsExtensions` is on in Astro's base tsconfig). A test asserts the scripts' `slugFromId` is the very same function the site uses.

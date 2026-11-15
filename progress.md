@@ -17,12 +17,19 @@ M0's record is in git history (`progress.md` as of commit 084f458).
 - [ ] progress.md is complete and status is COMPLETE
 
 ## Completed
+- `scripts/lib/slug.mjs`: `slugify` (NFKD + a small map for letters like ß/æ/ø/ł, apostrophes dropped, hyphens, cut at 60 on a word boundary), `postFileName`, and `slugFromId` re-exported from `src/lib/entries.ts`.
+- `scripts/lib/dates.mjs`: `today()` from local date parts.
+- `scripts/lib/entries.mjs`: `nextEntryNumber`, `findPost` (`16`, `016`, `the-slug`, `016-the-slug`), and file name helpers.
 
 ## Decisions
+- **One slug rule, imported rather than copied.** `scripts/lib/slug.mjs` imports `slugFromId` from `src/lib/entries.ts`. That file uses only erasable TypeScript, so Node 26 runs it natively with type stripping, Vitest handles it, and `astro check` accepts the `.ts` import (`allowImportingTsExtensions` is on in Astro's base tsconfig). A test asserts the scripts' `slugFromId` is the very same function the site uses.
+- **`// @ts-check` on every script file**, so `npm run check` type-checks the scripts' JSDoc (confirmed by planting a bad call and seeing `astro check` fail).
+- **`nextEntryNumber` counts both the frontmatter `no` and the file name prefix**, so a file whose prefix and `no` disagree can never lead to a collision.
 
 ## Deviations / deferred
 
 ## Known issues
+- This machine's default shell Node is 22.12 (nvm default). The repo needs 26 (`.nvmrc`); run `nvm use` first. Node 22 can't import the `.ts` slug rule from the scripts.
 
 ## Plan changes to consider
 

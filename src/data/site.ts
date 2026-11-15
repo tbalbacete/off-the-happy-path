@@ -81,6 +81,44 @@ export const site = {
     links: { rss: 'RSS feed', github: 'GitHub', email: 'Email' },
   },
 
+  post: {
+    /** The kicker reads `№ 015 · ESSAY · Filed 2026-11-12`. */
+    filed: 'Filed',
+    /** The entry details column, in order. */
+    meta: {
+      label: 'Entry details',
+      entry: 'Entry',
+      filed: 'Filed',
+      revised: 'Revised',
+      readingTime: 'Reading time',
+      filedUnder: 'Filed under',
+      confidence: 'Confidence',
+      /** Shown for a missing revised date or no tags. */
+      none: '—',
+      /** `9 min`. */
+      minutes: 'min',
+    },
+    reply: {
+      label: 'Reply',
+      /** `Disagree? Good. [Email me] with the subject line “Re: № 015.” I read all of it…` */
+      before: 'Disagree? Good. ',
+      link: 'Email me',
+      subjectBefore: ' with the subject line “',
+      subjectAfter: '.” I read all of it and answer most of it.',
+      /** The subject is this plus the entry number: `Re: № 015`. */
+      subjectPrefix: 'Re: ',
+    },
+    more: {
+      label: 'More entries',
+      previous: '← Previous',
+      next: 'Next →',
+      /** Next, on the newest entry. */
+      newestEnd: 'Not written yet.',
+      /** Previous, on the oldest entry. */
+      oldestEnd: 'Nothing before this. It starts here.',
+    },
+  },
+
   footer: {
     left: "© 2026 Tony Albacete · Opinions are mine, not my employer's.",
     right: 'Plain HTML. No tracking. No pop-ups. Hosted for $0.',

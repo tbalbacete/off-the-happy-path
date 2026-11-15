@@ -1,0 +1,37 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getPosts, type Post } from '../../lib/posts';
+import { formatEntryNo, slugFromId } from '../../lib/entries';
+import { readingTime } from '../../lib/reading-time';
+
+export const getStaticPaths = (async () => {
+  const posts = await getPosts();
+  return posts.map((post) => ({ params: { slug: slugFromId(post.id) }, props: { post } }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  post: Post;
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const minutes = readingTime(post.body ?? '');
+---
+
+<BaseLayout title={post.data.title}>
+  <header>
+    <p><a href="/">Home</a></p>
+  </header>
+  <main>
+    <article>
+      <h1>{post.data.title}</h1>
+      <p class="mono">
+        {formatEntryNo(post.data.no)} · {post.data.date} · {minutes} min read
+        {post.data.draft && ' · draft'}
+      </p>
+      <Content />
+    </article>
+  </main>
+</BaseLayout>

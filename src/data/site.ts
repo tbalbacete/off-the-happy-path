@@ -151,6 +151,17 @@ export const site = {
     descriptionAfter: ', newest first.',
   },
 
+  /** The archive, `/archive/`. */
+  archive: {
+    kicker: 'Archive',
+    title: 'Every entry',
+    metaTitle: 'Archive',
+    /** The dek reads `3 entries, grouped by year, newest first.` */
+    dekAfter: ', grouped by year, newest first.',
+    description: 'Every entry in Off the Happy Path, grouped by year, newest first.',
+    empty: 'No entries yet.',
+  },
+
   footer: {
     left: "© 2026 Tony Albacete · Opinions are mine, not my employer's.",
     right: 'Plain HTML. No tracking. No pop-ups. Hosted for $0.',

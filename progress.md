@@ -3,7 +3,7 @@
 **Current milestone:** M3 - Post page to design
 **Status:** COMPLETE   <!-- IN PROGRESS | BLOCKED | COMPLETE -->
 **Kickoff:** docs/kickoffs/M3-kickoff.md
-**Branch:** `feature/postPageDesign`
+**Branch:** `feature/postPageDesign` (PR #8)
 
 M0's, M1's and M2's records are in git history (`progress.md` as of commits 084f458, 9406219 and ef48ec2).
 
@@ -15,7 +15,7 @@ M0's, M1's and M2's records are in git history (`progress.md` as of commits 084f
 - [x] Code uses only token colors - verified by: `grep -rnoE '#[0-9a-fA-F]{3,8}' src` finds only the six declarations in `global.css`; no `rgb(` or `hsl(`; the built HTML has no hex in any `style` attribute (Shiki writes `var(--code-*)`); the built CSS has exactly the six token hex values; `grep -rnE 'box-shadow|border-radius|gradient' src` and the same over the built CSS find nothing. `tests/code.test.ts` also asserts Shiki's output has no hex.
 - [x] No client JS - verified by: 0 of 7 built HTML files contain `<script`, and `find dist -name '*.js'` finds 0 files.
 - [x] Landmark and contrast checks pass on every built post page - verified by: each of the three post pages has exactly 1 `<header`, 1 `<main`, 1 `<footer`, 1 `<nav aria-label="Main">`, 1 `<nav aria-label="More entries">` and 1 `<aside aria-label="Entry details">` (the only aside); heading order h1 then body h2s (plus the screen-reader-only "Footnotes" h2). The active nav item follows the type (NOTES on № 001 and № 003, WRITING on № 004). `tests/contrast.test.ts` gained pencil on highlighter (code comments on a highlighted line); every pair passes 4.5:1.
-- [x] Tests pass for the new behavior. CI is green on the PR - locally verified: `npm test` passes 16 files / 179 tests (new: `post.test.ts` for `prevNext`, `neighbourLink`, `replyHref`, `postMeta`; `code.test.ts` for `parseCodeMeta` and the code box; `rehype-sidenotes.test.ts` with every case in scope; `postHref` in `entries.test.ts`). `npm run check` and `npm run build` exit 0 before every commit. CI runs once the branch is pushed and a PR is opened (not done yet; waiting for Tony).
+- [x] Tests pass for the new behavior. CI is green on the PR - locally verified: `npm test` passes 16 files / 179 tests (new: `post.test.ts` for `prevNext`, `neighbourLink`, `replyHref`, `postMeta`; `code.test.ts` for `parseCodeMeta` and the code box; `rehype-sidenotes.test.ts` with every case in scope; `postHref` in `entries.test.ts`). `npm run check` and `npm run build` exit 0 before every commit. CI `verify` (check, test, build) passed on PR #8, and the Vercel preview deployed.
 - [x] progress.md is complete and status is COMPLETE - verified by: this file.
 
 ## Completed

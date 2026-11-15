@@ -172,6 +172,15 @@ export const site = {
     description: 'Who writes Off the Happy Path, and how to reply.',
     /** The aside's accessible name for the AUTHOR / COVERAGE / STATUS column. */
     metaLabel: 'About the log',
+    /** The "On AI" section, around its "email me" link. The footer links here. */
+    ai: {
+      id: 'on-ai',
+      heading: 'On AI',
+      before:
+        "Yes, AI helped build this site: the layout, the build scripts, most of the plumbing. And yes, it helps me get drafts into shape. No, it isn't the brains here. The ideas, the stories and the opinions are mine, and so are the mistakes. If something reads like a person didn't write it, ",
+      link: 'email me',
+      after: ' and tell me where.',
+    },
   },
 
   /** The 404 page. */
@@ -191,6 +200,8 @@ export const site = {
   footer: {
     left: "© 2026 Tony Albacete · Opinions are mine, not my employer's.",
     right: 'Plain HTML. No tracking. No pop-ups. Hosted for $0.',
+    /** After the right-hand line: a link to the About page's "On AI" section. */
+    ai: { label: 'Built with some help from AI →', href: '/about/#on-ai' },
   },
 } as const;
 

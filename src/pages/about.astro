@@ -14,6 +14,8 @@ const rows = site.masthead.cells.map((cell) => ({ label: cell.label, value: cell
     <div class="about-body prose">
       <p>{intro}</p>
       <p>{reply.before}<a href={`mailto:${site.email}`} class="pen-link">{reply.link}</a>{reply.after}</p>
+      <h2 id={a.ai.id}>{a.ai.heading}</h2>
+      <p>{a.ai.before}<a href={`mailto:${site.email}`} class="pen-link">{a.ai.link}</a>{a.ai.after}</p>
     </div>
   </div>
 </PageLayout>

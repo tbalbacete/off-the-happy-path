@@ -24,7 +24,7 @@ Follow the `pull-requests` skill for naming and wording. On top of that:
 2. Commit as you go, one commit per logical step of the kickoff's suggested order of work. Do not save everything for one commit at the end.
 3. Every commit builds and passes the tests: run `npm test` and `npm run build` (and `npm run check` once it exists) before each commit.
 4. Tests go in the same commit as the logic they cover. progress.md updates ride along with the step they describe.
-5. When the milestone is COMPLETE, push the branch and open a PR to `main`. Do not merge it; the next milestone branches from `main` after the PR is merged.
+5. When the milestone is COMPLETE, stop with the branch committed locally. Push it and open a PR to `main` only when Tony asks. Never merge it yourself; the next milestone branches from `main` after the PR is merged.
 
 ## Project conventions
 - Keep it simple: static output, no database, no CMS, zero client JS unless a kickoff justifies it.

@@ -3,7 +3,7 @@
 **Current milestone:** M2 - Home page to design
 **Status:** COMPLETE   <!-- IN PROGRESS | BLOCKED | COMPLETE -->
 **Kickoff:** docs/kickoffs/M2-kickoff.md
-**Branch:** `feature/homePageDesign` (PR #6, open)
+**Branch:** `feature/homePageDesign` (PR #6, merged into `main` as b2d0afc)
 
 M0's and M1's records are in git history (`progress.md` as of commits 084f458 and 9406219).
 

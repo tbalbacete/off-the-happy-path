@@ -1,0 +1,54 @@
+---
+import { site, type NavId } from '../data/site';
+
+interface Props {
+  /** The nav item for the current page, if any. */
+  active?: NavId;
+}
+
+const { active } = Astro.props;
+---
+
+<nav aria-label="Main" class="main-nav">
+  <ul>
+    {
+      site.nav.map((item) => (
+        <li>
+          <a
+            href={item.href}
+            class:list={{ active: item.id === active }}
+            aria-current={item.id === active ? 'page' : undefined}
+          >
+            {item.label}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<style>
+  .main-nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 22px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .main-nav a {
+    text-decoration: none;
+  }
+  .main-nav a:hover {
+    text-decoration: underline;
+  }
+  .main-nav a.active {
+    color: var(--pen);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+  }
+</style>

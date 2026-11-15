@@ -2,7 +2,7 @@
  * Pure helpers for the home page and the type filter pages. No Astro imports;
  * they take already-filtered, newest-first posts.
  */
-import { slugFromId } from './entries';
+import { postHref } from './entries';
 import { readingTime } from './reading-time';
 import { tagLabel } from './tags';
 
@@ -92,7 +92,7 @@ export function entrySummary(post: Summarisable): EntrySummary {
   const { no, title, dek, type, date, tags, draft } = post.data;
   return {
     no,
-    href: `/log/${slugFromId(post.id)}/`,
+    href: postHref(post.id),
     title,
     dek,
     type,

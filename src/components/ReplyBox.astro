@@ -1,0 +1,41 @@
+---
+import { site } from '../data/site';
+import { formatEntryNo } from '../lib/entries';
+import { replyHref } from '../lib/post';
+
+interface Props {
+  no: number;
+}
+
+const { no } = Astro.props;
+const r = site.post.reply;
+---
+
+<section aria-label={r.label} class="reply">
+  <span class="label">{r.label}</span>
+  <p>
+    {r.before}<a href={replyHref(site.email, no)}>{r.link}</a>{r.subjectBefore}{r.subjectPrefix}{formatEntryNo(no)}{r.subjectAfter}
+  </p>
+</section>
+
+<style>
+  .reply {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 48px;
+    padding: 18px 20px;
+    border: 2px solid var(--ink);
+  }
+  .reply .label {
+    letter-spacing: 0.12em;
+  }
+  .reply p {
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.5;
+  }
+  .reply a {
+    color: var(--pen);
+  }
+</style>

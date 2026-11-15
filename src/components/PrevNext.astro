@@ -1,0 +1,76 @@
+---
+import { site } from '../data/site';
+import { formatEntryNo } from '../lib/entries';
+import type { NeighbourLink } from '../lib/post';
+
+interface Props {
+  /** The next-older entry, or null on the oldest. */
+  previous: NeighbourLink | null;
+  /** The next-newer entry, or null on the newest. */
+  next: NeighbourLink | null;
+}
+
+const { previous, next } = Astro.props;
+const m = site.post.more;
+const cells = [
+  { entry: previous, label: m.previous, end: m.oldestEnd },
+  { entry: next, label: m.next, end: m.newestEnd },
+];
+---
+
+<nav aria-label={m.label} class="prev-next">
+  {
+    cells.map(({ entry, label, end }) =>
+      entry ? (
+        <a href={entry.href} class="prev-next__cell">
+          <span class="label">
+            {label} · {formatEntryNo(entry.no)}
+          </span>
+          <span class="prev-next__title">{entry.title}</span>
+        </a>
+      ) : (
+        <div class="prev-next__cell">
+          <span class="label">{label}</span>
+          <span class="prev-next__end">{end}</span>
+        </div>
+      ),
+    )
+  }
+</nav>
+
+<style>
+  /* Form cells: the ink background shows through the 2px gaps. */
+  .prev-next {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    margin-top: 28px;
+    background: var(--ink);
+    border: 2px solid var(--ink);
+  }
+  .prev-next__cell {
+    flex: 1 1 240px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 14px 16px;
+    background: var(--paper);
+    text-decoration: none;
+  }
+  .prev-next__title {
+    font-family: var(--font-head);
+    font-stretch: 85%;
+    font-weight: 750;
+    font-size: 19px;
+    line-height: 1.2;
+  }
+  a.prev-next__cell:hover .prev-next__title {
+    text-decoration: underline;
+  }
+  .prev-next__end {
+    font-style: italic;
+    font-size: 17px;
+    line-height: 1.4;
+    color: var(--pencil);
+  }
+</style>

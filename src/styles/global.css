@@ -10,7 +10,23 @@
   /* The one allowed neutral tint, for hairline dividers. */
   --hairline: #c4c2b9;
 
-  --font-head: 'Archivo Variable', 'Arial Narrow', sans-serif;
+  /*
+   * Code colors (the Shiki theme in src/lib/code.ts). Ink for nearly
+   * everything, pencil for comments and punctuation, never pen.
+   */
+  --code-foreground: var(--ink);
+  --code-background: var(--paper);
+  --code-token-constant: var(--ink);
+  --code-token-string: var(--ink);
+  --code-token-comment: var(--pencil);
+  --code-token-keyword: var(--ink);
+  --code-token-parameter: var(--ink);
+  --code-token-function: var(--ink);
+  --code-token-string-expression: var(--ink);
+  --code-token-punctuation: var(--pencil);
+  --code-token-link: var(--ink);
+
+  --font-head:'Archivo Variable', 'Arial Narrow', sans-serif;
   --font-body: 'Source Serif 4 Variable', Georgia, serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
 
@@ -102,9 +118,20 @@ a:hover {
   outline-offset: 2px;
 }
 
+/*
+ * The highlighter band over the lower third of the text, drawn as a thick
+ * underline: the featured title on the home page and <mark> in posts. The
+ * artboards use an inset shadow, which plan §6 rules out.
+ */
+.highlight,
 mark {
-  background: var(--highlighter);
-  color: var(--ink);
+  background: none;
+  color: inherit;
+  text-decoration-line: underline;
+  text-decoration-color: var(--highlighter);
+  text-decoration-thickness: 0.32em;
+  text-underline-offset: -0.24em;
+  text-decoration-skip-ink: none;
 }
 
 hr {
@@ -138,4 +165,205 @@ hr {
   font-size: 13px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+}
+
+/* Visually hidden, still read by screen readers (e.g. the "Footnotes" heading). */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Post body: the Markdown inside a post's article. */
+.prose {
+  font-size: 20px;
+  line-height: 1.68;
+}
+.prose > :first-child {
+  margin-top: 0;
+}
+.prose p,
+.prose ul,
+.prose ol,
+.prose blockquote {
+  margin: 0 0 24px;
+}
+.prose h2 {
+  margin: 44px 0 14px;
+  font-family: var(--font-head);
+  font-stretch: 85%;
+  font-weight: 800;
+  font-size: 30px;
+  line-height: 1.15;
+}
+.prose h3 {
+  margin: 32px 0 10px;
+  font-family: var(--font-head);
+  font-stretch: 85%;
+  font-weight: 800;
+  font-size: 23px;
+  line-height: 1.2;
+}
+.prose :not(pre) > code {
+  font-size: 0.8em;
+}
+.prose blockquote {
+  padding-left: 18px;
+  border-left: 2px solid var(--ink);
+  font-style: italic;
+}
+
+/* Code "file" box (see transformerCodeFigure in src/lib/code.ts). */
+.code-box {
+  margin: 0 0 28px;
+  border: 1.5px solid var(--ink);
+  background: var(--paper);
+}
+.code-box__caption {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 16px;
+  padding: 7px 14px;
+  border-bottom: 1.5px solid var(--ink);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  line-height: 1.5;
+  letter-spacing: 0.08em;
+  color: var(--pencil);
+}
+/* File names stay as written; the note is a label, set in capitals. */
+.code-box__note {
+  text-transform: uppercase;
+}
+.code-box pre {
+  margin: 0;
+  padding: 14px 0;
+  font-size: 15px;
+  line-height: 1.7;
+  overflow-x: auto;
+}
+/* Lines as wide as the longest one, so a highlight spans the whole box. */
+.code-box code {
+  display: block;
+  width: max-content;
+  min-width: 100%;
+}
+.code-box .line {
+  display: inline-block;
+  min-width: 100%;
+  padding: 0 16px;
+}
+.code-box .line.highlighted {
+  background: var(--highlighter);
+}
+
+/* Footnote references. */
+.prose sup {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 0;
+  color: var(--pen);
+}
+.prose sup a {
+  padding: 0 1px;
+  color: var(--pen);
+  text-decoration: none;
+}
+.prose sup a:hover {
+  text-decoration: underline;
+}
+
+/*
+ * Notes: sidenotes in the right margin on wide screens, end notes under the
+ * article on narrower ones. Exactly one copy is shown (src/lib/rehype-sidenotes.ts).
+ */
+.sidenote,
+.footnotes {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 1.55;
+  font-style: normal;
+  font-weight: 400;
+  color: var(--pen);
+}
+.sidenote a,
+.footnotes a {
+  color: var(--pen);
+}
+.sidenote code,
+.footnotes code {
+  font-size: 1em;
+}
+.sidenote {
+  /* Floats into the empty third grid track: 48px gap plus a 200px column. */
+  float: right;
+  clear: right;
+  width: 200px;
+  margin: 0 -248px 22px 0;
+  padding-top: 10px;
+  border-top: 1.5px solid var(--pen);
+}
+.sidenote__no {
+  font-weight: 600;
+}
+.footnotes {
+  display: none;
+  margin-top: 40px;
+}
+.footnotes ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: note;
+}
+.footnotes li {
+  counter-increment: note;
+  margin: 0 0 18px;
+  padding-top: 10px;
+  border-top: 1.5px solid var(--pen);
+}
+.footnotes li p {
+  margin: 0 0 6px;
+}
+.footnotes li > p:first-child::before {
+  content: counter(note) ' ';
+  font-weight: 600;
+}
+
+@media (max-width: 1099px) {
+  .sidenote {
+    display: none;
+  }
+  .footnotes {
+    display: block;
+  }
+}
+
+/* Phones: slightly smaller body and headings, same rhythm. */
+@media (max-width: 480px) {
+  .prose {
+    font-size: 18px;
+    line-height: 1.62;
+  }
+  .prose p,
+  .prose ul,
+  .prose ol,
+  .prose blockquote {
+    margin-bottom: 20px;
+  }
+  .prose h2 {
+    margin-top: 36px;
+    font-size: 26px;
+  }
+  .code-box pre {
+    font-size: 14px;
+  }
 }

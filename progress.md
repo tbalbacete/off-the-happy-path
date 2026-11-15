@@ -24,6 +24,7 @@ M0's and M1's records are in git history (`progress.md` as of commits 084f458 an
 - `src/components/`: `Stamp` (RANT in `--pen`), `Masthead` (form cells, name in a `clamp()` size, cells as a `<dl>`), `SiteNav` (tagline row, `nav aria-label="Main"`, active item in `--pen` with a 2px underline and `aria-current="page"`), `Footer`. `global.css` gains `.container` (1180px, 40/32/56 padding; 20/16/40 under 480px), `.label` / `.label--small`, link underline offset and the `--pen` hover. The home page uses them around the old list.
 - `LogHeader` (filters as a list labelled "Filter by type", active one ink, underlined, `aria-current="page"`), `FeaturedEntry` (h2, highlighter band, LATEST, `READ ENTRY →` in `--pen`), `EntryRow` (h3 by default, `level` prop for type pages), and a shared `EntryMetaColumn` (number, `<time>`, stamp, LATEST / DRAFT in `--pen`). `entrySummary` in `src/lib/home.ts` turns a post into their props (href, reading time, meta line), with tests. `index.astro` now shows the log: featured entry, up to six rows, and the older link when entries remain.
 - `CurrentlyBox` (2px ink box, ink header bar with paper text, `<dl>` with hairlines; reads `currently.ts` through its prop) and `HomeAside` (Currently, FILED UNDER from `tagCounts`, ABOUT THIS LOG with `id="about"` and a `mailto:` "email me", and the RSS / GitHub / Email links). `tagHref` added to `tags.ts` with a test. The home page now has the aside.
+- `src/pages/type/[type].astro`: `getStaticPaths` from `POST_TYPES`, so all three pages always build. Same masthead, nav, aside and footer; `LogHeader` with that filter active; every matching post as an `EntryRow` at h2 (no featured entry, no highlighter); the empty line from `site.log.empty` otherwise. `navItemForType` in `home.ts` (NOTES on the note page, WRITING on the others), with a test. Production build: `/type/note/` lists № 003 and № 001; `/type/essay/` shows "No essays yet." (the only essay, № 002, is a draft); `/type/rant/` shows "No rants yet."
 
 ## Decisions
 - **`homeEntries` reads the older range from entry numbers, not positions**, so gaps (a removed post) still give the right `(008–001)`-style label.
@@ -34,6 +35,7 @@ M0's and M1's records are in git history (`progress.md` as of commits 084f458 an
 - **The filter links are a `<ul aria-label="Filter by type">`, not a second `<nav>`**, so the page has exactly one labelled nav as the kickoff asks.
 - **Under 600px the meta column becomes one line above the content** (number, date, stamp, LATEST) instead of a 150px column, to save vertical space on phones.
 - **FILED UNDER links point to `/tag/<slug>/`** (via `tagHref`), the URLs M4's tag pages will use. Like RSS, they 404 until M4. The section is left out when no post has tags.
+- **Entry titles on type pages are h2**, since there is no featured entry to sit under; the home page keeps h3 under the featured h2.
 
 ## Deviations / deferred
 - The Currently box keeps the artboard's bracketed placeholders (Tony's choice). M5 fills `src/data/currently.ts`.

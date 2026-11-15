@@ -44,6 +44,11 @@ export function homeEntries<T extends Numbered>(posts: T[], count = 7): HomeEntr
   return { featured, rows, older };
 }
 
+/** Which main nav item a type page marks active: NOTES for notes, WRITING otherwise. */
+export function navItemForType(type: PostType): 'writing' | 'notes' {
+  return type === 'note' ? 'notes' : 'writing';
+}
+
 /** Posts of one type, in the order given. */
 export function postsOfType<T extends Typed>(posts: T[], type: PostType): T[] {
   return posts.filter((p) => p.data.type === type);

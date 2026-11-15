@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { entryMeta, entrySummary, homeEntries, postsOfType, type PostType } from '../src/lib/home';
+import { entryMeta, entrySummary, homeEntries, navItemForType, postsOfType, type PostType } from '../src/lib/home';
 
 const post = (no: number, type: PostType = 'essay') => ({ id: `${no}`, data: { no, type } });
 /** Newest first, like getPosts returns them. */
@@ -114,5 +114,13 @@ describe('entrySummary', () => {
     const s = entrySummary({ ...base, body: undefined, data: { ...base.data, tags: [], draft: true } });
     expect(s.meta).toBe('1 MIN');
     expect(s.draft).toBe(true);
+  });
+});
+
+describe('navItemForType', () => {
+  it('marks NOTES on the note page and WRITING on the others', () => {
+    expect(navItemForType('note')).toBe('notes');
+    expect(navItemForType('essay')).toBe('writing');
+    expect(navItemForType('rant')).toBe('writing');
   });
 });

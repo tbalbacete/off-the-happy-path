@@ -21,11 +21,16 @@ M0's record is in git history (`progress.md` as of commit 084f458).
 - `scripts/lib/dates.mjs`: `today()` from local date parts.
 - `scripts/lib/entries.mjs`: `nextEntryNumber`, `findPost` (`16`, `016`, `the-slug`, `016-the-slug`), and file name helpers.
 - `scripts/lib/frontmatter.mjs`: `readFrontmatter` (the small YAML subset posts use) and `setField` / `setDraft` / `setDate`, which rewrite only the one line and keep spacing, trailing comments, quote style and CRLF.
+- `templates/post.md` and `scripts/lib/template.mjs` (`fillTemplate`, `templateValues`, `parseTags`, `parseType`, `yamlString`). Checked by hand: a filled draft passes `npm run check` and the build skips it; the same file with `draft: false` and a footnote built to `/log/probe/` with the title escaped correctly and none of the reminder text in the HTML.
 
 ## Decisions
 - **One slug rule, imported rather than copied.** `scripts/lib/slug.mjs` imports `slugFromId` from `src/lib/entries.ts`. That file uses only erasable TypeScript, so Node 26 runs it natively with type stripping, Vitest handles it, and `astro check` accepts the `.ts` import (`allowImportingTsExtensions` is on in Astro's base tsconfig). A test asserts the scripts' `slugFromId` is the very same function the site uses.
 - **`// @ts-check` on every script file**, so `npm run check` type-checks the scripts' JSDoc (confirmed by planting a bad call and seeing `astro check` fail).
 - **`nextEntryNumber` counts both the frontmatter `no` and the file name prefix**, so a file whose prefix and `no` disagree can never lead to a collision.
+- **Template reminders are YAML comments inside the frontmatter**, not HTML comments in the body. An HTML comment survives into the built HTML; a frontmatter comment can never render. The body starts empty.
+- **Placeholders cover the fields the script fills** (`no`, `title`, `dek`, `type`, `date`, `tags`, `draft`). `revised:` is written blank (the schema allows null), and `confidence` is a commented example, because a blank `confidence:` would be null and fail the schema.
+- **A skipped dek becomes `"TODO: one or two sentences for the home page."`**, because the schema requires a non-empty dek and a fresh draft must build. `publish` refuses a post whose dek is still that placeholder.
+- **Titles and deks are written as JSON strings** (valid YAML double-quoted), so quotes, colons and backslashes are safe. Tags are slugified, so `Code Review` becomes `code-review`.
 
 ## Deviations / deferred
 

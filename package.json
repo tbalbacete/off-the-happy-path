@@ -11,6 +11,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
+    "links": "node scripts/check-links.mjs",
     "test": "vitest run",
     "new": "node scripts/new-post.mjs",
     "publish": "node scripts/publish-post.mjs",

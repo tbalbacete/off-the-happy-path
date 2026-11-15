@@ -14,11 +14,21 @@ const s = site.post.share;
 const links = shareLinks(url, title);
 ---
 
-<section aria-label={s.label} class="share">
+<section aria-label={s.label} class="share" data-share>
   <span class="label">{s.label}</span>
   <div class="share__permalink">
-    <p class="share__url">{url}</p>
+    <p class="share__url" data-share-url>{url}</p>
+    <button
+      type="button"
+      class="share__copy"
+      hidden
+      data-url={url}
+      data-copied={s.copied}
+      data-copied-status={s.copiedStatus}
+      data-fallback-status={s.fallbackStatus}>{s.copy}</button
+    >
   </div>
+  <p class="sr-only" role="status" data-share-status></p>
   <ul class="share__links">
     {
       links.map((l, i) => (
@@ -30,6 +40,49 @@ const links = shareLinks(url, title);
     }
   </ul>
 </section>
+
+<script>
+  // The copy button: the site's only client JS. Without it the button stays
+  // hidden and the permalink is still there to select by hand.
+  const RESET_MS = 2000;
+
+  for (const box of document.querySelectorAll<HTMLElement>('[data-share]')) {
+    const button = box.querySelector<HTMLButtonElement>('.share__copy');
+    const permalink = box.querySelector<HTMLElement>('[data-share-url]');
+    const status = box.querySelector<HTMLElement>('[data-share-status]');
+    if (!button || !permalink || !status) continue;
+
+    const { url = '', copied = '', copiedStatus = '', fallbackStatus = '' } = button.dataset;
+    const label = button.textContent ?? '';
+    let timer: ReturnType<typeof setTimeout> | undefined;
+
+    const show = (text: string, message: string) => {
+      clearTimeout(timer);
+      button.textContent = text;
+      status.textContent = message;
+      timer = setTimeout(() => {
+        button.textContent = label;
+        status.textContent = '';
+      }, RESET_MS);
+    };
+
+    // No clipboard API (or it refused): select the URL and say how to copy it.
+    const fallback = () => {
+      const range = document.createRange();
+      range.selectNodeContents(permalink);
+      const selection = window.getSelection();
+      selection?.removeAllRanges();
+      selection?.addRange(range);
+      show(label, fallbackStatus);
+    };
+
+    button.addEventListener('click', () => {
+      if (!navigator.clipboard) return fallback();
+      navigator.clipboard.writeText(url).then(() => show(copied, copiedStatus), fallback);
+    });
+    button.hidden = false;
+  }
+</script>
 
 <style>
   .share {
@@ -58,7 +111,32 @@ const links = shareLinks(url, title);
     font-size: 14px;
     line-height: 1.5;
     overflow-wrap: anywhere;
+    -webkit-user-select: all;
     user-select: all;
+  }
+  /* Sized to the longer label, so the box doesn't move when it reads COPIED. */
+  .share__copy {
+    flex: none;
+    min-width: calc(9ch + 9 * 0.1em + 36px);
+    padding: 8px 16px;
+    border: 2px solid var(--ink);
+    border-radius: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.5;
+    letter-spacing: 0.1em;
+    text-align: left;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .share__copy[hidden] {
+    display: none;
+  }
+  .share__copy:hover {
+    background: var(--ink);
+    color: var(--paper);
   }
   .share__links {
     display: flex;

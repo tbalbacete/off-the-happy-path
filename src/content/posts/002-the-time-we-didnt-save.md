@@ -26,13 +26,15 @@ You pick up a ticket. It has a title, "Update user permissions," and nothing els
 
 So you ask. The person who created it remembers the meeting but not the details.[^memory] Someone thinks it was about admins. Someone else thinks it came from a customer request, maybe two. Nobody is being difficult. Nobody knows, because nobody ever wrote it down, and the ticket has been in the backlog long enough to look like it means something.
 
-Then it gets pulled into the sprint anyway, because it has a title and it has points, and that's usually enough.
+Then it gets pulled into the sprint anyway (assuming you're even doing sprints... or 'concepts' of sprints), because it has a title and it has points, and that's usually enough.
 
 ## The trade nobody makes on purpose
 
 I don't think any team decides to skip requirements. It happens one reasonable shortcut at a time. Planning runs long, so the last few tickets get a title and a promise to fill them in later. A date is close, so we agree to figure it out as we go. Writing down what done looks like feels like paperwork when there's real work waiting.[^expected]
 
 Part of the problem is that the cost is invisible when you pay it. A deadline is on a calendar. An hour spent working out what a ticket means isn't on anything. It's also nobody's job in particular, which in practice means it's nobody's job.
+
+That means the people who plan and budget the next project can't account for any of it, because they never saw it happen. Does that feed the feeling that every new project's deadlines are more unreasonable than the last? I think so.
 
 And asking questions can feel like slowing everyone down. When the room is ready to move on, being the person who says "wait, what does done look like?" takes a bit of nerve.
 

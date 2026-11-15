@@ -91,6 +91,9 @@ describe('createPost', () => {
   });
 });
 
+/** A card step that renders nothing and has nothing to undo. */
+const noCard = async () => async () => {};
+
 describe('publishPost', () => {
   const draft = `---
 no: 4   # keep me
@@ -109,7 +112,7 @@ Body with draft: true in it.
 
   it('flips draft and sets the date to today, changing only those lines', async () => {
     await seed('004-a-draft.md', draft);
-    const result = await publishPost({ postsDir: dir, query: '4', date: '2026-11-14', verify: pass });
+    const result = await publishPost({ postsDir: dir, query: '4', date: '2026-11-14', card: noCard, verify: pass });
     expect(result).toMatchObject({ ok: true, date: '2026-11-14', wasDraft: true });
     expect(await readFile(join(dir, '004-a-draft.md'), 'utf8')).toBe(
       draft.replace('date: "2026-01-02"', 'date: "2026-11-14"').replace('draft: true\n---', 'draft: false\n---'),
@@ -123,6 +126,7 @@ Body with draft: true in it.
       query: 'a-draft',
       date: '2026-11-14',
       keepDate: true,
+      card: noCard,
       verify: pass,
     });
     expect(result.date).toBe('2026-01-02');
@@ -138,6 +142,7 @@ Body with draft: true in it.
       postsDir: dir,
       query: '004',
       date: '2026-11-14',
+      card: noCard,
       verify: async () => {
         seen = await readFile(join(dir, '004-a-draft.md'), 'utf8');
         return true;
@@ -148,7 +153,7 @@ Body with draft: true in it.
 
   it('restores the file byte for byte when verify fails', async () => {
     await seed('004-a-draft.md', draft);
-    const result = await publishPost({ postsDir: dir, query: '4', date: '2026-11-14', verify: fail });
+    const result = await publishPost({ postsDir: dir, query: '4', date: '2026-11-14', card: noCard, verify: fail });
     expect(result.ok).toBe(false);
     expect(await readFile(join(dir, '004-a-draft.md'), 'utf8')).toBe(draft);
   });
@@ -160,6 +165,7 @@ Body with draft: true in it.
         postsDir: dir,
         query: '4',
         date: '2026-11-14',
+        card: noCard,
         verify: async () => {
           throw new Error('spawn failed');
         },
@@ -171,7 +177,7 @@ Body with draft: true in it.
   it('refuses an unknown post', async () => {
     await seed('004-a-draft.md', draft);
     await expect(
-      publishPost({ postsDir: dir, query: 'nope', date: '2026-11-14', verify: pass }),
+      publishPost({ postsDir: dir, query: 'nope', date: '2026-11-14', card: noCard, verify: pass }),
     ).rejects.toThrow(/No post matches "nope". Posts: 4 a-draft/);
   });
 
@@ -179,14 +185,92 @@ Body with draft: true in it.
     const placeholder = draft.replace('"Real dek."', JSON.stringify(DEK_PLACEHOLDER));
     await seed('004-a-draft.md', placeholder);
     await expect(
-      publishPost({ postsDir: dir, query: '4', date: '2026-11-14', verify: pass }),
+      publishPost({ postsDir: dir, query: '4', date: '2026-11-14', card: noCard, verify: pass }),
     ).rejects.toThrow(/placeholder dek/);
     expect(await readFile(join(dir, '004-a-draft.md'), 'utf8')).toBe(placeholder);
   });
 
+  it('renders the card with the new date before writing the post', async () => {
+    await seed('004-a-draft.md', draft);
+    const calls: unknown[] = [];
+    await publishPost({
+      postsDir: dir,
+      query: '4',
+      date: '2026-11-14',
+      card: async (post) => {
+        calls.push({ post, fileThen: await readFile(join(dir, '004-a-draft.md'), 'utf8') });
+        return async () => {};
+      },
+      verify: pass,
+    });
+    expect(calls).toEqual([
+      {
+        post: { no: 4, title: 'A draft', dek: 'Real dek.', type: 'note', date: '2026-11-14', slug: 'a-draft' },
+        fileThen: draft,
+      },
+    ]);
+  });
+
+  it('writes nothing and skips verify when the card fails', async () => {
+    await seed('004-a-draft.md', draft);
+    let verified = false;
+    await expect(
+      publishPost({
+        postsDir: dir,
+        query: '4',
+        date: '2026-11-14',
+        card: async () => {
+          throw new Error('Chrome not found at /nope. Set CHROME_PATH to a Chrome or Chromium binary.');
+        },
+        verify: async () => (verified = true),
+      }),
+    ).rejects.toThrow(/CHROME_PATH/);
+    expect(verified).toBe(false);
+    expect(await readFile(join(dir, '004-a-draft.md'), 'utf8')).toBe(draft);
+  });
+
+  it('undoes the card when verify fails or throws, and keeps it when it passes', async () => {
+    for (const [verify, expectUndo] of [
+      [fail, true],
+      [async () => Promise.reject(new Error('boom')), true],
+      [pass, false],
+    ] as const) {
+      await seed('004-a-draft.md', draft);
+      let undone = false;
+      await publishPost({
+        postsDir: dir,
+        query: '4',
+        date: '2026-11-14',
+        card: async () => async () => {
+          undone = true;
+        },
+        verify,
+      }).catch(() => {});
+      expect(undone).toBe(expectUndo);
+    }
+  });
+
+  it('refuses a post missing a card field before rendering anything', async () => {
+    await seed('004-a-draft.md', draft.replace('type: note', 'type: poem'));
+    let rendered = false;
+    await expect(
+      publishPost({
+        postsDir: dir,
+        query: '4',
+        date: '2026-11-14',
+        card: async () => {
+          rendered = true;
+          return async () => {};
+        },
+        verify: pass,
+      }),
+    ).rejects.toThrow(UsageError);
+    expect(rendered).toBe(false);
+  });
+
   it('reports a post that was already published', async () => {
     await seed('004-a-draft.md', draft.replace('draft: true', 'draft: false'));
-    const result = await publishPost({ postsDir: dir, query: '4', date: '2026-11-14', verify: pass });
+    const result = await publishPost({ postsDir: dir, query: '4', date: '2026-11-14', card: noCard, verify: pass });
     expect(result.wasDraft).toBe(false);
   });
 });

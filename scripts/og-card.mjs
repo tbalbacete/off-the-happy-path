@@ -12,7 +12,7 @@ import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
 import { findPost } from './lib/entries.mjs';
 import { cardPostFrom } from './lib/og-card.mjs';
-import { ChromeMissingError, renderCards } from './lib/og-render.mjs';
+import { CardError, renderCards } from './lib/og-render.mjs';
 import { UsageError, listPosts } from './lib/workflow.mjs';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
@@ -68,7 +68,7 @@ async function main() {
 }
 
 main().catch((error) => {
-  if (error instanceof UsageError || error instanceof ChromeMissingError || error?.code?.startsWith?.('ERR_PARSE_ARGS')) {
+  if (error instanceof UsageError || error instanceof CardError || error?.code?.startsWith?.('ERR_PARSE_ARGS')) {
     console.error(error.message);
     process.exit(1);
   }

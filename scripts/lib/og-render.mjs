@@ -12,9 +12,9 @@ import { CARD_HEIGHT, CARD_WIDTH, ogCardHtml } from './og-card.mjs';
 
 export const DEFAULT_CHROME_PATH = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 
-/** Chrome isn't where we looked. Scripts print the message and exit 1. */
-export class ChromeMissingError extends Error {
-  name = 'ChromeMissingError';
+/** Chrome is missing or the card's fonts didn't load. Scripts print the message and exit 1. */
+export class CardError extends Error {
+  name = 'CardError';
 }
 
 /** The fonts the card must have loaded before the screenshot. */
@@ -54,7 +54,7 @@ export function cardPath(slug) {
  */
 export async function renderCards(posts, { root, chrome = chromePath() }) {
   if (!existsSync(chrome)) {
-    throw new ChromeMissingError(`Chrome not found at ${chrome}. Set CHROME_PATH to a Chrome or Chromium binary.`);
+    throw new CardError(`Chrome not found at ${chrome}. Set CHROME_PATH to a Chrome or Chromium binary.`);
   }
   const { chromium } = await import('playwright-core');
   const browser = await chromium.launch({ executablePath: chrome });
@@ -80,7 +80,7 @@ export async function renderCards(posts, { root, chrome = chromePath() }) {
         return families.filter((f) => !loaded.has(f));
       }, CARD_FONTS);
       if (missing.length > 0) {
-        throw new Error(`Fonts didn't load for the card: ${missing.join(', ')}. Run npm ci first.`);
+        throw new CardError(`Fonts didn't load for the card: ${missing.join(', ')}. Run npm ci first.`);
       }
       const png = await page.screenshot({ type: 'png' });
 

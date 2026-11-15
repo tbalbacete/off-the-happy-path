@@ -2,6 +2,7 @@
 import BaseLayout from './BaseLayout.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import Stamp from '../components/Stamp.astro';
+import TitleBlock from '../components/TitleBlock.astro';
 import PostMeta from '../components/PostMeta.astro';
 import Footer from '../components/Footer.astro';
 import { site, type NavId } from '../data/site';
@@ -28,13 +29,11 @@ const { no, title, dek, type, date, meta, active } = Astro.props;
   <div class="container container--post">
     <SiteHeader active={active} />
     <main class="post">
-      <div class="post-title">
-        <p class="post-kicker">
+      <TitleBlock title={title} dek={dek}>
+        <Fragment slot="kicker">
           {formatEntryNo(no)} · <Stamp type={type} large /> · {site.post.filed}{' '}<time datetime={date}>{date}</time>
-        </p>
-        <h1 class="post-title__title">{title}</h1>
-        <p class="post-title__dek">{dek}</p>
-      </div>
+        </Fragment>
+      </TitleBlock>
       <div class="post-columns">
         <PostMeta rows={meta} />
         <article class="post-body prose">
@@ -51,37 +50,6 @@ const { no, title, dek, type, date, meta, active } = Astro.props;
   .container--post {
     padding-top: 28px;
   }
-  .post-title {
-    max-width: 900px;
-    padding: 56px 0 36px;
-    border-bottom: 1px solid var(--ink);
-  }
-  .post-kicker {
-    margin: 0 0 18px;
-    font-family: var(--font-mono);
-    font-size: 13px;
-    line-height: 1.5;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--pencil);
-  }
-  .post-title__title {
-    margin: 0 0 20px;
-    font-family: var(--font-head);
-    font-stretch: 76%;
-    font-weight: 900;
-    font-size: clamp(40px, 7.5vw + 12px, 84px);
-    line-height: 0.95;
-    letter-spacing: -0.015em;
-  }
-  .post-title__dek {
-    margin: 0;
-    max-width: 720px;
-    font-style: italic;
-    font-size: 25px;
-    line-height: 1.4;
-  }
-
   /*
    * Meta column, article, and an empty third track that the sidenotes float
    * into. Under the sidenote breakpoint the third track goes; on phones the
@@ -109,12 +77,6 @@ const { no, title, dek, type, date, meta, active } = Astro.props;
     .post-columns {
       grid-template-columns: minmax(0, 1fr);
       padding-top: 28px;
-    }
-    .post-title {
-      padding: 40px 0 28px;
-    }
-    .post-title__dek {
-      font-size: 21px;
     }
   }
   @media (max-width: 480px) {

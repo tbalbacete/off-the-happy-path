@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { tagCounts, tagHref, tagLabel } from '../src/lib/tags';
+import { postsWithTag, tagCounts, tagHref, tagLabel } from '../src/lib/tags';
 
 describe('tagLabel', () => {
   it('turns hyphens into spaces and uses sentence case', () => {
@@ -59,5 +59,26 @@ describe('tagCounts', () => {
 describe('tagHref', () => {
   it('points at the tag page', () => {
     expect(tagHref('legacy-code')).toBe('/tag/legacy-code/');
+  });
+});
+
+describe('postsWithTag', () => {
+  const post = (no: number, ...tags: string[]) => ({ data: { no, tags } });
+  const posts = [post(5, 'process', 'ai'), post(4, 'meta'), post(3, 'ai'), post(1, 'process')];
+
+  it('keeps only the posts with the tag, in the order given', () => {
+    expect(postsWithTag(posts, 'ai').map((p) => p.data.no)).toEqual([5, 3]);
+    expect(postsWithTag(posts, 'process').map((p) => p.data.no)).toEqual([5, 1]);
+  });
+  it('returns an empty list for a tag nobody uses', () => {
+    expect(postsWithTag(posts, 'career')).toEqual([]);
+  });
+  it('matches whole tags, not parts of them', () => {
+    expect(postsWithTag([post(1, 'code-review')], 'code')).toEqual([]);
+  });
+  it('does not mutate the input', () => {
+    const copy = [...posts];
+    postsWithTag(posts, 'ai');
+    expect(posts).toEqual(copy);
   });
 });

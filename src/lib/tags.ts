@@ -36,3 +36,8 @@ export function tagCounts(posts: Tagged[]): TagCount[] {
 export function tagHref(slug: string): string {
   return `/tag/${slug}/`;
 }
+
+/** The posts carrying `tag`, in the order given (newest first from getPosts). */
+export function postsWithTag<T extends Tagged>(posts: readonly T[], tag: string): T[] {
+  return posts.filter((p) => p.data.tags.includes(tag));
+}

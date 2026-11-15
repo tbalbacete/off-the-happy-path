@@ -138,6 +138,19 @@ export const site = {
     },
   },
 
+  /** `1 entry`, `3 entries`. */
+  entryCount: { one: 'entry', other: 'entries' },
+
+  /** Tag pages, `/tag/<slug>/`. */
+  tag: {
+    kicker: 'Filed under',
+    /** The dek reads `3 entries, newest first.` */
+    dekAfter: ', newest first.',
+    /** The description reads `Entries filed under Process, newest first.` */
+    descriptionBefore: 'Entries filed under ',
+    descriptionAfter: ', newest first.',
+  },
+
   footer: {
     left: "© 2026 Tony Albacete · Opinions are mine, not my employer's.",
     right: 'Plain HTML. No tracking. No pop-ups. Hosted for $0.',

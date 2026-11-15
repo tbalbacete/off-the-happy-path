@@ -85,6 +85,6 @@ How each row was checked:
 
 ## Notes for the next kickoff
 - M5 is the last milestone in the plan, and the post-merge checks are done.
-- Optional feed tidy-up: `feedHtml` could drop `style` attributes (they only carry `var(--code-*)` colors readers can't resolve) and turn footnote anchors into absolute post URLs, which would clear both validator warnings.
+- Done after M5 (branch `cleanup/feedValidatorWarnings`): `feedHtml(html, postUrl)` now takes the post's absolute URL, drops `style` attributes, and makes in-page `#` links (the footnote references and back-links) absolute against the post, alongside the root-relative links it already fixed. The rebuilt feed has 0 `style=` and 0 relative references; the footnote links point at ids that exist on the post page. The W3C validator's direct-input mode on the rebuilt `dist/rss.xml`: valid, 0 errors, and only `SelfDoesntMatchLocation`, which direct input always reports (there is no URL to compare the `atom:link` with). Both production warnings are gone. Tests updated in `tests/feed.test.ts` (225 tests).
 - The checking scripts (page audit, keyboard pass, design-rules check, Lighthouse runner, print renderer) lived in the session scratchpad. If they're wanted again, they're worth moving into `scripts/` as a single `npm run verify-site`.
 - Open from M4: a tag named like a page ("notes", "archive") would duplicate that page's `<title>`.

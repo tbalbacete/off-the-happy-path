@@ -25,7 +25,7 @@ export const GET: APIRoute = async (context) => {
         link: postHref(post.id),
         pubDate: new Date(`${post.data.date}T12:00:00Z`),
         description: post.data.dek,
-        content: feedHtml(html, origin),
+        content: feedHtml(html, new URL(postHref(post.id), origin)),
       };
     }),
   });

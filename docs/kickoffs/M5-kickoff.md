@@ -31,12 +31,22 @@ No new artboards. The canvas at https://claude.ai/artifact/GK34FStGk8f8USEThnYXL
 - **Print styles** for posts, as above, in `global.css` under `@media print` (or in `PostLayout`'s styles). Check with Chrome's print emulation (`page.emulateMedia({ media: 'print' })` screenshots) and a `page.pdf()` of a post with notes and a code box.
 - **`public/robots.txt`**, allowing everything and naming `https://off-the-happy-path.vercel.app/sitemap-index.xml`.
 - **Remove the sample content.** Delete № 002 (the draft example), № 003 (the throwaway) and № 004 (the M3 sample). Keep № 001 "Hello, log". Tony confirmed both. Before deleting № 004, run the Lighthouse, keyboard and print checks against it, since it is the only post with sidenotes, a code box and `<mark>`. After it's gone, check those features again with a temporary post that is never committed. Confirm `npm run links` still passes (the `process` and `requirements` tag pages go with № 004).
-- **Real copy from Tony.** The About page keeps its current copy (`site.aside.about`); Tony approved it as is. Still needed: the Currently box values in `currently.ts`, any 404 wording changes, and any tag display names. The agent doesn't invent personal facts: ask for these at the start, build everything else meanwhile, and put Tony's words in verbatim. The first real entry is the one exception, below.
+- **The Currently box** (`currently.ts`), from Tony, paraphrased to fit:
+  - Shipping: "An iOS asset management app"
+  - Reading: "The Let Them Theory, by Mel Robbins"
+  - Mildly annoyed by: "Dependency updates moving at AI speed" (Tony's point: AI has sped up releases so much that staying current is hard). Check it at 360px; if it wraps badly, shorten it further without losing the AI point.
+- **A note on AI.** Using AI at all carries a stigma in Tony's circles, so the site says plainly how it's used:
+  - On `/about/`, a short section after the current paragraphs, an `h2` "On AI" with `id="on-ai"`, in the same `.prose` style. Starting copy (Tony approves the final wording): "Yes, AI helped build this site: the layout, the build scripts, most of the plumbing. And yes, it helps me get drafts into shape. No, it isn't the brains here. The ideas, the stories and the opinions are mine, and so are the mistakes. If something reads like a person didn't write it, email me and tell me where." The "email me" is a `--pen` `mailto:` link, as in the paragraph above it.
+  - In the footer on every page, a short link to that section, such as "Built with some help from AI →" pointing to `/about/#on-ai`. It sits with the right-hand line and wraps cleanly at 360px.
+  - Copy in `site.ts` (`site.about.ai` and `site.footer.ai`). The home aside's ABOUT THIS LOG stays as it is.
+- **Real copy from Tony.** The About page keeps its current paragraphs (`site.aside.about`); Tony approved them as is. Still needed: any 404 wording changes and any tag display names. The agent doesn't invent personal facts: ask for these at the start, build everything else meanwhile, and put Tony's words in verbatim. The first real entry is the one exception, below.
 - **Design-rules review.** A page-by-page checklist in progress.md: rows for home, a type page, a post, a tag page, archive, About, 404, the OG image and the favicon; columns for each §6 rule that applies (five colors plus hairline, three fonts, lines and boxes only with no radius, shadow or gradient, no emoji, numbered and dated, asymmetric with nothing centered but the container, stamps to spec, highlighter at most once per page, `--pen` focus styles, works at 360px, landmarks, contrast, zero JS). Each cell says how it was checked (a grep over `src` and `dist`, a computed-style check, a screenshot). Fix anything that fails, or record it under Decisions if it's a deliberate exception. The M3 sample has both `<mark>` and a highlighted code line, so say how highlighted code lines count against "once per page".
 - **The first real entry**, drafted by the agent and finished with Tony. See the next section. It is created with `npm run new` and published with `npm run publish -- 2` on this branch, so it ships with the merge. With № 002–004 removed, it is № 002.
 
 ## The first real entry: a rant about requirements
-Tony asked the agent to draft most of this post. That's a deliberate exception to "the agent doesn't write Tony's copy"; record it under Decisions. Tony reads and edits all of it, and it's published only after he says it's ready.
+Tony asked the agent to draft most of this post from his input. That's a deliberate exception to "the agent doesn't write Tony's copy"; record it under Decisions. Tony reads and edits all of it, and it's published only after he says it's ready.
+
+It also has to stay true to the site's AI note: "the ideas, the stories and the opinions are mine". So the argument comes from Tony (as given below), every story or personal detail comes from his answers, and the draft takes no position he hasn't stated or approved. The agent's part is structure, wording and editing.
 
 **The argument.** Teams rarely set aside time for requirements. Developers get thin or missing requirements, start anyway because starting feels like progress, and later everyone asks why the work went sideways or took twice as long. Skipping that time doesn't save it. The cost moves later, where it's bigger and nobody sees where it came from. The post asks for one thing: count requirements work as real work and give it time.
 
@@ -97,6 +107,7 @@ Tony asked the agent to draft most of this post. That's a deliberate exception t
 - [ ] Posts print cleanly: no nav, reply box, prev/next or sidenotes; end notes, title, meta and article present; code wraps; external links show their URLs. Verified with print-emulation screenshots and a PDF.
 - [ ] No sample posts in production: № 002, № 003 and № 004 are deleted, the built HTML, feed and sitemap contain none of them, and `npm run links` passes.
 - [ ] The Currently box carries Tony's real values, the About page keeps its approved copy, and no bracketed placeholder text is left anywhere in `src` or `dist`.
+- [ ] `/about/` has the "On AI" section with Tony's approved wording, and every page's footer links to `/about/#on-ai`. The link resolves (`npm run links`) and the footer reads well at 1280, 390 and 360px.
 - [ ] The design-rules checklist from plan §6 is filled in page by page in progress.md, with how each cell was checked, and every failure fixed or recorded as a decision.
 - [ ] Every page makes only same-origin requests, and the M4 page audit passes again on every built page.
 - [ ] The first real entry (№ 002, the requirements rant) follows the tone rules above, uses a code box, a sidenote and one `<mark>`, has Tony's explicit sign-off, is published with `npm run publish` on this branch, and is live on production after the merge.
@@ -105,8 +116,8 @@ Tony asked the agent to draft most of this post. That's a deliberate exception t
 - [ ] progress.md is complete and status is COMPLETE.
 
 ## Needs Tony
-- **Already settled:** the About page keeps its current copy; № 002, № 003 and № 004 are deleted and № 001 stays; the agent drafts the first entry.
-- **Currently box:** what he's shipping, reading, and mildly annoyed by.
+- **Already settled:** the About page keeps its current copy; № 002, № 003 and № 004 are deleted and № 001 stays; the agent drafts the first entry from Tony's input; the Currently values are above; the AI note goes on About with a footer link.
+- **AI note wording:** approve or edit the "On AI" copy and the footer line.
 - **The first real entry:** answers to the questions in its Process list, edits to the draft, and the final sign-off.
 - **Tag names:** any display names to add to `site.tagNames`. Also decide on the comma problem: keep "AI, honestly" and switch tag lists to a different separator, or drop the comma from the name. Default if no answer: leave both as they are.
 - **404 wording:** optional; the agent's placeholder stays otherwise.
@@ -121,7 +132,7 @@ If any of Tony's copy is missing when everything else is done, set status BLOCKE
 4. Print styles for posts, checked on № 004.
 5. `public/robots.txt`, and the same-origin request check.
 6. Remove № 002, № 003 and № 004. Re-check sidenotes, code boxes and `<mark>` with a temporary post that is never committed.
-7. Tony's copy: Currently, tag names, 404 changes.
+7. Tony's copy: Currently, the "On AI" section and footer link, tag names, 404 changes.
 8. The first real entry: create it with `npm run new`, draft it, revise with Tony, and `npm run publish -- 2` once he signs off.
 9. The design-rules review, page by page; fix or record each failure.
 10. Final verification: Lighthouse on home and the real entry, the keyboard pass, print, the M4 page audit, links, screenshots at 1280, 390 and 360.

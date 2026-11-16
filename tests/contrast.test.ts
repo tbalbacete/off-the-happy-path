@@ -54,6 +54,14 @@ describe('contrastRatio', () => {
 describe('the dark theme', () => {
   it('declares the same values for the system setting and the stored choice', () => {
     expect(darkBySystem).toEqual(darkByChoice);
+    const norm = (b: string) => b.replace(/\s+/g, ' ').trim();
+    expect(norm(block(":root:not([data-theme='light'])"))).toBe(norm(block(":root[data-theme='dark']")));
+  });
+  it('draws <mark> and the featured title as a solid block with dark text', () => {
+    expect(darkByChoice['mark-fill']).toBe(darkByChoice.highlighter);
+    expect(darkByChoice['mark-text']).toBe(darkByChoice['on-highlighter']);
+    expect(block(":root[data-theme='dark']")).toMatch(/--mark-band:\s*transparent;/);
+    expect(block(':root')).toMatch(/--mark-fill:\s*transparent;/);
   });
   it('overrides every color token', () => {
     for (const name of ['paper', 'ink', 'pencil', 'pen', 'highlighter', 'hairline', 'on-highlighter', 'on-highlighter-muted'])

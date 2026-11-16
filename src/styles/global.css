@@ -12,6 +12,11 @@
   /* Text on the highlighter, which stays dark in both themes. */
   --on-highlighter: var(--ink);
   --on-highlighter-muted: var(--pencil);
+  /* <mark> and the featured title: a band under the text in light. */
+  --mark-band: var(--highlighter);
+  --mark-fill: transparent;
+  --mark-text: currentColor;
+  --mark-pad: 0;
   color-scheme: light;
 
   --font-head:'Archivo Variable', 'Arial Narrow', sans-serif;
@@ -39,6 +44,11 @@
     --hairline: #3b3a35;
     --on-highlighter: #161614;
     --on-highlighter-muted: #55534d;
+    /* A solid block in dark: light text can't sit on the band. */
+    --mark-band: transparent;
+    --mark-fill: var(--highlighter);
+    --mark-text: var(--on-highlighter);
+    --mark-pad: 0 0.12em;
     color-scheme: dark;
   }
 }
@@ -52,6 +62,11 @@
     --hairline: #3b3a35;
     --on-highlighter: #161614;
     --on-highlighter-muted: #55534d;
+    /* A solid block in dark: light text can't sit on the band. */
+    --mark-band: transparent;
+    --mark-fill: var(--highlighter);
+    --mark-text: var(--on-highlighter);
+    --mark-pad: 0 0.12em;
     color-scheme: dark;
   }
 }
@@ -148,16 +163,20 @@ a:hover {
 }
 
 /*
- * The highlighter band over the lower third of the text, drawn as a thick
- * underline: the featured title on the home page and <mark> in posts. The
- * artboards use an inset shadow, which plan §6 rules out.
+ * The highlighter on the featured title and <mark>. In light, a band over
+ * the lower third of the text, drawn as a thick underline (the artboards
+ * use an inset shadow, which plan §6 rules out). In dark, the `--mark-*`
+ * tokens turn it into a solid block with dark text.
  */
 .highlight,
 mark {
-  background: none;
-  color: inherit;
+  padding: var(--mark-pad);
+  background: var(--mark-fill);
+  color: var(--mark-text);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
   text-decoration-line: underline;
-  text-decoration-color: var(--highlighter);
+  text-decoration-color: var(--mark-band);
   text-decoration-thickness: 0.32em;
   text-underline-offset: -0.24em;
   text-decoration-skip-ink: none;

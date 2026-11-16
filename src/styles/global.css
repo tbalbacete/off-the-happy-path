@@ -443,7 +443,7 @@ hr {
   }
 }
 
-/* Print: no paper tint, no skip link. The post layout has the rest. */
+/* Print: no paper tint, no skip link or theme button. The post layout has the rest. */
 @media print {
   @page {
     margin: 16mm 16mm 18mm;
@@ -452,7 +452,8 @@ hr {
   body {
     background: none;
   }
-  .skip-link {
+  .skip-link,
+  [data-theme-toggle] {
     display: none;
   }
 }

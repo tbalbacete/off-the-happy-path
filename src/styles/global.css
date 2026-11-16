@@ -134,6 +134,14 @@ a:hover {
   font-size: 10.5px;
 }
 
+/* The main nav and the theme button, side by side in both site headers. */
+.header-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 22px;
+}
+
 :focus-visible {
   outline: 2px solid var(--pen);
   outline-offset: 2px;

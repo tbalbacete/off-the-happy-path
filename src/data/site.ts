@@ -159,6 +159,11 @@ export const site = {
     },
   },
 
+  /** The theme button in the header. Pressed (`aria-pressed`) while the dark theme shows. */
+  theme: {
+    toggle: 'Dark theme',
+  },
+
   /** `1 entry`, `3 entries`. */
   entryCount: { one: 'entry', other: 'entries' },
 

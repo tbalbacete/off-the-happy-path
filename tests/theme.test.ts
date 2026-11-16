@@ -7,10 +7,10 @@ import {
   resolveTheme,
   THEME_ATTRIBUTE,
   THEME_STORAGE_KEY,
-  themeHeadScript,
   writeStoredTheme,
   type ThemeStorage,
 } from '../src/lib/theme';
+import { themeHeadScript } from '../src/lib/theme-head';
 
 const junk = [null, undefined, '', 'Dark', 'DARK', ' dark', 'system', 'auto', '1', 1, true, {}];
 

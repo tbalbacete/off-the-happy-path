@@ -25,6 +25,7 @@ interface Props {
 const { title, description, type, noindex, image } = Astro.props;
 if (!Astro.site) throw new Error('Set `site` in astro.config.mjs; canonical and Open Graph URLs need it.');
 const meta = pageMeta({ title, description, type, noindex, image, path: Astro.url.pathname, origin: Astro.site });
+import { themeHeadScript } from '../lib/theme-head';
 ---
 
 <!doctype html>
@@ -32,6 +33,8 @@ const meta = pageMeta({ title, description, type, noindex, image, path: Astro.ur
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Applies a stored theme choice before the first paint (src/lib/theme.ts). -->
+    <script is:inline set:html={themeHeadScript} />
     <title>{meta.title}</title>
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />

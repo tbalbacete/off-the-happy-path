@@ -1,5 +1,6 @@
 ---
 import MainNav from './MainNav.astro';
+import ThemeToggle from './ThemeToggle.astro';
 import { site, type NavId } from '../data/site';
 
 interface Props {
@@ -12,7 +13,10 @@ const { active } = Astro.props;
 
 <header class="site-header">
   <a href="/" class="site-header__name">{site.name}</a>
-  <MainNav active={active} />
+  <div class="header-tools">
+    <MainNav active={active} />
+    <ThemeToggle />
+  </div>
 </header>
 
 <style>

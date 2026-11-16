@@ -167,6 +167,12 @@ These come from the canvas style sheet. Kickoffs restate the ones that apply.
 - `--highlighter: #FFE14D` (`<mark>`, highlighted code lines; once per page at most)
 - Hairline divider `#C4C2B9` is the one allowed neutral tint.
 
+**Dark theme (M7):** the same five roles with dark values, so components never name a color directly. Carbon paper rather than a black screen:
+- `--paper: #161614`, `--ink: #ECEAE3`, `--pencil: #A9A69C`, `--pen: #F0675C`, hairline `#3B3A35`.
+- `--highlighter` stays `#FFE14D`, and text on it stays dark (`#161614`), as on paper.
+- Contrast on the dark paper: ink 15.0:1, pencil 7.4:1, pen 5.9:1. Text on the highlighter 13.9:1.
+- The OG cards, `public/og.png` and print stay light.
+
 **Type:**
 - Headlines: Archivo, condensed (`font-stretch` about 72–85%), weight 750–900.
 - Body: Source Serif 4, about 20px in posts and 17px in lists, line-height about 1.6.
@@ -174,14 +180,15 @@ These come from the canvas style sheet. Kickoffs restate the ones that apply.
 
 **Shapes and structure:**
 - Lines and boxes only: 2px ink rules for structure, 1px hairlines between rows, form cells built with a 2px-gap ink background.
-- No cards, shadows, rounded corners, gradients, hero images, stock photos, emoji, icon grids, or "features" sections.
+- No cards, shadows, rounded corners, gradients, hero images, stock photos, emoji, icon grids, or "features" sections. The one place icons are allowed is the share strip: small monochrome network marks in `currentColor`, each with an accessible name.
 - Everything is numbered and dated: `№ 015`, `2026-11-12`.
 - Asymmetric layout: content left, margin right. Nothing centered.
 - Stamps (ESSAY / NOTE / RANT): mono 10.5px, 1.5px border, rotated -2°. RANT uses `--pen`.
 
 **Behavior:**
 - No newsletter pop-up, cookie banner, analytics, or third-party script.
-- Zero client JS unless a milestone explicitly justifies it. The one exception so far is M6's copy-link button on post pages: small, same-origin, and the page works without it.
+- Zero client JS unless a milestone explicitly justifies it. The exceptions are M6's copy-link button on post pages and M7's theme toggle on every page: each small, same-origin and inline, and each page works without them.
+- The theme choice is the only thing the site stores in the browser: one `localStorage` entry, never sent anywhere. No cookies.
 - Works at 360px wide: header cells wrap, aside drops below the log, sidenotes become end notes.
 - Accessible: semantic landmarks (`header`, `nav`, `main`, `aside`, `footer`), real links, visible focus styles in `--pen`, text contrast ≥ 4.5:1, `lang="en"`.
 
@@ -241,3 +248,15 @@ Accessibility and performance pass (keyboard navigation, focus styles, Lighthous
 ### M6 — Sharing
 Add a SHARE box to the post page, between REPLY and MORE ENTRIES, built like the reply box: a 2px ink box with a mono label. It shows the post's permalink in mono as selectable text, then plain share links in `--pen`: Email (`mailto:` with the title as subject and the URL as body), LinkedIn (`share-offsite`), Bluesky (`intent/compose`) and X (`intent/post`). The links are ordinary `<a href>`s, so no widget scripts or third-party requests load until a reader clicks one. `shareLinks(url, title)` in `src/lib/share.ts` builds them, with Vitest tests for each network's encoding. Labels and the network list live in `site.post.share`. Add a COPY LINK button that copies the permalink to the clipboard. This is the site's one piece of client JS, justified because copying a link is the most common way to share: a small same-origin script, on post pages only, in the post's own bundle. It is progressive enhancement: the button renders `hidden` and the script reveals it, so readers without JS still get the selectable permalink. On success the label changes to COPIED for a few seconds and a polite live region announces it. If the clipboard is unavailable or fails, the script selects the permalink text instead. Then replace the single static OG image on posts with a generated 1200×630 card per post (№, type stamp, title, dek, in the logbook style with the three local fonts), rendered with headless Chrome by `npm run publish` (or `npm run og`) like `public/og.png` and committed to `public/og/`; other pages keep `public/og.png`. Build-time renderers such as Satori can't draw Archivo's condensed width, which the card depends on. The share box is hidden in print.
 **Done when:** every published post has the share box with correct links for all four networks (tested); the copy button copies the exact canonical URL in Chrome, Safari and Firefox, announces it to screen readers, and is absent with JS disabled while the permalink stays selectable; the button is keyboard reachable with the `--pen` focus outline; home, list and other non-post pages still ship zero JS, and every page still makes only same-origin requests; each post's `og:image` points at its own card, which follows the §6 design rules and shows in a link-preview check; the share box doesn't appear in print; Lighthouse and the M5 audits still pass on a post page.
+_As built:_ after review, the share box became a strip just under the post's title instead of a box at the end: a SHARE label, the COPY LINK button and monochrome icon links (Email, LinkedIn, Bluesky, X) with accessible names. The permalink is hidden and only shown and selected when the clipboard fails. The email subject is `Title - Off the Happy Path`.
+
+### M7 — Dark theme
+Add a dark theme using the palette in §6. Readers get it from their system setting (`prefers-color-scheme: dark`) by default, and a toggle in the site header lets them override it either way. Move every color in components onto the five tokens (plus hairline) so the theme is one block of overrides in `global.css`: `:root[data-theme="dark"]`, and the same values under `@media (prefers-color-scheme: dark)` for `:root:not([data-theme="light"])`, so readers without JS still follow their system. Set `color-scheme` so form controls and scrollbars match. Give the custom Shiki theme a dark variant (Astro's dual themes via CSS variables), keeping highlighted lines in the highlighter color. Check the stamps, the masthead's form cells, sidenotes, `<mark>`, code boxes, the share strip, the favicon and focus outlines in both themes. The toggle is a mono button in the header, in the same style as the COPY LINK button, with `aria-pressed` and a label from `site.ts`. A tiny inline script in `<head>` applies the stored choice before first paint so there's no flash of the wrong theme; a second inline script wires the button, which renders `hidden` and is revealed by the script, like COPY LINK. The choice is stored in one `localStorage` entry, read and written inside try/catch so a blocked storage just falls back to the system setting. Theme resolution (stored value, system preference, default) goes in a pure function with Vitest tests. Print always uses the light theme.
+**Done when:** with no stored choice, every page matches the reader's system setting in Chrome, Safari and Firefox, including with JS disabled (where the toggle doesn't appear); the toggle switches the theme, is announced correctly by a screen reader, is keyboard reachable with the focus outline, and the choice survives a reload and navigation with no flash of the wrong theme; storage being blocked doesn't break the page; every page passes the contrast check (≥ 4.5:1 for text) in both themes, with no hard-coded colors left outside the tokens; code blocks, stamps, sidenotes, `<mark>` and the share strip follow §6 in both themes at 1280px and 360px; print is light; each page still makes only same-origin requests; Lighthouse still scores 100 for accessibility and best practices and 95+ for performance on home and post pages in both themes; theme-resolution tests pass.
+
+## Later
+
+Ideas to turn into milestones when they're wanted. Not scheduled.
+
+- **Pre-publish checks.** `npm run publish` refuses or warns before flipping the draft: broken external links, a missing or placeholder dek, a title too long for the card's size steps, more than one `<mark>`, and images without alt text. Each check is a pure function in `scripts/lib` with tests.
+- **Scheduled posts.** A published post with a future `date:` is left out of the build until that date. A daily GitHub Actions cron triggers a Vercel deploy hook, so it goes live on its own, still at $0. `npm run publish -- <n> --on 2026-12-01` sets the date.

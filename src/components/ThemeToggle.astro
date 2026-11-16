@@ -1,0 +1,64 @@
+---
+/**
+ * The THEME button in the site header: pressed when the dark theme shows.
+ * It renders hidden; its script reveals it, so readers without JS (who
+ * still get their system's theme from CSS) never see a button that does
+ * nothing.
+ */
+import { site } from '../data/site';
+---
+
+<button type="button" class="theme-toggle" hidden aria-pressed="false" data-theme-toggle>{site.theme.toggle}</button>
+
+<script>
+  // Flips the theme for this page and stores the choice. The <head> script
+  // (themeHeadScript in src/lib/theme.ts) applies it on later pages.
+  import { THEME_ATTRIBUTE, otherTheme, parseStoredTheme, resolveTheme, writeStoredTheme } from '../lib/theme';
+
+  const root = document.documentElement;
+  const system = window.matchMedia('(prefers-color-scheme: dark)');
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]');
+  const current = () => resolveTheme(parseStoredTheme(root.getAttribute(THEME_ATTRIBUTE)), system.matches);
+  const sync = () => {
+    for (const b of buttons) b.setAttribute('aria-pressed', String(current() === 'dark'));
+  };
+
+  for (const button of buttons) {
+    button.addEventListener('click', () => {
+      const next = otherTheme(current());
+      root.setAttribute(THEME_ATTRIBUTE, next);
+      writeStoredTheme(() => localStorage, next);
+      sync();
+    });
+    button.hidden = false;
+  }
+  // With no stored choice the page follows the system, and so does the button.
+  system.addEventListener('change', sync);
+  sync();
+</script>
+
+<style>
+  /* The COPY LINK button's style: mono capitals in a 2px ink box. */
+  .theme-toggle {
+    flex: none;
+    padding: 5px 10px;
+    border: 2px solid var(--ink);
+    border-radius: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.4;
+    letter-spacing: 0.1em;
+    text-align: left;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .theme-toggle[hidden] {
+    display: none;
+  }
+  .theme-toggle:hover {
+    background: var(--ink);
+    color: var(--paper);
+  }
+</style>

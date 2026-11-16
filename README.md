@@ -39,7 +39,7 @@ Drafts show up in `npm run dev` and are left out of the production build.
 
 ## Share cards and the share strip
 
-Every post page has a SHARE strip just under the title: a COPY LINK button and icon links for email, LinkedIn, Bluesky and X. The button is the site's only JavaScript and appears only on post pages; readers without JavaScript don't see it. If the clipboard isn't available, the button shows the link and selects it instead. The strip's text, including each icon's accessible name, lives in `site.post.share` in `src/data/site.ts`, and the icons in `src/lib/share-icons.ts`.
+Every post page has a SHARE strip just under the title: a COPY LINK button and icon links for email, LinkedIn, Bluesky and X. The button appears only on post pages, and readers without JavaScript don't see it. If the clipboard isn't available, the button shows the link and selects it instead. The strip's text, including each icon's accessible name, lives in `site.post.share` in `src/data/site.ts`, and the icons in `src/lib/share-icons.ts`.
 
 When a post is shared, the preview uses its own card (1200×630) from `public/og/<slug>.png`. `npm run publish` makes it. To remake one by hand:
 
@@ -49,6 +49,12 @@ npm run og -- --all     # every published post
 ```
 
 The card's layout is `ogCardHtml` in `scripts/lib/og-card.mjs`. A production build fails if a published post has no card, so a post published by hand can't go out with the wrong preview.
+
+## Light and dark themes
+
+Pages follow the reader's system setting, light or dark, through CSS alone. The DARK THEME button in the header overrides it, and the choice is kept in one `localStorage` entry (`theme`) in the reader's browser, never sent anywhere. A small script in `<head>` applies a stored choice before the page paints. Readers without JavaScript get their system's theme and no button. Print is always light.
+
+Both palettes are the token blocks at the top of `src/styles/global.css` (the dark values are written twice, once for the system setting and once for the button, and a test checks they match). Components use the tokens only; `npm test` fails on a color written anywhere else in `src/`. The theme logic is in `src/lib/theme.ts`.
 
 ## Editing a published post
 

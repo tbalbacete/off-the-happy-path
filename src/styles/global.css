@@ -9,22 +9,15 @@
   --highlighter: #ffe14d;
   /* The one allowed neutral tint, for hairline dividers. */
   --hairline: #c4c2b9;
-
-  /*
-   * Code colors (the Shiki theme in src/lib/code.ts). Ink for nearly
-   * everything, pencil for comments and punctuation, never pen.
-   */
-  --code-foreground: var(--ink);
-  --code-background: var(--paper);
-  --code-token-constant: var(--ink);
-  --code-token-string: var(--ink);
-  --code-token-comment: var(--pencil);
-  --code-token-keyword: var(--ink);
-  --code-token-parameter: var(--ink);
-  --code-token-function: var(--ink);
-  --code-token-string-expression: var(--ink);
-  --code-token-punctuation: var(--pencil);
-  --code-token-link: var(--ink);
+  /* Text on the highlighter, which stays dark in both themes. */
+  --on-highlighter: var(--ink);
+  --on-highlighter-muted: var(--pencil);
+  /* <mark> and the featured title: a band under the text in light. */
+  --mark-band: var(--highlighter);
+  --mark-fill: transparent;
+  --mark-text: currentColor;
+  --mark-pad: 0;
+  color-scheme: light;
 
   --font-head:'Archivo Variable', 'Arial Narrow', sans-serif;
   --font-body: 'Source Serif 4 Variable', Georgia, serif;
@@ -33,6 +26,49 @@
   --head-stretch: 78%;
   --head-weight: 800;
   --mono-tracking: 0.08em;
+}
+
+/*
+ * Dark theme (plan §6): the same roles with carbon-paper values. It follows
+ * the system unless the reader chose light, or applies when they chose dark
+ * (`data-theme` on <html>, set by src/lib/theme.ts). The two blocks hold the
+ * same values (tests/contrast.test.ts checks). Screen only, so print is light.
+ */
+@media screen and (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --paper: #161614;
+    --ink: #eceae3;
+    --pencil: #a9a69c;
+    --pen: #f0675c;
+    --highlighter: #ffe14d;
+    --hairline: #3b3a35;
+    --on-highlighter: #161614;
+    --on-highlighter-muted: #55534d;
+    /* A solid block in dark: light text can't sit on the band. */
+    --mark-band: transparent;
+    --mark-fill: var(--highlighter);
+    --mark-text: var(--on-highlighter);
+    --mark-pad: 0 0.12em;
+    color-scheme: dark;
+  }
+}
+@media screen {
+  :root[data-theme='dark'] {
+    --paper: #161614;
+    --ink: #eceae3;
+    --pencil: #a9a69c;
+    --pen: #f0675c;
+    --highlighter: #ffe14d;
+    --hairline: #3b3a35;
+    --on-highlighter: #161614;
+    --on-highlighter-muted: #55534d;
+    /* A solid block in dark: light text can't sit on the band. */
+    --mark-band: transparent;
+    --mark-fill: var(--highlighter);
+    --mark-text: var(--on-highlighter);
+    --mark-pad: 0 0.12em;
+    color-scheme: dark;
+  }
 }
 
 *,
@@ -113,22 +149,34 @@ a:hover {
   font-size: 10.5px;
 }
 
+/* The main nav and the theme button, side by side in both site headers. */
+.header-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 22px;
+}
+
 :focus-visible {
   outline: 2px solid var(--pen);
   outline-offset: 2px;
 }
 
 /*
- * The highlighter band over the lower third of the text, drawn as a thick
- * underline: the featured title on the home page and <mark> in posts. The
- * artboards use an inset shadow, which plan §6 rules out.
+ * The highlighter on the featured title and <mark>. In light, a band over
+ * the lower third of the text, drawn as a thick underline (the artboards
+ * use an inset shadow, which plan §6 rules out). In dark, the `--mark-*`
+ * tokens turn it into a solid block with dark text.
  */
 .highlight,
 mark {
-  background: none;
-  color: inherit;
+  padding: var(--mark-pad);
+  background: var(--mark-fill);
+  color: var(--mark-text);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
   text-decoration-line: underline;
-  text-decoration-color: var(--highlighter);
+  text-decoration-color: var(--mark-band);
   text-decoration-thickness: 0.32em;
   text-underline-offset: -0.24em;
   text-decoration-skip-ink: none;
@@ -284,7 +332,29 @@ hr {
   min-width: 100%;
   padding: 0 16px;
 }
+/*
+ * Code colors (the Shiki theme in src/lib/code.ts). Ink for nearly
+ * everything, pencil for comments and punctuation, never pen. Declared on
+ * the box and again on highlighted lines, where ink and pencil switch to
+ * the dark text the highlighter needs in either theme.
+ */
+.code-box,
 .code-box .line.highlighted {
+  --code-foreground: var(--ink);
+  --code-background: var(--paper);
+  --code-token-constant: var(--ink);
+  --code-token-string: var(--ink);
+  --code-token-comment: var(--pencil);
+  --code-token-keyword: var(--ink);
+  --code-token-parameter: var(--ink);
+  --code-token-function: var(--ink);
+  --code-token-string-expression: var(--ink);
+  --code-token-punctuation: var(--pencil);
+  --code-token-link: var(--ink);
+}
+.code-box .line.highlighted {
+  --ink: var(--on-highlighter);
+  --pencil: var(--on-highlighter-muted);
   background: var(--highlighter);
 }
 
@@ -392,7 +462,7 @@ hr {
   }
 }
 
-/* Print: no paper tint, no skip link. The post layout has the rest. */
+/* Print: no paper tint, no skip link or theme button. The post layout has the rest. */
 @media print {
   @page {
     margin: 16mm 16mm 18mm;
@@ -401,7 +471,8 @@ hr {
   body {
     background: none;
   }
-  .skip-link {
+  .skip-link,
+  [data-theme-toggle] {
     display: none;
   }
 }

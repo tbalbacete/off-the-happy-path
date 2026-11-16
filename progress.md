@@ -3,7 +3,7 @@
 **Current milestone:** M7 - Dark theme
 **Status:** COMPLETE   <!-- IN PROGRESS | BLOCKED | COMPLETE -->
 **Kickoff:** docs/kickoffs/M7-kickoff.md
-**Branch:** `feature/darkTheme`
+**Branch:** `feature/darkTheme` (PR #18)
 
 M0's to M6's records are in git history (`progress.md` as of commits 084f458, 9406219, ef48ec2, b8c049f, fe98946, ffa3d0d and 65a223b).
 
@@ -17,7 +17,7 @@ M0's to M6's records are in git history (`progress.md` as of commits 084f458, 94
 - [x] Print is light regardless of theme - verified by: print emulation on № 002 with the system dark, and again with a stored dark choice. Tokens, body text and `color-scheme` are light, the share strip and theme button are hidden, and a print-emulated screenshot is light. The Letter PDF is 4 pages, as in M6.
 - [x] Every page makes only same-origin requests on load in both themes, and the scripts are only the ones listed under Constraints - verified by: the page audit (every page has the head script and the toggle script, posts also COPY LINK, no `src`, no `.js` in `dist`) and the request listener over the 12 pages plus `/rss.xml`, light and dark at 1280, 390 and 360: all same-origin.
 - [x] Lighthouse still scores 100 for accessibility and best practices and 95+ for performance (median of three) on home and № 002, mobile and desktop, in both themes - verified by: Lighthouse 13.6.0 against `astro preview`, three runs each of 8 combinations, every run 100/100/100. Each run's final screenshot was sampled to confirm its theme (`22,22,20` dark, `242,243,238` light). Home: LCP 0.75 s mobile, 0.20 s desktop. № 002: LCP 0.90 s mobile, 0.24 s desktop (M6: 0.9 / 0.2). TBT 0 ms. CLS at most 0.018 (№ 002 desktop; M6 0.017).
-- [x] Tests pass for the theme-resolution logic, the script/function parity check, the matching token blocks, and the extended contrast test. CI is green on the PR - verified by: 349 Vitest tests (from 262), in `tests/theme.test.ts` and `tests/contrast.test.ts`. `npm test`, `npm run check`, `npm run build` and `npm run links` exited 0 before every commit. **CI:** not run yet; it runs when the branch is pushed and the PR opened, which waits on Tony.
+- [x] Tests pass for the theme-resolution logic, the script/function parity check, the matching token blocks, and the extended contrast test. CI is green on the PR - verified by: 349 Vitest tests (from 262), in `tests/theme.test.ts` and `tests/contrast.test.ts`. `npm test`, `npm run check`, `npm run build` and `npm run links` exited 0 before every commit. CI `verify` (check, test, build, links) passed on PR #18, and the Vercel preview deployed.
 - [x] progress.md is complete and status is COMPLETE - verified by: this file.
 
 ## Completed
@@ -61,6 +61,5 @@ M0's to M6's records are in git history (`progress.md` as of commits 084f458, 94
 - Open from M4: a tag named like a page ("notes", "archive") would duplicate that page's `<title>`.
 
 ## Notes for the next kickoff
-- CI on the dark-theme PR hasn't run yet; record it when Tony asks for the push and PR.
 - In dark, body-size `<mark>` text (Tony's option A) has its lower third light on yellow. It reads, but softer than the rest of the line. If it bothers Tony in use, a dark-only full-background mark is a few lines of CSS.
 - The checking scripts were recreated again in the scratchpad (toggle run, design-rules pass in both themes, page audit, print, Lighthouse with a forced scheme). The case for `npm run verify-site` grows with each milestone.

@@ -9,6 +9,7 @@ import { site, type NavId } from '../data/site';
 import { formatEntryNo } from '../lib/entries';
 import type { PostType } from '../lib/home';
 import type { MetaRow } from '../lib/post';
+import type { OgImage } from '../lib/meta';
 
 interface Props {
   no: number;
@@ -20,12 +21,14 @@ interface Props {
   meta: MetaRow[];
   /** The main nav item to mark active. */
   active: NavId;
+  /** The post's Open Graph card. */
+  image: OgImage;
 }
 
-const { no, title, dek, type, date, meta, active } = Astro.props;
+const { no, title, dek, type, date, meta, active, image } = Astro.props;
 ---
 
-<BaseLayout title={title} description={dek} type="article">
+<BaseLayout title={title} description={dek} type="article" image={image}>
   <div class="container container--post">
     <SiteHeader active={active} />
     <main id="main" class="post">
@@ -34,6 +37,7 @@ const { no, title, dek, type, date, meta, active } = Astro.props;
           {formatEntryNo(no)} · <Stamp type={type} large /> · {site.post.filed}{' '}<time datetime={date}>{date}</time>
         </Fragment>
       </TitleBlock>
+      <slot name="share" />
       <div class="post-columns">
         <PostMeta rows={meta} />
         <article class="post-body prose">
@@ -86,9 +90,9 @@ const { no, title, dek, type, date, meta, active } = Astro.props;
   }
   /*
    * Print: the post on the page's own white. The title, the meta rows as one
-   * compact block, the article and the end notes; no nav, reply box,
-   * previous/next or sidenotes. Long code lines wrap, external links print
-   * their URLs, and code boxes and headings don't split across pages.
+   * compact block, the article and the end notes; no nav, reply box, share
+   * box, previous/next or sidenotes. Long code lines wrap, external links
+   * print their URLs, and code boxes and headings don't split across pages.
    */
   @media print {
     .container--post {
@@ -97,6 +101,7 @@ const { no, title, dek, type, date, meta, active } = Astro.props;
     }
     .container--post :global(.main-nav),
     .post :global(.reply),
+    .post :global(.share),
     .post :global(.prev-next),
     .post-body :global(.sidenote) {
       display: none;

@@ -2,15 +2,18 @@
 /**
  * npm run publish -- <slug-or-number> [--keep-date]
  *
- * Sets draft: false and date: today (unless --keep-date), then runs
- * `npm run check` and `npm run build`. If either fails, the post is put back
- * exactly as it was. Prints the git commands; never runs git.
+ * Renders the post's Open Graph card with the system Chrome, sets draft:
+ * false and date: today (unless --keep-date), then runs `npm run check` and
+ * `npm run build`. If the card fails, nothing is changed; if check or build
+ * fails, the post and card are put back exactly as they were. Prints the git
+ * commands; never runs git.
  */
 import { spawn } from 'node:child_process';
 import { relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
 import { today } from './lib/dates.mjs';
+import { CardError, cardPath, renderCards } from './lib/og-render.mjs';
 import { UsageError, publishPost } from './lib/workflow.mjs';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
@@ -20,9 +23,12 @@ const HELP = `Publish a draft post.
 
   npm run publish -- <slug-or-number> [--keep-date]
 
-Sets draft: false and the date to today (--keep-date keeps the existing
-date), then runs npm run check and npm run build. If either fails, the post
-is restored and the exit code is non-zero.`;
+Renders the post's Open Graph card (public/og/<slug>.png) with the system
+Chrome, sets draft: false and the date to today (--keep-date keeps the
+existing date), then runs npm run check and npm run build. If the card
+can't be made, nothing changes. If check or build fails, the post and card
+are restored and the exit code is non-zero. Set CHROME_PATH if Chrome isn't
+at the macOS default.`;
 
 /**
  * Run an npm script with its output shown. Resolves true on exit code 0.
@@ -77,6 +83,11 @@ async function main() {
     query: positionals[0],
     date: today(),
     keepDate: values['keep-date'] ?? false,
+    card: async (cardPost) => {
+      console.log(`\n> card ${cardPath(cardPost.slug)}`);
+      const [rendered] = await renderCards([cardPost], { root: ROOT });
+      return rendered.undo;
+    },
     verify: () =>
       ignoreInterruptsWhile(async () => {
         for (const step of ['check', 'build']) {
@@ -95,7 +106,7 @@ async function main() {
 
   if (!result.ok) {
     console.error(
-      `\n${interrupted ? 'Interrupted' : `npm run ${failedStep} failed`}. ${path} was restored to how it was.`,
+      `\n${interrupted ? 'Interrupted' : `npm run ${failedStep} failed`}. ${path} and its card were restored to how they were.`,
     );
     process.exitCode = 1;
     return;
@@ -103,15 +114,15 @@ async function main() {
 
   console.log(`
 Published ${label} (${post.slug}), dated ${result.date}.${result.wasDraft ? '' : ' (It was already published.)'}
-Check and build passed. When you're ready:
+Card, check and build passed. When you're ready:
 
-  git add ${path}
+  git add ${path} ${cardPath(post.slug)}
   git commit -m "Entry ${String(post.no ?? '').padStart(3, '0')}"
   git push`);
 }
 
 main().catch((error) => {
-  if (error instanceof UsageError || error?.code?.startsWith?.('ERR_PARSE_ARGS')) {
+  if (error instanceof UsageError || error instanceof CardError || error?.code?.startsWith?.('ERR_PARSE_ARGS')) {
     console.error(error.message);
     process.exit(1);
   }

@@ -1,0 +1,162 @@
+---
+/**
+ * The share strip under a post's title: a mono SHARE label, the COPY LINK
+ * button, and icon links for email, LinkedIn, Bluesky and X.
+ */
+import { site } from '../data/site';
+import { shareLinks } from '../lib/share';
+import { shareIcons } from '../lib/share-icons';
+
+interface Props {
+  /** The post's canonical URL, from `canonicalUrl` (the same as `<link rel="canonical">`). */
+  url: string;
+  /** The post's title, as typed (curly quotes kept). */
+  title: string;
+}
+
+const { url, title } = Astro.props;
+const s = site.post.share;
+const links = shareLinks(url, title);
+---
+
+<section aria-label={s.label} class="share" data-share>
+  <span class="label" aria-hidden="true">{s.label}</span>
+  <button
+    type="button"
+    class="share__copy"
+    hidden
+    data-url={url}
+    data-copied={s.copied}
+    data-copied-status={s.copiedStatus}
+    data-fallback-status={s.fallbackStatus}>{s.copy}</button
+  >
+  <ul class="share__links">
+    {
+      links.map((l) => (
+        <li>
+          <a href={l.href} aria-label={l.label} title={l.label}>
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" set:html={shareIcons[l.id]} />
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+  <!-- Shown and selected only when the clipboard API is missing or refuses. -->
+  <p class="share__url" hidden data-share-url>{url}</p>
+  <p class="sr-only" role="status" data-share-status></p>
+</section>
+
+<script>
+  // The copy button: the site's only client JS. Without it the button stays
+  // hidden, and the address bar has the same URL.
+  const RESET_MS = 2000;
+
+  for (const box of document.querySelectorAll<HTMLElement>('[data-share]')) {
+    const button = box.querySelector<HTMLButtonElement>('.share__copy');
+    const permalink = box.querySelector<HTMLElement>('[data-share-url]');
+    const status = box.querySelector<HTMLElement>('[data-share-status]');
+    if (!button || !permalink || !status) continue;
+
+    const { url = '', copied = '', copiedStatus = '', fallbackStatus = '' } = button.dataset;
+    const label = button.textContent ?? '';
+    let timer: ReturnType<typeof setTimeout> | undefined;
+
+    const show = (text: string, message: string) => {
+      clearTimeout(timer);
+      button.textContent = text;
+      status.textContent = message;
+      timer = setTimeout(() => {
+        button.textContent = label;
+        status.textContent = '';
+      }, RESET_MS);
+    };
+
+    // No clipboard API (or it refused): show the URL, select it, say how to copy it.
+    const fallback = () => {
+      permalink.hidden = false;
+      const range = document.createRange();
+      range.selectNodeContents(permalink);
+      const selection = window.getSelection();
+      selection?.removeAllRanges();
+      selection?.addRange(range);
+      show(label, fallbackStatus);
+    };
+
+    button.addEventListener('click', () => {
+      if (!navigator.clipboard) return fallback();
+      navigator.clipboard.writeText(url).then(() => show(copied, copiedStatus), fallback);
+    });
+    button.hidden = false;
+  }
+</script>
+
+<style>
+  .share {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 12px;
+    max-width: 900px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .share .label {
+    letter-spacing: 0.12em;
+  }
+  /* Sized to the longer label, so the strip doesn't move when it reads COPIED. */
+  .share__copy {
+    flex: none;
+    min-width: calc(9ch + 9 * 0.1em + 24px);
+    padding: 5px 10px;
+    border: 2px solid var(--ink);
+    border-radius: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.4;
+    letter-spacing: 0.1em;
+    text-align: left;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .share__copy[hidden] {
+    display: none;
+  }
+  .share__copy:hover {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .share__links {
+    display: flex;
+    gap: 2px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  /* 36px targets around 20px marks, so the strip fits one line at 360px. */
+  .share__links a {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    color: var(--ink);
+  }
+  .share__links a:hover {
+    color: var(--pen);
+  }
+  .share__links svg {
+    display: block;
+  }
+  .share__url {
+    flex: 1 1 100%;
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+  .share__url[hidden] {
+    display: none;
+  }
+</style>

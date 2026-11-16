@@ -7,7 +7,7 @@ import '@fontsource/ibm-plex-mono/500.css';
 import '@fontsource/ibm-plex-mono/600.css';
 import '../styles/global.css';
 import { site } from '../data/site';
-import { pageMeta } from '../lib/meta';
+import { pageMeta, type OgImage } from '../lib/meta';
 
 interface Props {
   /** Page title; omitted on the home page. */
@@ -18,11 +18,13 @@ interface Props {
   type?: 'website' | 'article';
   /** Keep the page out of search results (the 404). */
   noindex?: boolean;
+  /** The Open Graph image; defaults to the shared one. */
+  image?: OgImage;
 }
 
-const { title, description, type, noindex } = Astro.props;
+const { title, description, type, noindex, image } = Astro.props;
 if (!Astro.site) throw new Error('Set `site` in astro.config.mjs; canonical and Open Graph URLs need it.');
-const meta = pageMeta({ title, description, type, noindex, path: Astro.url.pathname, origin: Astro.site });
+const meta = pageMeta({ title, description, type, noindex, image, path: Astro.url.pathname, origin: Astro.site });
 ---
 
 <!doctype html>

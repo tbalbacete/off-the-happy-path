@@ -1,9 +1,10 @@
 /**
  * New and publish end to end, against a temp folder seeded with the fixture
  * posts in tests/fixtures/posts (one published, one draft) and the real template. No real src/content/posts, no real build: `verify`
- * stands in for check + build and applies the site's own rules instead.
+ * stands in for check + build and applies the site's own rules instead, and
+ * `card` stands in for Chrome by writing a text file where the PNG would go.
  */
-import { copyFile, mkdtemp, readdir, readFile, rm } from 'node:fs/promises';
+import { copyFile, mkdir, mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
@@ -11,6 +12,7 @@ import { isDateString, rawDateProblems } from '../src/lib/dates';
 import { assertUniqueEntries, slugFromId } from '../src/lib/entries';
 import { readFrontmatter } from '../scripts/lib/frontmatter.mjs';
 import { POST_TYPES } from '../scripts/lib/template.mjs';
+import type { CardPost } from '../scripts/lib/og-card.mjs';
 import { UsageError, createPost, listPosts, publishPost } from '../scripts/lib/workflow.mjs';
 
 const ROOT = new URL('../', import.meta.url);
@@ -61,6 +63,15 @@ async function siteRulesPass(): Promise<boolean> {
 
 const read = (file: string) => readFile(join(dir, file), 'utf8');
 
+/** The stub card step: writes `<dir>/og/<slug>.png` as JSON and undoes by deleting it. */
+async function stubCard(post: CardPost) {
+  await mkdir(join(dir, 'og'), { recursive: true });
+  const path = join(dir, 'og', `${post.slug}.png`);
+  await writeFile(path, JSON.stringify(post));
+  return () => rm(path, { force: true });
+}
+const cardFor = (slug: string) => readFile(join(dir, 'og', `${slug}.png`), 'utf8').then(JSON.parse, () => null);
+
 describe('new, then publish', () => {
   let file = '';
 
@@ -99,16 +110,41 @@ describe('new, then publish', () => {
     expect(await readdir(dir)).toEqual(before);
   });
 
-  it('leaves the post unchanged when check or build fails', async () => {
+  it('changes nothing when the card step fails, as with Chrome missing', async () => {
     const before = await read(file);
+    const files = await readdir(dir);
+    await expect(
+      publishPost({
+        postsDir: dir,
+        query: '3',
+        date: '2026-11-20',
+        card: async () => {
+          throw new Error('Chrome not found at /nope. Set CHROME_PATH to a Chrome or Chromium binary.');
+        },
+        verify: async () => true,
+      }),
+    ).rejects.toThrow(/CHROME_PATH/);
+    expect(await read(file)).toBe(before);
+    expect(await readdir(dir)).toEqual(files);
+  });
+
+  it('leaves the post unchanged and removes the card when check or build fails', async () => {
+    const before = await read(file);
+    let cardDuringVerify: CardPost | null = null;
     const result = await publishPost({
       postsDir: dir,
       query: 'estimates-are-apologies-in-advance',
       date: '2026-11-20',
-      verify: async () => false,
+      card: stubCard,
+      verify: async () => {
+        cardDuringVerify = await cardFor('estimates-are-apologies-in-advance');
+        return false;
+      },
     });
     expect(result.ok).toBe(false);
+    expect(cardDuringVerify).not.toBeNull();
     expect(await read(file)).toBe(before);
+    expect(await cardFor('estimates-are-apologies-in-advance')).toBeNull();
   });
 
   it('publishes by number, dates it today, and passes the site rules', async () => {
@@ -118,10 +154,20 @@ describe('new, then publish', () => {
       postsDir: dir,
       query: '003',
       date: '2026-11-20',
+      card: stubCard,
       verify: async () => (rulesPassed = await siteRulesPass()),
     });
     expect(rulesPassed).toBe(true);
     expect(result).toMatchObject({ ok: true, date: '2026-11-20', wasDraft: true });
+    // The card was made from the published post, with today's date.
+    expect(await cardFor('estimates-are-apologies-in-advance')).toEqual({
+      no: 3,
+      title: 'Estimates are apologies in advance',
+      dek: 'We promise a date, then apologise for it.',
+      type: 'rant',
+      date: '2026-11-20',
+      slug: 'estimates-are-apologies-in-advance',
+    });
 
     const after = await read(file);
     expect(readFrontmatter(after)).toMatchObject({ draft: false, date: '2026-11-20' });
@@ -137,6 +183,7 @@ describe('new, then publish', () => {
       query: '3',
       date: '2026-12-01',
       keepDate: true,
+      card: stubCard,
       verify: async () => true,
     });
     expect(result).toMatchObject({ ok: true, date: '2026-11-20', wasDraft: false });

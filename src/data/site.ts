@@ -138,6 +138,25 @@ export const site = {
       /** Previous, on the oldest entry. */
       oldestEnd: 'Nothing before this. It starts here.',
     },
+    share: {
+      label: 'Share',
+      /** The button's label, and what it reads for about 2 seconds after a copy. */
+      copy: 'Copy link',
+      copied: 'Copied',
+      /** Screen-reader messages in the box's live region. */
+      copiedStatus: 'Link copied',
+      fallbackStatus: 'Press Ctrl+C or Cmd+C to copy',
+      /**
+       * The share links, in order. They show as icons; `label` is each link's
+       * accessible name and hover title.
+       */
+      networks: [
+        { id: 'email', label: 'Share by email' },
+        { id: 'linkedin', label: 'Share on LinkedIn' },
+        { id: 'bluesky', label: 'Share on Bluesky' },
+        { id: 'x', label: 'Share on X' },
+      ],
+    },
   },
 
   /** `1 entry`, `3 entries`. */

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { pageMeta, withTrailingSlash, type MetaTag } from '../src/lib/meta';
+import { canonicalUrl, pageMeta, withTrailingSlash, type MetaTag } from '../src/lib/meta';
 import { site } from '../src/data/site';
 
 const origin = 'https://off-the-happy-path.vercel.app';
@@ -10,6 +10,20 @@ describe('withTrailingSlash', () => {
     expect(withTrailingSlash('/archive')).toBe('/archive/');
     expect(withTrailingSlash('/archive/')).toBe('/archive/');
     expect(withTrailingSlash('/')).toBe('/');
+  });
+});
+
+describe('canonicalUrl', () => {
+  it('joins the origin and path with a trailing slash', () => {
+    expect(canonicalUrl('/log/hello-log', origin)).toBe(`${origin}/log/hello-log/`);
+    expect(canonicalUrl('/log/hello-log/', new URL(origin))).toBe(`${origin}/log/hello-log/`);
+    expect(canonicalUrl('/', origin)).toBe(`${origin}/`);
+  });
+
+  it('is what pageMeta uses for the canonical and og:url', () => {
+    const meta = pageMeta({ path: '/log/hello-log', origin, type: 'article' });
+    expect(meta.canonical).toBe(canonicalUrl('/log/hello-log', origin));
+    expect(get(meta.tags, 'og:url')).toBe(canonicalUrl('/log/hello-log', origin));
   });
 });
 
@@ -53,6 +67,19 @@ describe('pageMeta', () => {
     expect(get(tags, 'og:image:alt')).toBe(site.og.alt);
     expect(get(tags, 'og:site_name')).toBe(site.name);
     expect(get(tags, 'twitter:card')).toBe('summary_large_image');
+  });
+
+  it('takes a post image and its alt, keeping the size', () => {
+    const { tags } = pageMeta({
+      path: '/log/the-time-we-didnt-save/',
+      type: 'article',
+      origin,
+      image: { path: '/og/the-time-we-didnt-save.png', alt: '№ 002: The time we didn’t save' },
+    });
+    expect(get(tags, 'og:image')).toBe(`${origin}/og/the-time-we-didnt-save.png`);
+    expect(get(tags, 'og:image:alt')).toBe('№ 002: The time we didn’t save');
+    expect(get(tags, 'og:image:width')).toBe('1200');
+    expect(get(tags, 'og:image:height')).toBe('630');
   });
 
   it('uses property for Open Graph tags and name for the rest', () => {

@@ -8,6 +8,7 @@ import { readdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { findPost, nextEntryNumber, slugFromFile } from './entries.mjs';
 import { readFrontmatter, setDate, setDraft } from './frontmatter.mjs';
+import { cardPostFrom } from './og-card.mjs';
 import { postFileName, slugify } from './slug.mjs';
 import { DEK_PLACEHOLDER, fillTemplate, templateValues } from './template.mjs';
 
@@ -130,6 +131,10 @@ export async function createPost({ postsDir, template, title, type, tags, dek, d
  * @property {string} query  Slug or entry number.
  * @property {string} date  Today, `YYYY-MM-DD`.
  * @property {boolean} [keepDate]  Keep the post's existing date.
+ * @property {(post: import('./og-card.mjs').CardPost) => Promise<() => Promise<void>>} card
+ *   Renders the post's Open Graph card (with the new date) and resolves to an
+ *   undo that puts back whatever card was there before. If it throws, nothing
+ *   has been written.
  * @property {() => Promise<boolean>} verify  Runs check and build; true if both pass.
  */
 
@@ -142,13 +147,14 @@ export async function createPost({ postsDir, template, title, type, tags, dek, d
  */
 
 /**
- * Flip a post to published, set its date, then verify. If verify fails or
- * throws, the file is put back exactly as it was.
+ * Render the post's card, flip the post to published and set its date, then
+ * verify. If the card fails, nothing is written. If verify fails or throws,
+ * the post and the card are put back exactly as they were.
  *
  * @param {PublishInput} input
  * @returns {Promise<PublishResult>}
  */
-export async function publishPost({ postsDir, query, date, keepDate = false, verify }) {
+export async function publishPost({ postsDir, query, date, keepDate = false, card, verify }) {
   const posts = await listPosts(postsDir);
   const post = findPost(posts, query);
   if (!post) {
@@ -162,14 +168,27 @@ export async function publishPost({ postsDir, query, date, keepDate = false, ver
   const original = post.source;
   let updated = setDraft(original, false);
   if (!keepDate) updated = setDate(updated, date);
-  const finalDate = String(readFrontmatter(updated).date ?? '');
+  const finalData = readFrontmatter(updated);
+  const finalDate = String(finalData.date ?? '');
+
+  /** @type {import('./og-card.mjs').CardPost} */
+  let cardPost;
+  try {
+    cardPost = cardPostFrom({ file: post.file, slug: post.slug, data: finalData });
+  } catch (error) {
+    throw new UsageError(/** @type {Error} */ (error).message);
+  }
+  const undoCard = await card(cardPost);
 
   await writeFile(post.path, updated);
   let ok = false;
   try {
     ok = await verify();
   } finally {
-    if (!ok) await writeFile(post.path, original);
+    if (!ok) {
+      await writeFile(post.path, original);
+      await undoCard();
+    }
   }
   return { ok, post, date: finalDate, wasDraft: post.data.draft === true };
 }

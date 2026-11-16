@@ -1,24 +1,24 @@
 # Progress
 
 **Current milestone:** M7 - Dark theme
-**Status:** IN PROGRESS   <!-- IN PROGRESS | BLOCKED | COMPLETE -->
+**Status:** COMPLETE   <!-- IN PROGRESS | BLOCKED | COMPLETE -->
 **Kickoff:** docs/kickoffs/M7-kickoff.md
 **Branch:** `feature/darkTheme`
 
 M0's to M6's records are in git history (`progress.md` as of commits 084f458, 9406219, ef48ec2, b8c049f, fe98946, ffa3d0d and 65a223b).
 
 ## Done-when checklist
-- [ ] With no stored choice, every page matches the reader's system setting in Chrome, Safari and Firefox, including with JS disabled, where the toggle doesn't appear - verified by:
-- [ ] The toggle switches the theme, exposes its state correctly (`aria-pressed`, visible label), is keyboard reachable in reading order with the `--pen` outline, and works with Enter and Space - verified by:
-- [ ] A stored choice survives reload and navigation with no flash of the wrong theme - verified by:
-- [ ] With `localStorage` blocked, pages load without errors, follow the system, and the toggle still flips the current page - verified by:
-- [ ] Every text/background pair passes 4.5:1 in both themes, and no hard-coded color is left in `src/` outside the token blocks - verified by:
-- [ ] Code blocks, stamps, sidenotes, `<mark>`, the featured title, the masthead cells, the CURRENTLY bar, the share strip and both buttons follow §6 in both themes at 1280 and 360px - verified by:
-- [ ] Print is light regardless of theme - verified by:
-- [ ] Every page makes only same-origin requests on load in both themes, and the scripts are only the ones listed under Constraints - verified by:
-- [ ] Lighthouse still scores 100 for accessibility and best practices and 95+ for performance (median of three) on home and № 002, mobile and desktop, in both themes - verified by:
-- [ ] Tests pass for the theme-resolution logic, the script/function parity check, the matching token blocks, and the extended contrast test. CI is green on the PR - verified by:
-- [ ] progress.md is complete and status is COMPLETE - verified by:
+- [x] With no stored choice, every page matches the reader's system setting in Chrome, Safari and Firefox, including with JS disabled, where the toggle doesn't appear - verified by: JS off in system Chrome over all 12 pages at 1280 and 360, with the system emulated dark then light: `body` background `rgb(22, 22, 20)` / `color-scheme: dark`, and `rgb(242, 242, 238)` / `light`. In Chrome, Firefox and WebKit (see Deviations), each with the system light and dark: JS on, no stored choice, no `data-theme`, and the background matches the system. JS off: the background matches and the button has no box.
+- [x] The toggle switches the theme, exposes its state correctly (`aria-pressed`, visible label), is keyboard reachable in reading order with the `--pen` outline, and works with Enter and Space - verified by: the 78-check toggle run in three engines (click flips the background and `aria-pressed`; the label stays "Dark theme"; Enter and Space each flip). Tabbing in Chrome at 1280, 390 and 360 on home and № 002, both themes: skip link > site name > Writing > Notes > About > RSS > Dark theme, with a 2px pen outline (`rgb(179, 25, 15)` light, `rgb(240, 103, 92)` dark). Focus screenshots of the header in each theme and width. Not done: a VoiceOver spot check (see Deviations).
+- [x] A stored choice survives reload and navigation with no flash of the wrong theme - verified by: in all three engines and both system settings, after a click the stored theme was on `<html>` when `<body>` was inserted, and `body`'s background in the first animation frame was the chosen theme. This held after a reload, after navigating to № 002, and on /about/ after choosing the theme that matches the system.
+- [x] With `localStorage` blocked, pages load without errors, follow the system, and the toggle still flips the current page - verified by: an init script replacing `localStorage` with a throwing getter, in three engines and both system settings. No page or console errors, the background matches the system, the button shows, and a click flips the page and `aria-pressed`. Unit tests run the head script with a throwing getter and throwing methods.
+- [x] Every text/background pair passes 4.5:1 in both themes, and no hard-coded color is left in `src/` outside the token blocks - verified by: `tests/contrast.test.ts` (six pairs per theme, all at least 4.5:1, and the no-hard-coded-colors scan over every source file, which failed on each of three planted colors). Rendered pass: lowest text contrast 6.11:1 light and 5.87:1 dark.
+- [x] Code blocks, stamps, sidenotes, `<mark>`, the featured title, the masthead cells, the CURRENTLY bar, the share strip and both buttons follow §6 in both themes at 1280 and 360px - verified by: full-page screenshots of every page in both themes at 1280 (home and № 002 also at 360; № 002 has a code box with a highlighted line, sidenotes and a `<mark>`), close-ups of the featured title, `<mark>` and code box in dark, and the design-rules pass over all 12 pages at 1280 and 360 in both themes, at rest and hovered (token colors only, three fonts, no radius, shadow, gradient or centered text).
+- [x] Print is light regardless of theme - verified by: print emulation on № 002 with the system dark, and again with a stored dark choice. Tokens, body text and `color-scheme` are light, the share strip and theme button are hidden, and a print-emulated screenshot is light. The Letter PDF is 4 pages, as in M6.
+- [x] Every page makes only same-origin requests on load in both themes, and the scripts are only the ones listed under Constraints - verified by: the page audit (every page has the head script and the toggle script, posts also COPY LINK, no `src`, no `.js` in `dist`) and the request listener over the 12 pages plus `/rss.xml`, light and dark at 1280, 390 and 360: all same-origin.
+- [x] Lighthouse still scores 100 for accessibility and best practices and 95+ for performance (median of three) on home and № 002, mobile and desktop, in both themes - verified by: Lighthouse 13.6.0 against `astro preview`, three runs each of 8 combinations, every run 100/100/100. Each run's final screenshot was sampled to confirm its theme (`22,22,20` dark, `242,243,238` light). Home: LCP 0.75 s mobile, 0.20 s desktop. № 002: LCP 0.90 s mobile, 0.24 s desktop (M6: 0.9 / 0.2). TBT 0 ms. CLS at most 0.018 (№ 002 desktop; M6 0.017).
+- [x] Tests pass for the theme-resolution logic, the script/function parity check, the matching token blocks, and the extended contrast test. CI is green on the PR - verified by: 349 Vitest tests (from 262), in `tests/theme.test.ts` and `tests/contrast.test.ts`. `npm test`, `npm run check`, `npm run build` and `npm run links` exited 0 before every commit. **CI:** not run yet; it runs when the branch is pushed and the PR opened, which waits on Tony.
+- [x] progress.md is complete and status is COMPLETE - verified by: this file.
 
 ## Completed
 - Branch `feature/darkTheme` created from `main` at d979126. The kickoff is committed on it.
@@ -38,12 +38,19 @@ M0's to M6's records are in git history (`progress.md` as of commits 084f458, 94
   - `localStorage` replaced by a throwing getter: no errors, the page follows the system, and a click still flips the page.
   - JS off: the page follows the system and the button has no box.
 - Keyboard (Chrome, 1280, 390 and 360, home and № 002, both themes): Tab goes skip link > site name > Writing > Notes > About > RSS > Dark theme. The button's outline is `solid 2px` pen in each theme (`rgb(179, 25, 15)` light, `rgb(240, 103, 92)` dark). Focus screenshots of the header at each width and theme. At 1280 the button sits right of the nav. At 390 and 360 it wraps under the nav, and no page scrolls sideways.
+- Surface sweep and design-rules pass (system Chrome, all 12 pages, 1280 and 360, both themes, at rest and with the theme button, COPY LINK, a share icon, a nav link, a prose link and a footer link each hovered): every visible element's `color`, `background-color`, drawn borders, outline and `text-decoration-color` is one of that theme's token values (light: the five plus hairline; dark: the five, hairline, and `#55534d` for muted text on the highlighter). No `border-radius`, `box-shadow`, `text-shadow` or `background-image` anywhere, and no centered text. Fonts are Plex Mono, Archivo and Source Serif 4 only. Lowest text contrast against the element's actual background: light 6.11:1, dark 5.87:1, both the pen "email me" link on paper. The favicon (a paper square with an ink frame) was rendered at 16 and 32px on a dark (`#202124`) and a light (`#dee1e6`) tab color and reads on both, so it's unchanged.
+- Page audit (recreated in the scratchpad, JS off, all 12 pages): one `main`, `footer` and `nav aria-label="Main"`, at most one `aria-current="page"`, one `h1` first with no skipped levels, `lang="en"`, unique titles, descriptions, canonical = `og:url` with a trailing slash (none on the 404, which is `noindex`), OG and Twitter tags, and post `og:image` returning 200. Scripts: every page has exactly the head script and the toggle script, post pages also COPY LINK, nothing with `src`, no `.js` in `dist`. Request listener over the 12 pages plus `/rss.xml`, light and dark at 1280, 390 and 360: all same-origin (110 requests per pass).
+- Print, with the system dark and then also a stored dark choice: under print emulation `--ink` is `#111`, `--paper` `#f2f2ee`, `color-scheme` light, body text `rgb(17, 17, 17)`, highlighted code lines ink on the highlighter, the share strip hidden. The first run showed the theme button in print, so the global print block now hides it. A Letter PDF of № 002 is 4 pages, as in M6, and a print-emulated screenshot is light throughout.
+- README: a "Light and dark themes" section (system default, the button, the one `localStorage` entry, print light, where the tokens and logic live, the no-hard-coded-colors test). The share section no longer calls COPY LINK the site's only JavaScript.
+- Lighthouse runs in both themes. Headless Chrome follows macOS's appearance, and this Mac is in dark mode, so the first set of "light" runs came out dark too (caught by sampling each run's final screenshot). The runs recorded above force the scheme with `--blink-settings=preferredColorScheme=1` (light) or `=0` (dark).
 
 ## Decisions
 - **Print stays light by scoping the dark blocks to `@media screen`** rather than forcing light values in the print blocks. Nothing extra to maintain in either print block.
 - **Parity between the inline script and the tested code:** only the `<head>` script has to be `is:inline`, so only it is a hand-written string. The tests execute that string rather than compare text. The toggle's script is an ordinary Astro `<script>` that imports `src/lib/theme.ts`, so it uses the tested functions directly.
 
 ## Deviations / deferred
+- **Firefox and Safari were checked with Playwright's Firefox and WebKit builds**, as in M6, not installed Firefox and Safari. A minute in real Safari and Firefox would confirm it: set the system to dark, open the site, click DARK THEME, reload.
+- **No VoiceOver check.** The button's state is a native `aria-pressed` on a `<button>` with a fixed visible label, which VoiceOver reads as a toggle button ("Dark theme, toggle button, selected/not selected"). Not heard on this machine; worth a quick listen.
 
 ## Known issues
 - This machine's default shell Node is 22. The repo needs 26 (`.nvmrc`); run `nvm use` first.
@@ -54,3 +61,6 @@ M0's to M6's records are in git history (`progress.md` as of commits 084f458, 94
 - Open from M4: a tag named like a page ("notes", "archive") would duplicate that page's `<title>`.
 
 ## Notes for the next kickoff
+- CI on the dark-theme PR hasn't run yet; record it when Tony asks for the push and PR.
+- In dark, body-size `<mark>` text (Tony's option A) has its lower third light on yellow. It reads, but softer than the rest of the line. If it bothers Tony in use, a dark-only full-background mark is a few lines of CSS.
+- The checking scripts were recreated again in the scratchpad (toggle run, design-rules pass in both themes, page audit, print, Lighthouse with a forced scheme). The case for `npm run verify-site` grows with each milestone.

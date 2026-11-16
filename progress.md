@@ -48,6 +48,10 @@ M0's to M5's records are in git history (`progress.md` as of commits 084f458, 94
 - README: the Chrome requirement (and `CHROME_PATH`) under Setup, the card in the publish description and the `git add` line, a "Share cards and the share box" section with `npm run og`, `npm run og -- 16` in the day-to-day loop and under editing a published post, and `npm run links` in Checks (CI already ran it; the README said three checks).
 
 ## Decisions
+- **The share UI moved to a strip under the title, with icons, and the end box is gone (Tony, after the PR was opened).** Tony felt the box at the very end was unlike how blogs usually share. The research found no controlled study, but common practice is a compact row just under the headline, optionally repeated at the end. Small-sample reports say buttons at the end go unseen, fixed bars on mobile cost more than they gain, and fewer networks do better. I mocked two top placements on the real page (A: a Share row in the Entry details column; B: a strip between the dek and the article). Tony chose B, chose to remove the end box, and chose icons only over words after hearing the trade-offs (the type-only look, the brand-mark rules, recognisability). What changed:
+  - The strip is the SHARE label, COPY LINK, then four 20px icons in ink (pen on hover) inside 36px targets. Each icon link carries an `aria-label` and `title` from `site.post.share.networks` ("Share by email", "Share on LinkedIn", …).
+  - The X and Bluesky icons are the official marks (paths from Simple Icons, CC0). LinkedIn's mark isn't in Simple Icons (removed at LinkedIn's request), so it's an "in" knocked out of a square-cornered square. Email is a line-drawn envelope.
+  - The permalink no longer shows by default. The fallback un-hides it in the strip and selects it. With JS off there's no button, and the address bar holds the same URL.
 - **The share email's subject names the blog: `The time we didn’t save - Off the Happy Path`.** The kickoff specified `subject=<title>`. When Tony checked the mailto in Outlook he asked for the site name in the email, and chose the subject (in the page `<title>`'s `Title - Site` form) over a lead-in line in the body. The body is still the URL alone. The other networks are unchanged.
 - **The permalink has `user-select: all`.** One click or tap selects the whole URL, which helps readers without JS (the button is hidden for them) and matches what the fallback does.
 
@@ -58,11 +62,19 @@ M0's to M5's records are in git history (`progress.md` as of commits 084f458, 94
 - This machine's default shell Node is 22. The repo needs 26 (`.nvmrc`); run `nvm use` first.
 
 ## Plan changes to consider
+- Plan §6 and M6's write-up describe the share UI as a box at the end with plain-word links and no icons. Tony changed that to a strip under the title with network icons (see Decisions). §6 should say network share icons are allowed: monochrome, in ink, square corners. M6's write-up should say the permalink shows only in the copy fallback.
 - The share links were checked signed out only. Clicking each one while signed in to LinkedIn, Bluesky and X would confirm the compose screens fill in.
 - Carried from M5: the checking scripts (page audit, keyboard pass, design-rules check, Lighthouse runner, print renderer) live in the session scratchpad. If they're wanted again, they're worth moving into `scripts/` as a single `npm run verify-site`.
 - Open from M4: a tag named like a page ("notes", "archive") would duplicate that page's `<title>`.
 
 ## Notes for the next kickoff
+- Checks after the move (playwright-core against `astro preview`, recorded here because the Done-when entries above describe the end box):
+  - Copy: Chrome, Firefox and WebKit each copied the exact URL, showed COPIED and reset, announced "Link copied", and responded to Enter and Space, with the button's width steady at 99.6px. The fallback (no clipboard, or a rejecting one) shows the URL in the strip, selects exactly it, and announces the Ctrl+C/Cmd+C message. With JS off: no button, all four icons visible, URL hidden.
+  - Keyboard (1280, 390, 360): after the title, Tab goes COPY LINK → Share by email → LinkedIn → Bluesky → X → the first tag in Entry details, each with the 2px pen outline (focus screenshot on X). Every icon target is 36px.
+  - Layout: the strip sits directly after the title block and fits one line at 1280, 390 and 360. No horizontal scroll at any width.
+  - Audit and design: the audit passes on all 12 pages (sections Share > Reply > More entries). The design pass found token colors only and nothing rounded, shadowed or centered, at rest and on hover; lowest text contrast 6.85:1.
+  - Also: all requests same-origin; print hides the strip.
+  - Lighthouse on № 002, three runs each: 100/100/100 mobile and desktop, LCP 0.9 s / 0.2 s, CLS 0 mobile and 0.017 desktop. Revealing the button causes no layout shift.
 - Waiting on Tony: after the merge of PR #16, the production link-preview check of a post card (fetch № 002 with a bot user agent and check `og:image` returns the card).
 - A manual click on COPY LINK in real Safari and Firefox is still worth doing once; the automated checks used Playwright's WebKit and Firefox builds.
 - `npm run publish` on a draft whose body is still only the template's comments fails at `npm run build`, because the feed refuses a post with no rendered HTML. The message names the feed, and the post and card are restored, so nothing breaks, but the error could say "the post has no body yet".

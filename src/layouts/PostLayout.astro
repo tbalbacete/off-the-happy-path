@@ -37,6 +37,7 @@ const { no, title, dek, type, date, meta, active, image } = Astro.props;
           {formatEntryNo(no)} · <Stamp type={type} large /> · {site.post.filed}{' '}<time datetime={date}>{date}</time>
         </Fragment>
       </TitleBlock>
+      <slot name="share" />
       <div class="post-columns">
         <PostMeta rows={meta} />
         <article class="post-body prose">

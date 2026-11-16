@@ -13,7 +13,7 @@ describe('shareLinks', () => {
   it('returns Email, LinkedIn, Bluesky and X in order, with labels from site.ts', () => {
     expect(links.map((l) => l.id)).toEqual(['email', 'linkedin', 'bluesky', 'x']);
     expect(links.map((l) => l.label)).toEqual(site.post.share.networks.map((n) => n.label));
-    expect(links.map((l) => l.label)).toEqual(['Email', 'LinkedIn', 'Bluesky', 'X']);
+    expect(links.map((l) => l.label)).toEqual(['Share by email', 'Share on LinkedIn', 'Share on Bluesky', 'Share on X']);
   });
 
   it('builds a mailto with the title and blog name as subject and the URL as body', () => {

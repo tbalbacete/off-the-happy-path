@@ -146,12 +146,15 @@ export const site = {
       /** Screen-reader messages in the box's live region. */
       copiedStatus: 'Link copied',
       fallbackStatus: 'Press Ctrl+C or Cmd+C to copy',
-      /** The share links, in order. Labels are plain words: no logos or icons. */
+      /**
+       * The share links, in order. They show as icons; `label` is each link's
+       * accessible name and hover title.
+       */
       networks: [
-        { id: 'email', label: 'Email' },
-        { id: 'linkedin', label: 'LinkedIn' },
-        { id: 'bluesky', label: 'Bluesky' },
-        { id: 'x', label: 'X' },
+        { id: 'email', label: 'Share by email' },
+        { id: 'linkedin', label: 'Share on LinkedIn' },
+        { id: 'bluesky', label: 'Share on Bluesky' },
+        { id: 'x', label: 'Share on X' },
       ],
     },
   },

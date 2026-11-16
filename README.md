@@ -37,9 +37,9 @@ Drafts show up in `npm run dev` and are left out of the production build.
 
 **`npm run publish -- <number-or-slug>`** first renders the post's share card to `public/og/<slug>.png` (see below). Then it sets `draft: false` and `date:` to today (add `--keep-date` to keep the existing date), and runs `npm run check` and `npm run build`. If the card can't be made (Chrome missing, say), nothing changes. If check or build fails, the post and its card are put back exactly as they were and the command exits non-zero. On success it prints the git commands. It never runs git itself.
 
-## Share cards and the share box
+## Share cards and the share strip
 
-Every post page ends with a SHARE box: the post's permalink, a COPY LINK button, and plain Email, LinkedIn, Bluesky and X links. The button is the site's only JavaScript and appears only on post pages. Readers without JavaScript don't see it and can select the permalink instead. The box's text lives in `site.post.share` in `src/data/site.ts`.
+Every post page has a SHARE strip just under the title: a COPY LINK button and icon links for email, LinkedIn, Bluesky and X. The button is the site's only JavaScript and appears only on post pages; readers without JavaScript don't see it. If the clipboard isn't available, the button shows the link and selects it instead. The strip's text, including each icon's accessible name, lives in `site.post.share` in `src/data/site.ts`, and the icons in `src/lib/share-icons.ts`.
 
 When a post is shared, the preview uses its own card (1200×630) from `public/og/<slug>.png`. `npm run publish` makes it. To remake one by hand:
 

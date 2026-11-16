@@ -42,8 +42,8 @@ const image = postOgImage({ slug, no, title, draft, hasCard, production: import.
 ---
 
 <PostLayout no={no} title={title} dek={dek} type={type} date={date} meta={meta} active={navItemForType(type)} image={image}>
+  <ShareBox slot="share" url={url} title={title} />
   <Content />
   <ReplyBox slot="after" no={no} />
-  <ShareBox slot="after" url={url} title={title} />
   <PrevNext slot="after" previous={neighbourLink(previous)} next={neighbourLink(next)} />
 </PostLayout>

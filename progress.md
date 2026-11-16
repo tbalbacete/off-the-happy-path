@@ -24,7 +24,10 @@ M0's to M6's records are in git history (`progress.md` as of commits 084f458, 94
 - Branch `feature/darkTheme` created from `main` at d979126. The kickoff is committed on it.
 - Needs Tony, answered before the start: `<mark>` and the featured title keep the highlighter band with light text in dark (option A, "light mode but inverse"). The toggle's label is "Dark theme" with `aria-pressed`.
 
+- `src/lib/theme.ts`: `parseStoredTheme` (only `light`/`dark`, anything else is no choice), `resolveTheme(stored, systemPrefersDark)`, `otherTheme`, `readStoredTheme`/`writeStoredTheme` (take a storage getter, try/catch, so a blocked `localStorage` reads as no choice and a write reports false), the constants `THEME_STORAGE_KEY` (`theme`) and `THEME_ATTRIBUTE` (`data-theme`), and `themeHeadScript`, the inline `<head>` script as a string built from those constants. Tests in `tests/theme.test.ts` run the script string in `node:vm` against stub `localStorage` and `document`, and check it gives the same result as `readStoredTheme` for every valid and junk value and for blocked storage (a throwing getter and throwing methods). 285 tests.
+
 ## Decisions
+- **Parity between the inline script and the tested code:** only the `<head>` script has to be `is:inline`, so only it is a hand-written string. The tests execute that string rather than compare text. The toggle's script is an ordinary Astro `<script>` that imports `src/lib/theme.ts`, so it uses the tested functions directly.
 
 ## Deviations / deferred
 

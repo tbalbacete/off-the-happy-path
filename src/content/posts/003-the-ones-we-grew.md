@@ -22,7 +22,7 @@ draft: true
 #   Code title:  ```md title="TICKET-4127.md"
 ---
 
-"They're going to send me an offer!" I was thrilled for her and proud, and I couldn't help wishing this day had waited a little longer. She's one of the most talented young engineers I've ever mentored, maybe the most, and she is about to move on to her next chapter.
+"They're going to send me an offer!" I was thrilled for her and proud, and I couldn't help wishing this day had waited a little longer. She's one of the most talented young engineers I've ever mentored, maybe the most, and she was about to move on to her next chapter.
 
 ## Watching them get good
 
@@ -30,7 +30,7 @@ When you mentor people, especially exceptional ones, you come to know that one d
 
 I remember it like it was yesterday. We had spent a day doing rapid-fire interviews, and now we had to boil the list down to the few people we were willing to take on as interns. For me, there was only one option. I remember telling my boss as soon as we finished, "If we don't get her, none of them will compare." To this day I'm still not sure why, but she picked us as her first choice, and the story began.
 
-She rapidly grew as an engineer and went on to build her own software solutions, integrations, and processes; and she handled every curveball and roadblock with humility, grace, and a drive that is remarkable. Watching someone go from a first pull request with 20 comments and 15 trips back to the drawing board to being seen as an expert in their craft and a core part of the team has been a gift.
+She rapidly grew as an engineer and went on to build her own software solutions, integrations, and processes, and she handled every curveball and roadblock with humility, grace, and a drive that is remarkable. Watching someone go from a first pull request with 20 comments and 15 trips back to the drawing board to being seen as an expert in their craft and a core part of the team has been a gift.
 
 Inevitably, the day comes when a mentee stops needing you, and that moment is so quiet you could hear a pin drop. Someone who used to come to me excited, with new ideas and questions about how to build them, was now showing me the cool things she had already done without my help or advice. She may or may not also be catching things I missed at times. I was *not* ready for that moment, and in an odd way, I wish I could go back to those early days, even for one day.
 

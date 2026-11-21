@@ -291,6 +291,78 @@ hr {
   font-style: italic;
 }
 
+/* Section heads in a post are numbered, like everything else on the log. */
+.prose {
+  counter-reset: section;
+}
+.prose > h2 {
+  counter-increment: section;
+  padding-top: 14px;
+  border-top: 2px solid var(--ink);
+}
+.prose > h2::before {
+  content: '§ ' counter(section, decimal-leading-zero);
+  display: block;
+  margin-bottom: 8px;
+  font-family: var(--font-mono);
+  font-stretch: normal;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0.1em;
+  color: var(--pencil);
+}
+.prose li::marker {
+  font-family: var(--font-mono);
+  font-size: 0.8em;
+  color: var(--pencil);
+}
+
+/* Pull quote: raw HTML in a post, <figure class="pull-quote"><blockquote>…</blockquote><figcaption>…</figcaption></figure>. */
+.prose .pull-quote {
+  margin: 40px 0 36px;
+  padding: 20px 0 18px;
+  border-top: 2px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
+}
+.prose .pull-quote blockquote {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-family: var(--font-head);
+  font-stretch: 75%;
+  font-style: normal;
+  font-weight: 800;
+  font-size: 36px;
+  line-height: 1.12;
+}
+.prose .pull-quote blockquote::before {
+  content: '\201C' / '';
+  display: block;
+  height: 0.5em;
+  font-size: 2.2em;
+  line-height: 1;
+  color: var(--pen);
+}
+.prose .pull-quote p {
+  margin: 0;
+}
+.prose .pull-quote figcaption {
+  margin-top: 16px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.5;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--pencil);
+}
+.prose .pull-quote figcaption::before {
+  content: '— ';
+}
+.prose .pull-quote cite {
+  font-style: normal;
+}
+
 /* Code "file" box (see transformerCodeFigure in src/lib/code.ts). */
 .code-box {
   margin: 0 0 28px;
@@ -456,6 +528,9 @@ hr {
   .prose h2 {
     margin-top: 36px;
     font-size: 26px;
+  }
+  .prose .pull-quote blockquote {
+    font-size: 28px;
   }
   .code-box pre {
     font-size: 14px;

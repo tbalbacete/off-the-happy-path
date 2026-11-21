@@ -14,7 +14,7 @@ revised:
 tags: [people, mentoring, ai]
 # Optional. Uncomment to show it in the post's meta column.
 confidence: "Sure it matters. Still working out how to keep them."
-draft: true
+draft: false
 #
 # Writing reminders. Comments up here never render.
 #   Sidenote:    a claim.[^1]   ...then anywhere below:   [^1]: The note.

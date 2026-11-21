@@ -22,7 +22,7 @@ draft: true
 #   Code title:  ```md title="TICKET-4127.md"
 ---
 
-"They're going to send me an offer!" The rush of bittersweet feelings that followed was something I never could have expected. As excited for her and as proud of her as I was, I couldn't help but wish this day had waited a little longer to come. One of the most talented young people I have ever had the chance to work with and mentor, if not the most talented, was about to get an offer to leave the company where we both work.
+"They're going to send me an offer!" I was thrilled for her and proud, and I couldn't help wishing this day had waited a little longer. She's one of the most talented young engineers I've ever mentored, maybe the most, and she is about to move on to her next chapter.
 
 ## Watching them get good
 
@@ -30,13 +30,13 @@ When you mentor people, especially exceptional ones, you come to know that one d
 
 I remember it like it was yesterday. We had spent a day doing rapid-fire interviews, and now we had to boil the list down to the few people we were willing to take on as interns. For me, there was only one option. I remember telling my boss as soon as we finished, "If we don't get her, none of them will compare." To this day I'm still not sure why, but she picked us as her first choice, and the story began.
 
-She grew as an engineer and went on to build her own software solutions, and she handled every curveball and roadblock with humility, grace, and a drive that is rare beyond measure. Watching someone go from a first pull request with 20 comments and 15 trips back to the drawing board to being seen as an expert in their craft has been remarkable.
+She rapidly grew as an engineer and went on to build her own software solutions, integrations, and processes; and she handled every curveball and roadblock with humility, grace, and a drive that is remarkable. Watching someone go from a first pull request with 20 comments and 15 trips back to the drawing board to being seen as an expert in their craft and a core part of the team has been a gift.
 
-Inevitably, the day comes when they stop needing you, and that moment is so quiet you could hear a pin drop. Someone who used to come to me excited, with new ideas and questions about how to build them, was now showing me the cool things she had already done without my help or advice. She may or may not also be catching things I missed. I was *not* ready for that moment, and in an odd way, I wish I could go back to those early days, even for one day.
+Inevitably, the day comes when a mentee stops needing you, and that moment is so quiet you could hear a pin drop. Someone who used to come to me excited, with new ideas and questions about how to build them, was now showing me the cool things she had already done without my help or advice. She may or may not also be catching things I missed at times. I was *not* ready for that moment, and in an odd way, I wish I could go back to those early days, even for one day.
 
 ## Then they leave
 
-She knows her potential, and fortunately for her, another company saw it too. I knew one day she would outgrow her role, and I always quietly (and sometimes not so quietly) hoped we would find something for her when that day came. We didn't. Oh, how common that is.
+She knows her potential, and unsurprisingly, another company saw it too. I knew one day she would outgrow her role, and I always quietly (and sometimes not so quietly) hoped we would find something for her when that day came. We didn't. Oh, how common that is.
 
 So many things are leaving with her. An infectious attitude and sense of humor. A shockingly deep understanding of our business, built in such a short time. A person who truly wants to leave things better than she found them, another rare quality. None of these things show up in the exit paperwork. Most of all, the way she brightened every one of our days leaves with her too, and that can't be replaced.
 
@@ -72,7 +72,7 @@ So notice it first. Promote and pay ahead of the market, not in response to it. 
 
 ## Letting go well
 
-Some people will leave anyway, no matter what you do, and that's okay. Sometimes it's the whole point. If you did your job well, you helped someone grow past what you could offer them. Being someone people are glad they worked for still counts for a lot.
+Some people will leave anyway, no matter what you do, and that's okay. Sometimes it's the whole point. If you did your job well, you helped someone grow beyond what their current environment could provide. Being someone people are glad they worked with still counts for a lot.
 
 There's a line near the end of *The Office* that I keep coming back to.[^finale]
 
